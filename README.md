@@ -84,39 +84,22 @@ This ensures the analyzer delivers **context-aware summaries** while maintaining
 
 ## 🖼️ Project Screenshots
 
-| UI Previews | Description |
-|--------------|-------------|
-| ![Screenshot 1](https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0212_.jpeg) | Landing page showing hero section and CTA |
-| ![Screenshot 2](https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02138_.jpeg) | Upload page with drag-and-drop interface |
-| ![Screenshot 3](https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02154_.jpeg) | AI brain animation showing processing state |
-| ![Screenshot 4](https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02342_.jpeg) | Results page displaying detailed summary |
-| ![Screenshot 5](https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02548_.jpeg) | Export page for downloading in chosen format |
-| ![Screenshot 6](https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0235_.jpeg) | Responsive layout for mobile experience |
+<p align="center">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0212_.jpeg" width="30%">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02138_.jpeg" width="30%">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02154_.jpeg" width="30%">
+</p>
+
+<p align="center">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02342_.jpeg" width="30%">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02548_.jpeg" width="30%">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0235_.jpeg" width="30%">
+</p>
 
 ---
 
-## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER.git
-cd PDERAX-AI-DOCUMENT-ANALYZER
-```
 
-### 2️⃣ Backend Setup
-```bash
-cd back-end
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
-
-### 3️⃣ Frontend Setup
-Simply open `index.html` in your browser or serve it locally using:
-```bash
-npx live-server
-```
-
----
 
 ## 🧩 Technologies Used
 
