@@ -1,0 +1,13 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+Connection error: Unable to reach AI service. Please check your internet connection.
+
+KEY INSIGHTS:
+--------------------
+1. Service temporarily unavailable
+
+QUESTIONS & ANSWERS:
+-------------------------

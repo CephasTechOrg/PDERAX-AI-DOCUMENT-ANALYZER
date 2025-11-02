@@ -1,0 +1,23 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings in Ghana Cedis (GHS). The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, nurses, drivers, traders, and students. All individuals maintain positive savings, indicating basic financial stability across the group, though savings rates vary considerably by profession.
+
+The analysis shows that higher-income professions like engineering (GHS 7,200 monthly) generate nearly six times the income of the lowest-earning student (GHS 1,200 monthly). Despite these disparities, all individuals spend less than they earn, with savings ranging from GHS 200 (student) to GHS 2,400 (engineer) monthly. The trader demonstrates notable financial performance, earning more than several traditional professions while maintaining healthy savings, suggesting potential viability in informal sector employment.
+
+KEY INSIGHTS:
+--------------------
+1. Income inequality is evident, with engineers earning 500% more than students and 106% more than teachers
+2. All individuals maintain positive cash flow (income > expenses), indicating financial discipline across occupations
+3. Savings rates vary from 16.7% (driver) to 33.3% (engineer) of monthly income
+4. The trader occupation shows competitive earnings (GHS 5,000 monthly), outperforming several formal sector jobs
+5. Monthly to annual calculations are consistent (12x multiplier) across all categories
+6. Student has the tightest budget with minimal savings (GHS 200 monthly), suggesting financial vulnerability
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings in Ghana Cedis (GHS). The data reveals...
+

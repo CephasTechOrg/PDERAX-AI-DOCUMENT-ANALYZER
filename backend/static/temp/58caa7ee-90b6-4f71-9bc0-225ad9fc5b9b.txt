@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, nurses, drivers, traders, and students. All individuals maintain positive savings, indicating basic financial stability within this sample group.
+
+The analysis shows that higher-income occupations like engineering (GHS 7,200 monthly) generate nearly six times the monthly income of the lowest earner (student at GHS 1,200). Savings rates vary considerably across professions, with Kojo Owusu (Engineer) achieving the highest absolute savings at GHS 2,400 monthly, while Kofi Adjei (Student) saves the least at GHS 200 monthly. The data suggests a correlation between occupation type and financial capacity, with professional roles commanding higher compensation and greater savings potential.
+
+KEY INSIGHTS:
+--------------------
+1. Income disparity is pronounced: Engineers earn 500% more than students and 106% more than teachers
+2. All individuals maintain positive cash flow (income > expenses)
+3. Savings rates range from 16.7% to 33.3% of monthly income across professions
+4. The highest saver in absolute terms is Kojo Owusu (Engineer) at GHS 2,400 monthly
+5. The highest savings rate belongs to Kojo Owusu (Engineer) at 33.3% of income
+6. Professional occupations (Engineer, Accountant) show significantly higher earning potential than other roles
+7. Monthly to annual calculations are consistent (monthly figures × 12 = annual figures)
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income d...
+

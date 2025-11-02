@@ -1,0 +1,25 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document is an unofficial academic transcript for MANU Derrick Obeng from the University of Energy and Natural Resources, showing his first semester results in the BSc Information Technology program (Level 100). The student achieved strong academic performance with a semester GPA of 3.53 and cumulative GPA of 3.53, having completed all 17 credit hours attempted.
+
+The transcript reveals a consistently high-performing student across technical and general education courses. While demonstrating excellence in programming, mathematics, and computing fundamentals (all scoring 80+ with A grades), the student's performance was comparatively weaker in French language studies (65, C+ grade). This pattern suggests strong aptitude for core technical subjects with room for improvement in language courses.
+
+Overall, this represents an excellent academic start to the IT program, with the student maintaining a high GPA while carrying a full course load. The 3.74 cumulative GPA mentioned in the header appears to be a clerical discrepancy from the detailed 3.53 GPA shown in the semester breakdown.
+
+KEY INSIGHTS:
+--------------------
+1. Excellent overall academic performance with GPA of 3.53/4.0 in first semester
+2. Strong aptitude for technical courses (Programming, Computing, Mathematics, Statistics) with perfect 4.0 grade points
+3. Comparative weakness in language studies (French - 65%, C+ grade)
+4. Perfect course completion rate - all 17 attempted credits successfully earned
+5. Minor data inconsistency between header CGPA (3.74) and detailed semester CGPA (3.53)
+6. Balanced course load including technical, communication, and general education requirements
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document is an unofficial academic transcript for MANU Derrick Obeng from the University of Energy and Natural Resources, showing his first semester results in the BSc Information Technology prog...
+

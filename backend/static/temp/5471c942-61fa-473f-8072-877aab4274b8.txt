@@ -1,0 +1,13 @@
+AI PDF Analyzer - Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+Error in AI analysis: HTTPSConnectionPool(host='api.deepseek.com', port=443): Read timed out.
+
+KEY INSIGHTS:
+--------------------
+1. Analysis unavailable due to API error
+
+QUESTIONS & ANSWERS:
+-------------------------

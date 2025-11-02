@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, nurses, drivers, traders, and students. All individuals maintain positive savings, indicating they live within their means, though savings rates vary considerably across income levels.
+
+The highest earner is Kojo Owusu (Engineer) with GHS 7,200 monthly income and GHS 2,400 monthly savings, while the lowest earner is Kofi Adjei (Student) with GHS 1,200 monthly income and only GHS 200 monthly savings. The data shows a clear correlation between income level and savings amount, though savings rates (savings as percentage of income) differ across occupations, suggesting varying financial management approaches or fixed cost structures.
+
+KEY INSIGHTS:
+--------------------
+1. Engineers earn 86% more than accountants despite both being professional roles
+2. Monthly savings range from GHS 200 (Student) to GHS 2,400 (Engineer) - a 12x difference
+3. All individuals maintain positive cash flow (income > expenses)
+4. Traders show strong earnings (GHS 5,000 monthly) comparable to some professional roles
+5. Students have the tightest budget with only 16.7% savings rate
+6. Engineers achieve the highest savings rate at 33.3% of income
+7. Annual data consistently reflects 12x monthly figures, confirming calculation accuracy
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparitie...
+

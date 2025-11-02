@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, drivers, and students. All individuals maintain positive savings rates, though the amounts vary considerably based on income levels and spending patterns.
+
+The financial health across these professions appears generally stable, with everyone spending less than they earn. However, savings rates (savings as a percentage of income) differ noticeably - Kojo Owusu (Engineer) saves 33% of his income while Kofi Adjei (Student) saves only 17%. The data suggests that higher-income professions like engineering and accounting provide greater financial security and capacity for wealth accumulation compared to middle-income and entry-level positions.
+
+KEY INSIGHTS:
+--------------------
+1. Income inequality is evident: Engineers earn 6x more than students and 2.6x more than teachers
+2. All individuals maintain positive cash flow (income > expenses)
+3. Savings rates range from 17% (Student) to 33% (Engineer), showing varying financial capacity
+4. The highest absolute savings belong to Kojo Owusu (Engineer) at GHS 2,400 monthly
+5. Professional hierarchy in earnings: Engineer > Accountant > Trader > Nurse > Teacher > Driver > Student
+6. Monthly expenses consistently represent 67-83% of income across all individuals
+7. Annual figures are exactly 12x monthly amounts, suggesting consistent financial patterns
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparitie...
+

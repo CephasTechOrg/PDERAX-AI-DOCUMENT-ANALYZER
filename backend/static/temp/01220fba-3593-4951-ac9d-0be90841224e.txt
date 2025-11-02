@@ -1,0 +1,22 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document is a 50-question Bible quiz covering foundational narratives, characters, and events from both the Old and New Testaments. It serves as a basic knowledge assessment tool, focusing on widely recognized biblical stories such as Noah's Ark, David and Goliath, the Exodus, and key moments from Jesus' life and ministry. The questions progress from general creation accounts to specific details about miracles, commandments, and prophetic acts.
+
+The quiz demonstrates a balanced selection across major biblical themes: creation and early history, Israel's leadership and prophets, Jesus' birth and ministry, and doctrinal elements like the Ten Commandments. It includes both straightforward factual questions (e.g., "Who built the ark?") and nuanced items requiring specific knowledge (e.g., the unnamed fruit in Eden). This structure makes it suitable for testing recall of essential biblical literacy across diverse stories and teachings.
+
+KEY INSIGHTS:
+--------------------
+1. The quiz emphasizes major narrative milestones (Creation, Flood, Exodus, Jesus' life) and key figures (Noah, Moses, David, Jesus' disciples)
+2. It includes both literal details (numbers of days, people, animals) and symbolic/theological elements (shortest verse, first commandment)
+3. Notable attention is given to miracles and supernatural events (walking on water, fiery furnace survival)
+4. Several questions correct common misconceptions (unnamed Eden fruit, "clean animals" distinction in the ark)
+5. The selection spans legal, historical, poetic, and prophetic biblical genres while maintaining accessibility
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document is a 50-question Bible quiz covering foundational narratives, characters, and events from both the Old and New Testaments. It serves as a basic knowledge assessment tool, focusing on wid...
+

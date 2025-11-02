@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings in Ghanaian Cedis (GHS). The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, nurses, drivers, traders, and students. All individuals maintain positive savings, indicating basic financial stability across the group, though savings rates vary considerably by occupation.
+
+The highest earner is Kojo Owusu (Engineer) with GHS 7,200 monthly income and GHS 2,400 monthly savings, while the lowest earner is Kofi Adjei (Student) with GHS 1,200 monthly income and GHS 200 monthly savings. The data shows a clear correlation between income level and absolute savings amount, though savings rates (savings as percentage of income) differ. The trader (Abena Serwaa) demonstrates that non-professional occupations can generate competitive earnings, outperforming several traditional professions in this dataset.
+
+KEY INSIGHTS:
+--------------------
+1. Income inequality is evident, with the highest earner (Engineer) earning 6x more than the lowest earner (Student)
+2. All individuals maintain positive cash flow, with savings ranging from 16.7% to 33.3% of monthly income
+3. The Engineer has both the highest absolute savings (GHS 2,400 monthly) and highest savings rate (33.3%)
+4. Traditional professional roles (Engineer, Accountant) outperform other occupations in both earnings and savings
+5. The Student maintains the lowest but still positive savings despite minimal income
+6. Monthly to annual calculations appear consistent (12x multiplier) across all categories
+7. The Trader occupation shows competitive earnings, surpassing several white-collar professions
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings in Ghanaian Cedis (GHS). The data reve...
+

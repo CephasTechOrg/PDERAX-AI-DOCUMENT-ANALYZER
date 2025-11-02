@@ -1,0 +1,23 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, nurses, drivers, traders, and students. All individuals maintain positive savings, indicating basic financial stability within this sample group.
+
+The analysis shows that higher-income occupations like engineering (GHS 7,200 monthly) generate nearly six times the monthly income of the lowest-earning student (GHS 1,200). Despite income variations, all subjects maintain savings rates between 16-33% of their income, suggesting consistent financial discipline across occupations. The trader demonstrates notable financial performance, generating the second-highest savings among non-professional occupations.
+
+KEY INSIGHTS:
+--------------------
+1. Income inequality is evident with engineers earning 500% more than students and 106% more than teachers
+2. All individuals maintain positive cash flow with savings rates ranging from 16.7% (driver) to 33.3% (engineer)
+3. The highest annual saver is the engineer (GHS 28,800), while the student saves the least (GHS 2,400)
+4. Monthly to annual calculations are consistent across all entries (multiplied by 12)
+5. The trader occupation generates substantial income (GHS 5,000 monthly), comparable to formal employment
+6. Expense patterns generally correlate with income levels across all occupations
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income d...
+

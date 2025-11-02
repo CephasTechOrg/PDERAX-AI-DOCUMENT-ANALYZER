@@ -1,0 +1,23 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than students and drivers. All individuals maintain positive savings, indicating basic financial stability, though savings rates vary considerably across income levels.
+
+The analysis shows that higher-income occupations like engineering (GHS 7,200 monthly) generate nearly six times the income of the lowest-earning student (GHS 1,200 monthly). Despite these disparities, all subjects maintain positive cash flow, with savings ranging from GHS 200 to GHS 2,400 monthly. The data provides a snapshot of earning potential and financial management across different socioeconomic segments in this sample group.
+
+KEY INSIGHTS:
+--------------------
+1. Income inequality is evident, with engineers earning 500% more than students and 157% more than teachers
+2. Savings rates (savings as percentage of income) range from 16.7% (student) to 33.3% (engineer), showing that higher earners tend to save proportionally more
+3. All individuals maintain positive net cash flow despite varying income levels
+4. The highest absolute savings belong to the engineer (GHS 2,400 monthly), while the lowest belongs to the student (GHS 200 monthly)
+5. Monthly to annual calculations appear consistent across all entries (multiplied by 12)
+6. The trader demonstrates that non-professional occupations can generate competitive income (GHS 5,000 monthly)
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income d...
+

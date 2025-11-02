@@ -1,0 +1,25 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document outlines the agenda and key content from the GNAAS Congress 2025, focusing on future career preparation and cyber fraud awareness. The career development section emphasizes that building a successful career requires more than academic qualifications, highlighting essential future skills identified by the World Economic Forum including technological literacy, creative thinking, and leadership. It provides practical strategies for career advancement through internships, national service, networking, and continuous skill development in areas like AI tools and data analytics.
+
+The cyber awareness section details emerging fraud trends targeting mobile money users in Ghana, including fake promotions, call forwarding scams, and WhatsApp hacking. It explains specific fraudulent techniques such as criminals sending small amounts to establish false transaction references and manipulating victims into entering their PINs incorrectly. The document concludes with comprehensive prevention measures including using eSIM technology, never sharing PINs, and canceling call forwarding codes when suspicious.
+
+KEY INSIGHTS:
+--------------------
+1. Future job market demands blend of technological proficiency (AI, data analytics) with human skills (creative thinking, leadership)
+2. Career development is presented as continuous cycle involving self-assessment, skill building, and professional networking
+3. Emerging careers cluster in four key areas: technology-driven roles, cybersecurity, sustainability (ESG), and healthcare/education
+4. Internships and national service provide critical real-world experience, networking, and career exploration opportunities
+5. Mobile money fraud in Ghana employs sophisticated social engineering tactics exploiting user behavior patterns
+6. Call forwarding scams (*21*, *61* codes) represent particularly dangerous threat as they can intercept authentication messages
+7. eSIM technology offers significant security advantages over physical SIM cards for mobile banking protection
+8. Document bridges career preparation with digital safety awareness as complementary essential skills
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document outlines the agenda and key content from the GNAAS Congress 2025, focusing on future career preparation and cyber fraud awareness. The career development section emphasizes that building...
+

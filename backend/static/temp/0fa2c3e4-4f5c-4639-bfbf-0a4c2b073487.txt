@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, nurses, drivers, traders, and students. All individuals maintain positive savings, indicating they live within their means, though savings rates vary considerably across income levels.
+
+The highest earner is Kojo Owusu (Engineer) with GHS 7,200 monthly income and GHS 2,400 monthly savings, while the lowest earner is Kofi Adjei (Student) with GHS 1,200 monthly income and GHS 200 monthly savings. The data shows a clear correlation between income level and absolute savings amount, though savings rates (savings as percentage of income) differ. The annual figures consistently reflect 12 times the monthly amounts, confirming data consistency across timeframes.
+
+KEY INSIGHTS:
+--------------------
+1. Income disparity is pronounced: Engineer's monthly income (GHS 7,200) is 6x Student's income (GHS 1,200)
+2. All individuals maintain positive cash flow (income > expenses)
+3. Highest savings rate: Engineer (33.3%) and Trader (26%) show strongest savings discipline
+4. Lowest savings rate: Driver (21.4%) and Student (16.7%) have relatively tighter budgets
+5. Professional occupations (Engineer, Accountant) generate highest absolute savings
+6. Monthly to annual calculations are mathematically consistent across all categories
+7. Expense patterns generally scale with income levels across all professions
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations in Ghana, showing their monthly and annual income, expenses, and savings. The data reveals significant income d...
+
