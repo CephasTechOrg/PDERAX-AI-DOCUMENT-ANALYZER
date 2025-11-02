@@ -43,6 +43,13 @@
   <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0235_.jpeg" width="300" alt="Screenshot 6"/>
 </p>
 
+### 💻 Desktop View
+
+<p align="center">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_13293_.jpeg" width="800" alt="Desktop View Screenshot"/>
+</p>
+
+
 ---
 
 ## ⚡ Project Overview
