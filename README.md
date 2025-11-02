@@ -72,6 +72,19 @@ back-end/
 
 💻 Frontend Folder Structure
 frontend/
+🔗 Integration with DeepSeek AI
+<p align="center"> The backend communicates directly with <b>DeepSeek AI API</b> for intelligent document summarization. This ensures the analyzer delivers <b>context-aware summaries</b> while maintaining <b>data privacy and efficiency</b>. </p>
+🖼️ Project Screenshots
+<p align="center"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0212_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02138_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02154_.jpeg" width="30%"> </p> <p align="center"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02342_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02548_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0235_.jpeg" width="30%"> </p>
+🧩 Technologies Used
+<p align="center">
+Category	Tools / Frameworks
+Frontend	HTML5, CSS3, JavaScript (ES6+), Glassmorphism UI
+Backend	FastAPI, Python, Uvicorn
+AI Engine	DeepSeek API
+Data Processing	Pydantic, Custom File Parsers
+Deployment	GitHub, Local or Cloud (optional)
+</p>
 ├── index.html          # Main HTML structure
 ├── style.css           # Glassmorphism-inspired responsive design
 ├── app.js              # Core JavaScript (2,000+ lines of logic)
