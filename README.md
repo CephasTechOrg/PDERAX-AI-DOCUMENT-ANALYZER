@@ -1,5 +1,5 @@
 <!--
-   🌌 MASTER README — PDERAX AI DOCUMENT ANALYZER
+   🌌 PRO MASTER README — PDERAX AI DOCUMENT ANALYZER
    Designed for: CephasTechOrg | GitHub: @CephasTechOrg
 -->
 
@@ -8,32 +8,29 @@
 <h1>📄 PDERAX AI DOCUMENT ANALYZER</h1>
 <h3>AI That Understands Your Documents</h3>
 
+<!-- Typing SVG for Dynamic Description -->
 <p align="center">
-  <em>Upload your documents, get comprehensive summaries, and download in your preferred format — all with professional branding and AI precision.</em>
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&pause=1500&color=00FFFF&center=true&width=550&lines=Upload+%7C+Analyze+%7C+Summarize;Download+with+Branding;Powered+by+DeepSeek+AI" alt="Typing SVG"/>
 </p>
 
----
-
-## 🌟 Project Overview
-
-**PDERAX AI Document Analyzer** is an advanced web application that leverages **DeepSeek AI** to process, analyze, and summarize any document you provide. Whether it's PDFs, Word files, or other formats, PDERAX intelligently extracts the key information and returns it in a professional format — complete with your branding or our logo for exported files.
-
-The system ensures a smooth, user-friendly experience from upload to export, with **animated progress visuals**, **real-time AI feedback**, and **multi-format output support**.
+<p align="center">
+  <em>Upload your documents, get intelligent summaries, and download in your preferred format — all with professional branding and AI precision.</em>
+</p>
 
 ---
 
 ## 📱 User Journey
 
-1. **Landing** – Hero section with project stats and clear CTA.  
-2. **Upload** – Drag-and-drop interface with file validation.  
-3. **Processing** – Animated AI brain visual showing progress stages.  
-4. **Results** – Comprehensive document analysis in multiple formats.  
-5. **Export** – Download summaries in preferred formats with branding.  
-6. **New Analysis** – Quick reset for processing another document.
+1. **Landing:** Hero section with stats & CTA  
+2. **Upload:** Drag & drop with file validation  
+3. **Processing:** Animated AI brain showing progress stages  
+4. **Results:** Comprehensive analysis in multiple formats  
+5. **Export:** Download summaries with branding  
+6. **New Analysis:** Reset for another document  
 
 ---
 
-## 🎨 Screenshots
+## 🖼️ Screenshots
 
 <p align="center">
   <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0212_.jpeg" width="300" alt="Screenshot 1"/>
@@ -48,42 +45,55 @@ The system ensures a smooth, user-friendly experience from upload to export, wit
 
 ---
 
-## 💡 Project Strengths
+## ⚡ Project Overview
 
-### ⚙️ Technical Excellence
-- Clean separation of concerns: API layer and UI logic  
-- Modern JavaScript practices (ES6+, async/await)  
-- Comprehensive error handling  
-- Performance optimizations: lazy loading, efficient DOM updates  
+**PDERAX AI Document Analyzer** is a modern AI-powered web application built using **FastAPI (Python)** as the backend framework. It connects with **DeepSeek AI API** to intelligently process and summarize your documents in real-time.
 
-### 🎨 Design Quality
-- Consistent design system  
-- Smooth animations and transitions  
-- Professional branding on exported files  
-- Modern UI/UX patterns for a seamless experience  
-
-### 🤖 AI Integration
-- Connected with **DeepSeek AI API** for intelligent document summarization  
-- Multi-format support for exports (PDF, DOCX, TXT, etc.)  
-- Automated branding and watermarking  
+Key points:  
+- ✅ No database required — lightweight & fast  
+- ✅ AI-powered summarization via **DeepSeek AI API**  
+- ✅ Multi-format exports: PDF, DOCX, TXT  
+- ✅ Branding included on downloaded files  
 
 ---
 
-## 🔧 Tech Stack
+## 🎨 Technical & Design Strengths
+
+### 💻 Backend
+- FastAPI (Python) for API endpoints and processing  
+- File validation & async processing  
+- Seamless integration with DeepSeek AI  
+
+### 🎨 Frontend
+- Modern UI with smooth animations  
+- Animated AI brain during processing  
+- Consistent branding & professional design  
+
+### ⚙️ Features
+- Drag-and-drop document uploads  
+- Real-time processing feedback  
+- Multi-format results export with watermark/logo  
+- Quick reset for new analyses  
+
+---
+
+## 🛠️ Tech Stack
 
 <p align="center">
-  🖥️ <b>Frontend:</b> HTML, CSS, JavaScript (ES6+), Modern UI Libraries<br/>
-  ⚡ <b>Backend:</b> FastAPI / Node.js (API server for DeepSeek integration)<br/>
-  🗄️ <b>Database:</b> PostgreSQL / MongoDB (for storing processed metadata)<br/>
-  ☁️ <b>Deployment:</b> Vercel / Render / Heroku  
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JavaScript-F7E01D?style=for-the-badge&logo=javascript&logoColor=black"/>
+  <img src="https://img.shields.io/badge/HTML5-E44D26?style=for-the-badge&logo=html5&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
 </p>
 
 ---
 
-## 📈 Future Enhancements
+## 🔮 Future Enhancements
+
 - AI-powered **document insight graphs**  
-- Support for more file types (Excel, CSV, presentations)  
-- Advanced **summary customization** (select sections, highlight keywords)  
+- Support for additional file types: Excel, CSV, PPT  
+- Advanced summary customization & keyword highlighting  
 - Real-time collaboration for teams  
 - Mobile-first adaptive interface  
 
