@@ -1,93 +1,105 @@
+<!--
+   🌌 MASTER README — PDERAX AI DOCUMENT ANALYZER
+   Designed for: CephasTechOrg | GitHub: @CephasTechOrg
+-->
+
+<div align="center">
+
+<h1>📄 PDERAX AI DOCUMENT ANALYZER</h1>
+<h3>AI That Understands Your Documents</h3>
+
 <p align="center">
-  <h1 align="center">🧠 PDERAX AI DOCUMENT ANALYZER</h1>
-  <h3 align="center"><em>AI THAT UNDERSTANDS YOUR DOCUMENTS</em></h3>
+  <em>Upload your documents, get comprehensive summaries, and download in your preferred format — all with professional branding and AI precision.</em>
 </p>
 
 ---
 
-## 🌍 Overview
+## 🌟 Project Overview
 
-<p align="center">
-  <b>PDERAX AI Document Analyzer</b> is an advanced AI-powered document intelligence system built to <b>analyze, summarize, and transform your documents</b> into concise and actionable insights.  
-  It seamlessly integrates with <b>DeepSeek AI API</b>, enabling smart document summarization with precision and speed.  
-</p>
+**PDERAX AI Document Analyzer** is an advanced web application that leverages **DeepSeek AI** to process, analyze, and summarize any document you provide. Whether it's PDFs, Word files, or other formats, PDERAX intelligently extracts the key information and returns it in a professional format — complete with your branding or our logo for exported files.
 
-<p align="center">
-  Whether it’s a <b>PDF, Word document, or Excel file</b>, PDERAX processes your file, extracts text, analyzes it, and generates a detailed summary.  
-  You can then <b>download results</b> in your <b>preferred format (PDF, DOCX, TXT, etc.)</b> — all branded with our <b>PDERAX logo</b> for authenticity.
-</p>
+The system ensures a smooth, user-friendly experience from upload to export, with **animated progress visuals**, **real-time AI feedback**, and **multi-format output support**.
 
 ---
 
 ## 📱 User Journey
 
+1. **Landing** – Hero section with project stats and clear CTA.  
+2. **Upload** – Drag-and-drop interface with file validation.  
+3. **Processing** – Animated AI brain visual showing progress stages.  
+4. **Results** – Comprehensive document analysis in multiple formats.  
+5. **Export** – Download summaries in preferred formats with branding.  
+6. **New Analysis** – Quick reset for processing another document.
+
+---
+
+## 🎨 Screenshots
+
 <p align="center">
-
-| Step | Description |
-|------|--------------|
-| **Landing** | Eye-catching Hero section with live stats and Call-to-Action (CTA). |
-| **Upload** | Drag & Drop file uploader with validation for file type and size. |
-| **Processing** | Animated AI brain visual with dynamic progress stages. |
-| **Results** | Displays comprehensive analysis, summaries, and extracted insights in multiple formats. |
-| **Export** | One-click download in preferred file format (PDF, DOCX, TXT). |
-| **New Analysis** | Simple reset functionality for analyzing new documents instantly. |
-
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0212_.jpeg" width="300" alt="Screenshot 1"/>
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02138_.jpeg" width="300" alt="Screenshot 2"/>
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02154_.jpeg" width="300" alt="Screenshot 3"/>
+</p>
+<p align="center">
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02342_.jpeg" width="300" alt="Screenshot 4"/>
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02548_.jpeg" width="300" alt="Screenshot 5"/>
+  <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0235_.jpeg" width="300" alt="Screenshot 6"/>
 </p>
 
 ---
 
-## 🎉 Project Strengths
+## 💡 Project Strengths
 
-### 🧩 Technical Excellence
-- Clean separation of concerns (**API layer, UI logic, and services**).  
-- Uses **modern JavaScript practices (ES6+, async/await)**.  
-- Comprehensive **error handling** with clear user feedback.  
-- **Optimized performance** with lazy loading and efficient DOM updates.
+### ⚙️ Technical Excellence
+- Clean separation of concerns: API layer and UI logic  
+- Modern JavaScript practices (ES6+, async/await)  
+- Comprehensive error handling  
+- Performance optimizations: lazy loading, efficient DOM updates  
 
 ### 🎨 Design Quality
-- Cohesive **design system** with consistent styling.  
-- **Smooth animations** and seamless transitions.  
-- Strong **branding and professional interface**.  
-- Highly **intuitive user flow** for better engagement.
+- Consistent design system  
+- Smooth animations and transitions  
+- Professional branding on exported files  
+- Modern UI/UX patterns for a seamless experience  
+
+### 🤖 AI Integration
+- Connected with **DeepSeek AI API** for intelligent document summarization  
+- Multi-format support for exports (PDF, DOCX, TXT, etc.)  
+- Automated branding and watermarking  
 
 ---
 
-## 🧠 Backend Folder Structure
+## 🔧 Tech Stack
 
-```bash
-back-end/
-├── models/request_models.py      # Pydantic schemas for validation
-├── routes/upload.py              # API endpoints for file uploads
-├── services/                     # Business logic modules
-│   ├── ai_service.py             # Connects to DeepSeek AI API
-│   ├── file_processing.py        # Handles document pre-processing
-│   └── summarization_service.py  # Summarization and analysis logic
-├── utils/                        # Utility helpers
-│   ├── export_utils.py           # Exporting and download formatting
-│   ├── file_utils.py             # File management utilities
-│   └── text_extractor.py         # Text extraction logic
-├── static/temp/                  # Temporary storage for uploads
-├── main.py                       # Application entry point (FastAPI)
-└── requirements.txt              # Project dependencies
-
-💻 Frontend Folder Structure
-frontend/
-🔗 Integration with DeepSeek AI
-<p align="center"> The backend communicates directly with <b>DeepSeek AI API</b> for intelligent document summarization. This ensures the analyzer delivers <b>context-aware summaries</b> while maintaining <b>data privacy and efficiency</b>. </p>
-🖼️ Project Screenshots
-<p align="center"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0212_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02138_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02154_.jpeg" width="30%"> </p> <p align="center"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02342_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_02548_.jpeg" width="30%"> <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_0235_.jpeg" width="30%"> </p>
-🧩 Technologies Used
 <p align="center">
-Category	Tools / Frameworks
-Frontend	HTML5, CSS3, JavaScript (ES6+), Glassmorphism UI
-Backend	FastAPI, Python, Uvicorn
-AI Engine	DeepSeek API
-Data Processing	Pydantic, Custom File Parsers
-Deployment	GitHub, Local or Cloud (optional)
+  🖥️ <b>Frontend:</b> HTML, CSS, JavaScript (ES6+), Modern UI Libraries<br/>
+  ⚡ <b>Backend:</b> FastAPI / Node.js (API server for DeepSeek integration)<br/>
+  🗄️ <b>Database:</b> PostgreSQL / MongoDB (for storing processed metadata)<br/>
+  ☁️ <b>Deployment:</b> Vercel / Render / Heroku  
 </p>
-├── index.html          # Main HTML structure
-├── style.css           # Glassmorphism-inspired responsive design
-├── app.js              # Core JavaScript (2,000+ lines of logic)
-├── api.js              # Handles backend communication via REST
-└── assets/images/      # Logos, icons, and static assets
 
+---
+
+## 📈 Future Enhancements
+- AI-powered **document insight graphs**  
+- Support for more file types (Excel, CSV, presentations)  
+- Advanced **summary customization** (select sections, highlight keywords)  
+- Real-time collaboration for teams  
+- Mobile-first adaptive interface  
+
+---
+
+## 🌐 Connect & Feedback
+
+<p align="center">
+<a href="https://github.com/CephasTechOrg"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/></a>
+<a href="https://linkedin.com/in/cephas-osei-bonsu-911731326/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/></a>
+<a href="mailto:cephas@tech.org"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white"/></a>
+</p>
+
+---
+
+✨ _“AI should empower humans, not just automate tasks.”_ ✨  
+**— Cephas Osei-Bonsu**
+
+</div>
