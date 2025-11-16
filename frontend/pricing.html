@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDERAX - Pricing & Plans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="animated-bg">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+                <div class="shape shape-5"></div>
+            </div>
+            <div class="particles" id="particles"></div>
+        </div>
+
+        <header class="header">
+            <div class="nav-container">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <img src="https://i.imgur.com/nBy9at5.png" alt="PDERAX Logo" class="logo-img">
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-primary">PDERAX</span>
+                        <span class="logo-subtitle">AI Document Intelligence</span>
+                    </div>
+                </div>
+                <nav class="nav-links" id="primary-navigation">
+                    <a href="index.html" class="nav-link" data-text="Analyzer">Analyzer</a>
+                    <a href="features.html" class="nav-link" data-text="Features">Features</a>
+                    <a href="pricing.html" class="nav-link active" data-text="Pricing">Pricing</a>
+                    <a href="documentation.html" class="nav-link" data-text="Docs">Docs</a>
+                </nav>
+                <div class="nav-actions" aria-hidden="true"></div>
+                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
+                    aria-controls="primary-navigation">
+                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
+                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-overlay" aria-hidden="true"></div>
+        </header>
+
+        <section class="hero-section subpage-hero">
+            <div class="hero-content">
+                <div class="hero-badge animate__animated animate__fadeInDown">
+                    <i class="fas fa-gem"></i>
+                    <span>Pricing</span>
+                    <div class="pulse-dot"></div>
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-gradient">Scale on your terms</span>
+                    <span class="title-sub">Usage-based plans with predictable packaging and enterprise safeguards.</span>
+                </h1>
+                <p class="hero-description">
+                    Every plan includes the Analyzer plus secure storage, export studio, and proactive support. Upgrade
+                    when you need more seats, workspaces, or compliance controls.
+                </p>
+                <div class="hero-cta">
+                    <a class="cta-btn" href="index.html">Try it free</a>
+                    <a class="ghost-btn" href="documentation.html">
+                        <i class="fas fa-file-signature"></i>
+                        View SLA
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="subpage-section">
+            <div class="section-header">
+                <span class="section-label">
+                    <i class="fas fa-cubes"></i>
+                    Plans
+                </span>
+                <h2>Simple tiers, transparent usage</h2>
+                <p>Pick the tier that fits your stage. Upgrade anytime, or contact us for tailored enterprise pricing.</p>
+            </div>
+            <div class="pricing-plans">
+                <div class="pricing-card">
+                    <span class="plan-badge">
+                        <i class="fas fa-rocket"></i>
+                        Starter
+                    </span>
+                    <h3>Launch</h3>
+                    <p class="plan-price">$49 <span>/seat per month</span></p>
+                    <p class="plan-description">Perfect for small teams validating AI-assisted workflows.</p>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 1 workspace / 5 seats</li>
+                        <li><i class="fas fa-check"></i> 500 pages per month</li>
+                        <li><i class="fas fa-check"></i> Email + chat support</li>
+                        <li><i class="fas fa-check"></i> Export Studio</li>
+                    </ul>
+                    <div class="plan-cta">
+                        <a class="cta-btn" href="index.html">Start Free Trial</a>
+                        <button class="ghost-btn">Schedule demo</button>
+                    </div>
+                </div>
+                <div class="pricing-card highlight">
+                    <span class="plan-badge">
+                        <i class="fas fa-star"></i>
+                        Most Popular
+                    </span>
+                    <h3>Growth</h3>
+                    <p class="plan-price">$199 <span>/workspace per month</span></p>
+                    <p class="plan-description">Advanced automation, multi-team governance, and premium support.</p>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 3 workspaces / 20 seats</li>
+                        <li><i class="fas fa-check"></i> Unlimited uploads</li>
+                        <li><i class="fas fa-check"></i> Webhooks + API access</li>
+                        <li><i class="fas fa-check"></i> Dedicated success manager</li>
+                    </ul>
+                    <div class="plan-cta">
+                        <a class="cta-btn" href="index.html">Upgrade Now</a>
+                        <button class="ghost-btn">Compare with Starter</button>
+                    </div>
+                </div>
+                <div class="pricing-card">
+                    <span class="plan-badge">
+                        <i class="fas fa-building"></i>
+                        Enterprise
+                    </span>
+                    <h3>Enterprise</h3>
+                    <p class="plan-price">Custom <span>/annual agreement</span></p>
+                    <p class="plan-description">Global deployments with bespoke security, compliance, and onboarding.</p>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Unlimited workspaces</li>
+                        <li><i class="fas fa-check"></i> On-prem or VPC isolation</li>
+                        <li><i class="fas fa-check"></i> Advanced compliance toolkit</li>
+                        <li><i class="fas fa-check"></i> 24/7 white-glove support</li>
+                    </ul>
+                    <div class="plan-cta">
+                        <a class="cta-btn" href="mailto:hello@pderax.ai">Talk to Sales</a>
+                        <button class="ghost-btn">Download security brief</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="subpage-section">
+            <div class="section-header">
+                <span class="section-label">
+                    <i class="fas fa-check-double"></i>
+                    Included in every plan
+                </span>
+                <h2>Enterprise DNA from day one</h2>
+                <p>Regardless of tier, you get the same secure architecture plus flexible deployment choices.</p>
+            </div>
+            <div class="info-grid">
+                <div class="info-card glass-card">
+                    <div class="info-card-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Security</h3>
+                    <p>Encryption in transit & at rest, granular roles, audit logs, and retention controls.</p>
+                    <ul class="info-list">
+                        <li><i class="fas fa-check"></i> SOC2 controls</li>
+                        <li><i class="fas fa-check"></i> Bring-your-own-key</li>
+                        <li><i class="fas fa-check"></i> SSO / SCIM</li>
+                    </ul>
+                </div>
+                <div class="info-card glass-card">
+                    <div class="info-card-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Integrations</h3>
+                    <p>Native connectors for Slack, Teams, Salesforce, and secure webhooks for custom workflows.</p>
+                    <ul class="info-list">
+                        <li><i class="fas fa-check"></i> API first</li>
+                        <li><i class="fas fa-check"></i> Real-time alerts</li>
+                        <li><i class="fas fa-check"></i> Data warehouse sync</li>
+                    </ul>
+                </div>
+                <div class="info-card glass-card">
+                    <div class="info-card-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Success</h3>
+                    <p>Live chat, office hours, enablement library, and roadmap access with quarterly reviews.</p>
+                    <ul class="info-list">
+                        <li><i class="fas fa-check"></i> 24/5 global coverage</li>
+                        <li><i class="fas fa-check"></i> Change management kit</li>
+                        <li><i class="fas fa-check"></i> Shared Slack channel</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="subpage-section">
+            <div class="glass-card" style="text-align: center; padding: 40px;">
+                <div class="section-label" style="margin-bottom: 16px;">
+                    <i class="fas fa-headset"></i>
+                    Need a custom quote?
+                </div>
+                <h2>We'll tailor PDERAX to your workflows</h2>
+                <p style="color: var(--text-secondary); margin: 16px auto 30px; max-width: 620px;">
+                    Share your document volume, regions, and compliance requirements. Our team responds within one
+                    business day with a roadmap and pricing breakdown.
+                </p>
+                <div class="hero-cta" style="justify-content: center;">
+                    <a class="cta-btn" href="mailto:hello@pderax.ai">Contact Sales</a>
+                    <a class="ghost-btn" href="features.html">
+                        <i class="fas fa-eye"></i>
+                        Explore the platform
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer subpage-footer">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <div class="logo-icon small">
+                            <img src="https://i.imgur.com/nBy9at5.png" alt="PDERAX Logo" class="logo-img">
+                        </div>
+                        <span class="logo-primary">PDERAX</span>
+                    </div>
+                    <p class="footer-tagline">AI that understands your document</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="features.html">Features</a>
+                        <a href="pricing.html">Pricing</a>
+                        <a href="#">API</a>
+                        <a href="#">Integrations</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Blog</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Press</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <a href="#">Help Center</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Status</a>
+                        <a href="documentation.html">Documentation</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                        <a href="#">Security</a>
+                        <a href="#">Compliance</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2024 PDERAX. All rights reserved.</p>
+                </div>
+                <div class="footer-credits">
+                    <p>
+                        Made with <i class="fas fa-heart" style="color: #ef4444;"></i> by
+                        <a href="https://cephastech.org" target="_blank" class="credit-link">
+                            @CephasTechOrg
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

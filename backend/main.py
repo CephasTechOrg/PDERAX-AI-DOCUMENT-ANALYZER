@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 from routes.upload import upload_router
+from routes.compression import compression_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,6 +24,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(upload_router, prefix="/api/v1", tags=["File Upload & Analysis"])
+app.include_router(compression_router, prefix="/api/v1", tags=["Compression"])
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory="static"), name="static")

@@ -39,22 +39,20 @@
                         <span class="logo-subtitle">AI Document Intelligence</span>
                     </div>
                 </div>
-                <nav class="nav-links">
-                    <a href="#" class="nav-link active" data-text="Analyzer">Analyzer</a>
-                    <a href="#" class="nav-link" data-text="Features">Features</a>
-                    <a href="#" class="nav-link" data-text="Pricing">Pricing</a>
-                    <a href="#" class="nav-link" data-text="Docs">Docs</a>
+                <nav class="nav-links" id="primary-navigation">
+                    <a href="index.html" class="nav-link active" data-text="Analyzer">Analyzer</a>
+                    <a href="features.html" class="nav-link" data-text="Features">Features</a>
+                    <a href="pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
+                    <a href="documentation.html" class="nav-link" data-text="Docs">Docs</a>
                 </nav>
-                <div class="nav-actions">
-                    <button class="nav-btn">
-                        <i class="fas fa-user"></i>
-                        Sign In
-                    </button>
-                </div>
-                <div class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </div>
+                <div class="nav-actions" aria-hidden="true"></div>
+                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
+                    aria-controls="primary-navigation">
+                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
+                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
+                </button>
             </div>
+            <div class="mobile-nav-overlay" aria-hidden="true"></div>
         </header>
 
         <!-- Enhanced Hero Section -->

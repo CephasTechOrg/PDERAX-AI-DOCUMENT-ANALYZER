@@ -1,0 +1,23 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparities between professions, with engineers and accountants earning substantially more than teachers, drivers, and students. All individuals maintain positive savings rates, indicating they live within their means, though savings amounts vary considerably based on income levels.
+
+The highest earner is Kojo Owusu (Engineer) with GHS 7,200 monthly income and GHS 2,400 monthly savings, while the lowest earner is Kofi Adjei (Student) with GHS 1,200 monthly income and GHS 200 monthly savings. The data shows a clear correlation between income levels and savings capacity, with higher-income individuals able to save both larger amounts and higher percentages of their income. The occupations represented span various economic sectors including education, healthcare, transportation, commerce, engineering, accounting, and education.
+
+KEY INSIGHTS:
+--------------------
+1. Income inequality is evident, with the highest earner (Engineer) making 6x more than the lowest earner (Student)
+2. All individuals maintain positive savings, with savings rates ranging from 16.7% to 33.3% of monthly income
+3. The highest savings rate belongs to Kojo Owusu (Engineer) at 33.3%, while the lowest belongs to Yaw Osei (Driver) at 16.7%
+4. Professional occupations (Engineer, Accountant) show significantly higher earning potential than other roles
+5. Monthly expenses generally correlate with income levels, suggesting lifestyle inflation with higher earnings
+6. The student has the most constrained financial situation with minimal savings buffer
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings. The data reveals significant income disparitie...
+

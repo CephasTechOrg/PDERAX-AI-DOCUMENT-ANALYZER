@@ -710,16 +710,48 @@ class PDERAXApp {
     initializeEventListeners() {
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.currentAnalysis) {
+            if (e.key !== 'Escape') return;
+
+            if (document.body.classList.contains('menu-open')) {
+                this.toggleMobileMenu(false);
+                return;
+            }
+
+            if (this.currentAnalysis) {
                 this.resetApp();
             }
         });
 
         // Mobile menu
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+        const navLinks = document.querySelectorAll('.nav-link');
+
         if (mobileMenuBtn) {
             mobileMenuBtn.addEventListener('click', () => this.toggleMobileMenu());
         }
+
+        if (mobileNavOverlay) {
+            mobileNavOverlay.addEventListener('click', () => this.toggleMobileMenu(false));
+        }
+
+        if (navLinks.length) {
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768 && document.body.classList.contains('menu-open')) {
+                        this.toggleMobileMenu(false);
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && document.body.classList.contains('menu-open')) {
+                this.toggleMobileMenu(false);
+            }
+        });
+
+        this.highlightActiveNavLink();
     }
 
     async checkBackendStatus() {
@@ -1310,14 +1342,46 @@ class PDERAXApp {
         console.log(`${type.toUpperCase()}: ${message}`);
     }
 
-    toggleMobileMenu() {
+    toggleMobileMenu(forceState = null) {
         const navLinks = document.querySelector('.nav-links');
         const navActions = document.querySelector('.nav-actions');
-        
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+
+        const isOpen = document.body.classList.contains('menu-open');
+        const shouldOpen = forceState !== null ? forceState : !isOpen;
+
         [navLinks, navActions].forEach(el => {
             if (el) {
-                el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+                el.classList.toggle('active', shouldOpen);
             }
+        });
+
+        document.body.classList.toggle('menu-open', shouldOpen);
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.classList.toggle('active', shouldOpen);
+            mobileMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        }
+
+        if (mobileNavOverlay) {
+            mobileNavOverlay.classList.toggle('active', shouldOpen);
+            mobileNavOverlay.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        }
+    }
+
+    highlightActiveNavLink() {
+        const navLinks = document.querySelectorAll('.nav-links .nav-link');
+        if (!navLinks.length) return;
+
+        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href') || '';
+            const normalized = href.includes('#') ? href : href.split('/').pop();
+            const target = normalized && normalized !== '' ? normalized : 'index.html';
+            const isActive = currentPath === target || (target === 'index.html' && currentPath === '');
+            link.classList.toggle('active', isActive);
         });
     }
 }

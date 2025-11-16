@@ -1,0 +1,23 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings in Ghanaian Cedis (GHS). The data reveals significant income disparities between professions, with Engineers and Accountants earning substantially more than Teachers, Nurses, Drivers, Traders, and Students. All individuals maintain positive savings, indicating basic financial stability across the group.
+
+The analysis shows that higher-income occupations generally achieve greater absolute savings, though savings rates vary. The Engineer demonstrates the strongest financial position with both the highest income (GHS 7,200 monthly) and savings (GHS 2,400 monthly), while the Student has the most constrained financial situation with the lowest income and savings. The data provides a clear picture of how occupation correlates with earning potential and financial capacity in this sample group.
+
+KEY INSIGHTS:
+--------------------
+1. Income varies significantly by occupation, ranging from GHS 1,200 (Student) to GHS 7,200 (Engineer) monthly
+2. All individuals maintain positive savings, indicating they live within their means
+3. The Engineer has the strongest financial position with highest income (GHS 7,200) and savings (GHS 2,400)
+4. The Student has the most limited finances with lowest income (GHS 1,200) and savings (GHS 200)
+5. Savings rates range from approximately 17% (Driver) to 33% (Engineer) of monthly income
+6. Professional occupations (Engineer, Accountant) show substantially higher earning power than other roles
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This document presents financial data for seven individuals across different occupations, showing their monthly and annual income, expenses, and savings in Ghanaian Cedis (GHS). The data reveals signi...
+
