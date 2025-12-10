@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+This research by Jeffery Jones computationally validates Newtonian gravitation and Keplerian orbital models using modern astronomical datasets. The study implements numerical integration techniques (Runge-Kutta 4th Order and Velocity Verlet) in Python to simulate planetary and satellite orbits, comparing results against high-precision data from NASA JPL Horizons and AGI's Satellite Tool Kit.
+
+The analysis demonstrates exceptional accuracy, with RMS positional errors below 0.01% and total energy conservation within 0.02% over one-year simulations. The Velocity Verlet integrator showed superior performance in maintaining energy conservation due to its symplectic properties. These results confirm that classical two-body dynamics remain highly accurate for low-eccentricity, low-perturbation systems like the Earth-Sun system.
+
+The study establishes a crucial baseline for testing advanced orbital models and defines the boundary conditions where Newtonian mechanics remains sufficient before perturbative or relativistic effects become significant. This work provides both a pedagogical framework for orbital mechanics and a validation benchmark for emerging computational methods in astrophysics.
+
+KEY INSIGHTS:
+--------------------
+1. Newtonian two-body dynamics achieve sub-0.01% positional accuracy (RMS error < 7 km) when validated against modern astronomical datasets
+2. Symplectic integrators (Velocity Verlet) maintain energy conservation within 0.02% over annual timescales, outperforming classical Runge-Kutta methods
+3. The research defines the domain of validity for classical mechanics: low-eccentricity, near-coplanar systems with minimal perturbations
+4. Modern computational verification serves as essential baseline testing for advanced methods including machine learning orbit predictors and n-body integrators
+5. The study bridges historical theoretical foundations (Kepler/Newton) with contemporary computational validation using gold-standard datasets
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: This research by Jeffery Jones computationally validates Newtonian gravitation and Keplerian orbital models using modern astronomical datasets. The study implements numerical integration techniques (R...
+

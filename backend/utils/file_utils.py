@@ -3,7 +3,7 @@ import uuid
 from fastapi import UploadFile
 
 class FileUtils:
-    ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.doc', '.xlsx', '.xls'}
+    ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.doc', '.xlsx', '.xls', '.txt'}
     
     @staticmethod
     def validate_file(file: UploadFile) -> bool:

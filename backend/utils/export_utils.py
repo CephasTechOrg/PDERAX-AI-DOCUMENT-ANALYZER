@@ -197,7 +197,7 @@ class ExportUtils:
                 textColor='#4b5563'
             )
             for insight in insights:
-                insight_items.append(ListItem(Paragraph(f"• {insight}", insight_style)))
+                insight_items.append(ListItem(Paragraph(f"- {insight}", insight_style)))
             story.append(ListFlowable(insight_items, bulletType='bullet'))
         else:
             story.append(Paragraph('No insights available', styles['BodyText']))

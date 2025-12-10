@@ -39,11 +39,11 @@
                         <span class="logo-subtitle">AI Document Intelligence</span>
                     </div>
                 </div>
-                <nav class="nav-links">
-                    <a href="#" class="nav-link active" data-text="Analyzer">Analyzer</a>
-                    <a href="#" class="nav-link" data-text="Features">Features</a>
-                    <a href="#" class="nav-link" data-text="Pricing">Pricing</a>
-                    <a href="#" class="nav-link" data-text="Docs">Docs</a>
+                <nav class="nav-links" id="primary-navigation">
+                    <a href="index.html" class="nav-link active" data-text="Analyzer">Analyzer</a>
+                    <a href="features.html" class="nav-link" data-text="Features">Features</a>
+                    <a href="pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
+                    <a href="documentation.html" class="nav-link" data-text="Docs">Docs</a>
                 </nav>
                 <div class="nav-actions">
                     <button class="nav-btn">
@@ -51,10 +51,13 @@
                         Sign In
                     </button>
                 </div>
-                <div class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </div>
+                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
+                    aria-controls="primary-navigation">
+                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
+                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
+                </button>
             </div>
+            <div class="mobile-nav-overlay" aria-hidden="true"></div>
         </header>
 
         <!-- Enhanced Hero Section -->
@@ -353,21 +356,25 @@
                 <div class="results-container">
                     <!-- Enhanced Results Header -->
                     <div class="results-header glass-card">
-                        <div class="results-title">
-                            <div class="success-animation">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="title-content">
-                                <h2>Analysis Complete</h2>
-                                <p>Your document has been processed by PDERAX AI</p>
-                            </div>
+                    <div class="results-title">
+                        <div class="success-animation">
+                            <i class="fas fa-check-circle"></i>
                         </div>
-                        <div class="results-actions">
-                            <div class="download-buttons" id="downloadButtons"></div>
-                            <button class="action-btn primary" onclick="resetApp()">
-                                <i class="fas fa-plus"></i>
-                                New Analysis
-                            </button>
+                        <div class="title-content">
+                            <h2>Analysis Complete</h2>
+                            <p>Your document has been processed by PDERAX AI</p>
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button class="action-btn secondary back-btn" onclick="app.goBackToUpload()">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Upload
+                        </button>
+                        <div class="download-buttons" id="downloadButtons"></div>
+                        <button class="action-btn primary" onclick="resetApp()">
+                            <i class="fas fa-plus"></i>
+                            New Analysis
+                        </button>
                         </div>
                     </div>
 

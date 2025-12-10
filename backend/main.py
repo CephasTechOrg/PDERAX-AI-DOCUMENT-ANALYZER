@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 from routes.upload import upload_router
+from routes.compression import compression_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,6 +24,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(upload_router, prefix="/api/v1", tags=["File Upload & Analysis"])
+app.include_router(compression_router, prefix="/api/v1", tags=["Compression"])
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -38,6 +40,11 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "service": "AI PDF Analyzer"}
+
+@app.get("/api/v1/health")
+async def versioned_health_check():
+    """Health endpoint to match frontend expectations."""
+    return {"status": "healthy", "service": "AI PDF Analyzer", "version": "v1"}
 
 if __name__ == "__main__":
     import uvicorn

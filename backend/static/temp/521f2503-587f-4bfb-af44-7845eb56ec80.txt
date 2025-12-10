@@ -1,0 +1,21 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+OSEI-BONSU CEPHAS KOSS, GHANA | cephasbonsuosei003@gmail.com| LinkedIn EDUCATION KONONGO ODUMASE SHS Graduated September 2023 General science graduate | 3.95 GPA Academic Transcript Evaluated Transcript(SpanTran) Relevant Programs: Core Mathematics. Physics, Elective Mathematics, Biology, Chemistry, English Language, Social Studies, Integrated Science Link to my portfolio website that I built highlighting videos of my projects, passion, skills, future plans, and my accomplishments. BIO I am driven to become a software engineer with a deep focus on AI and machine learning, creating systems that do more than process data—they transform lives. My passion lies in building intelligent software that empowers communities, improves access to opportunities, and drives meaningful innovation. Beyond technology for its own sake, I believe in using Computer Science to address the challenges that define our time. From healthcare gaps to global security risks, from economic inequality to environmental decline, I see AI as a tool to design solutions that make society stronger and more resilient. Projects like Vital-Go, my health tech initiative, reflect this vision by combining wearable technology and AI-driven insights to bring life-saving healthcare to underserved communities. I also remain committed to the intersection of technology and sustainability. The Earth is under strain with climate change, shrinking resources, and
+
+KEY INSIGHTS:
+--------------------
+1. Approximate document length: 728 words.
+2. Local fallback summary generated because the AI service was unavailable.
+3. AI service unavailable: HTTPSConnectionPool(host='api.deepseek.com', port=443): Read timed out.
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: OSEI-BONSU CEPHAS KOSS, GHANA | cephasbonsuosei003@gmail.com| LinkedIn EDUCATION KONONGO ODUMASE SHS Graduated September 2023 General science graduate | 3.95 GPA Academic Transcript Evaluated Transcript(SpanTran) Relevant Programs: Core Mat...
+
+Q2: Why is this a fallback summary?
+A2: AI service unavailable: HTTPSConnectionPool(host='api.deepseek.com', port=443): Read timed out.
+

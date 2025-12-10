@@ -1,0 +1,24 @@
+PDERAX - AI Document Analysis Report
+==================================================
+
+SUMMARY:
+--------------------
+Ebenezer K. Acquah is a Computer Science student at Grambling State University (expected graduation 2028) with a strong technical portfolio demonstrating full-stack development capabilities and AI integration expertise. His experience spans both US and Ghana-based tech roles, where he has consistently delivered projects with measurable impact on user efficiency and engagement.
+
+The document reveals a professional with significant practical experience despite being early in his academic career, having completed multiple software engineering roles where he led development of web applications and implemented CI/CD pipelines. His project portfolio shows particular strength in building AI-powered tools and educational technology solutions, with demonstrated results including 50-90% improvements in user productivity and system efficiency across various applications.
+
+KEY INSIGHTS:
+--------------------
+1. Demonstrates unusually advanced practical experience for a current undergraduate student, with leadership roles in software development
+2. Shows strong full-stack capabilities with expertise spanning frontend (React, JavaScript), backend (Node.js, Python), and DevOps (Docker, CI/CD)
+3. Exhibits specialization in AI/ML integration with multiple projects leveraging ChatGPT API, TensorFlow, and web scraping for intelligent applications
+4. Displays consistent focus on educational technology and accessibility, particularly for underprivileged students in Ghana
+5. Provides quantifiable impact metrics across all projects and roles (e.g., 80% error reduction, 60% productivity improvements)
+6. Maintains international perspective with work experience spanning US and Ghanaian tech environments
+7. Shows strong data analysis skills through coursework (Statistics, Linear Algebra) and practical application in project algorithms
+
+QUESTIONS & ANSWERS:
+-------------------------
+Q1: What is this document about?
+A1: Ebenezer K. Acquah is a Computer Science student at Grambling State University (expected graduation 2028) with a strong technical portfolio demonstrating full-stack development capabilities and AI int...
+

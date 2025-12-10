@@ -717,9 +717,32 @@ class PDERAXApp {
 
         // Mobile menu
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+        const navLinks = document.querySelectorAll('.nav-link');
+
         if (mobileMenuBtn) {
             mobileMenuBtn.addEventListener('click', () => this.toggleMobileMenu());
         }
+
+        if (mobileNavOverlay) {
+            mobileNavOverlay.addEventListener('click', () => this.toggleMobileMenu(false));
+        }
+
+        if (navLinks.length) {
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768 && document.body.classList.contains('menu-open')) {
+                        this.toggleMobileMenu(false);
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && document.body.classList.contains('menu-open')) {
+                this.toggleMobileMenu(false);
+            }
+        });
     }
 
     async checkBackendStatus() {
@@ -1250,6 +1273,14 @@ class PDERAXApp {
         });
     }
 
+    goBackToUpload() {
+        this.resetApp();
+        const uploadSection = document.getElementById('uploadSection');
+        if (uploadSection) {
+            uploadSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
     resetApp() {
         this.currentAnalysis = null;
         this.isProcessing = false;
@@ -1310,15 +1341,31 @@ class PDERAXApp {
         console.log(`${type.toUpperCase()}: ${message}`);
     }
 
-    toggleMobileMenu() {
+    toggleMobileMenu(forceState = null) {
         const navLinks = document.querySelector('.nav-links');
         const navActions = document.querySelector('.nav-actions');
-        
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+
+        const isOpen = document.body.classList.contains('menu-open');
+        const shouldOpen = forceState !== null ? forceState : !isOpen;
+
         [navLinks, navActions].forEach(el => {
             if (el) {
-                el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
+                el.classList.toggle('active', shouldOpen);
             }
         });
+
+        document.body.classList.toggle('menu-open', shouldOpen);
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.classList.toggle('active', shouldOpen);
+            mobileMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        }
+
+        if (mobileNavOverlay) {
+            mobileNavOverlay.classList.toggle('active', shouldOpen);
+        }
     }
 }
 

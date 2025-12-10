@@ -28,7 +28,11 @@ class TextExtractor:
                 text += paragraph.text + "\n"
             return text.strip()
         except Exception as e:
-            raise Exception(f"DOCX extraction error: {str(e)}")
+            # Fallback for legacy .doc files that python-docx cannot parse cleanly
+            try:
+                return TextExtractor._safe_binary_read(file_path)
+            except Exception:
+                raise Exception(f"DOCX extraction error: {str(e)}")
 
     @staticmethod
     def extract_text_from_excel(file_path: str) -> str:
@@ -48,6 +52,28 @@ class TextExtractor:
             return text.strip()
         except Exception as e:
             raise Exception(f"Excel extraction error: {str(e)}")
+
+    @staticmethod
+    def extract_text_from_txt(file_path: str) -> str:
+        """Extract text from plain text files"""
+        try:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as file:
+                return file.read().strip()
+        except Exception as e:
+            raise Exception(f"Text file extraction error: {str(e)}")
+
+    @staticmethod
+    def _safe_binary_read(file_path: str) -> str:
+        """Best-effort text extraction for unsupported Word formats (e.g., .doc)"""
+        with open(file_path, "rb") as binary_file:
+            data = binary_file.read()
+        try:
+            text = data.decode("utf-8", errors="ignore")
+        except Exception:
+            text = data.decode("latin-1", errors="ignore")
+        # Remove non-printable control characters
+        text = re.sub(r"[\x00-\x08\x0b-\x1f]", " ", text)
+        return text.strip()
 
     @staticmethod
     def count_words(text: str) -> int:
@@ -101,6 +127,8 @@ class TextExtractor:
                 raw_text = TextExtractor.extract_text_from_docx(file_path)
             elif ext in ['.xlsx', '.xls']:
                 raw_text = TextExtractor.extract_text_from_excel(file_path)
+            elif ext == '.txt':
+                raw_text = TextExtractor.extract_text_from_txt(file_path)
             else:
                 raise Exception(f"Unsupported file type: {ext}")
             
