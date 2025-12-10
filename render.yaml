@@ -11,7 +11,7 @@ services:
       pip install --upgrade pip
       pip install -r requirements.txt
 
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1 --limit-max-requests 50 --limit-concurrency 2
 
     envVars:
       - key: PYTHON_VERSION
@@ -19,6 +19,6 @@ services:
       - key: PIP_ROOT_USER_ACTION
         value: ignore
       - key: UVICORN_WORKERS
-        value: 4
+        value: 1   # keep memory footprint low on free plan
       - key: MISE_PYTHON_COMPILE
         value: "false"   # ✅ helps avoid Rust build issues

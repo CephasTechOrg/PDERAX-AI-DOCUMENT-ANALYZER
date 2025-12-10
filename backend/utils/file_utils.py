@@ -27,16 +27,27 @@ class FileUtils:
         return f"{unique_id}{ext}"
     
     @staticmethod
-    async def save_uploaded_file(file: UploadFile, directory: str = "static/temp") -> str:
-        """Save uploaded file to temporary directory"""
+    async def save_uploaded_file(file: UploadFile, directory: str = "static/temp", chunk_size: int = 1024 * 1024) -> str:
+        """Save uploaded file to temporary directory without loading entire file into memory"""
         os.makedirs(directory, exist_ok=True)
+        max_size_mb = int(os.getenv("MAX_UPLOAD_SIZE_MB", "50"))
+        max_size_bytes = max_size_mb * 1024 * 1024
         
         filename = FileUtils.generate_unique_filename(file.filename)
         file_path = os.path.join(directory, filename)
         
         with open(file_path, "wb") as buffer:
-            content = await file.read()
-            buffer.write(content)
+            total_bytes = 0
+            while True:
+                chunk = await file.read(chunk_size)
+                if not chunk:
+                    break
+                total_bytes += len(chunk)
+                if total_bytes > max_size_bytes:
+                    buffer.close()
+                    os.remove(file_path)
+                    raise ValueError(f"File exceeds {max_size_mb}MB limit.")
+                buffer.write(chunk)
             
         return file_path
     
