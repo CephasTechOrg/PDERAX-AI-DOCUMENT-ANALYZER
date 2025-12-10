@@ -710,13 +710,23 @@ class PDERAXApp {
     initializeEventListeners() {
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.currentAnalysis) {
+            if (e.key !== 'Escape') return;
+
+            if (document.body.classList.contains('menu-open')) {
+                this.toggleMobileMenu(false);
+                return;
+            }
+
+            if (this.currentAnalysis) {
                 this.resetApp();
             }
         });
 
         // Mobile menu
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+        const navLinks = document.querySelectorAll('.nav-link');
+
         const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
         const navLinks = document.querySelectorAll('.nav-link');
 
@@ -1352,20 +1362,9 @@ class PDERAXApp {
 
         [navLinks, navActions].forEach(el => {
             if (el) {
-                el.classList.toggle('active', shouldOpen);
+                el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
             }
         });
-
-        document.body.classList.toggle('menu-open', shouldOpen);
-
-        if (mobileMenuBtn) {
-            mobileMenuBtn.classList.toggle('active', shouldOpen);
-            mobileMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-        }
-
-        if (mobileNavOverlay) {
-            mobileNavOverlay.classList.toggle('active', shouldOpen);
-        }
     }
 }
 
