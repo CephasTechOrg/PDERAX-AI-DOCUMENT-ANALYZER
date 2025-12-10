@@ -1,11 +1,33 @@
 // API Layer - Pure backend communication
-// DO NOT MODIFY THIS FILE UNLESS BACKEND API CHANGES
+// Supports both local dev and Render deployment
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const LOCAL_API_BASE_URL = 'http://localhost:8000/api/v1';
+const RENDER_API_BASE_URL = 'https://ai-pdf-analyzer-backend.onrender.com/api/v1';
+
+function resolveBaseURL() {
+    const host = window.location.hostname;
+
+    // Explicit override via query param (?api=local|render)
+    const params = new URLSearchParams(window.location.search);
+    const apiTarget = params.get('api');
+    if (apiTarget === 'local') return LOCAL_API_BASE_URL;
+    if (apiTarget === 'render') return RENDER_API_BASE_URL;
+
+    // Default: use local in dev, Render in production/hosted
+    const isLocal =
+        host === 'localhost' ||
+        host === '127.0.0.1' ||
+        host.endsWith('.local') ||
+        host.startsWith('192.168.') ||
+        host.startsWith('10.') ||
+        host.startsWith('172.16.');
+
+    return isLocal ? LOCAL_API_BASE_URL : RENDER_API_BASE_URL;
+}
 
 class APIService {
     constructor() {
-        this.baseURL = API_BASE_URL;
+        this.baseURL = resolveBaseURL();
     }
 
     /**
