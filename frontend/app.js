@@ -727,9 +727,6 @@ class PDERAXApp {
         const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
         const navLinks = document.querySelectorAll('.nav-link');
 
-        const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
-        const navLinks = document.querySelectorAll('.nav-link');
-
         if (mobileMenuBtn) {
             mobileMenuBtn.addEventListener('click', () => this.toggleMobileMenu());
         }
@@ -1360,11 +1357,15 @@ class PDERAXApp {
         const isOpen = document.body.classList.contains('menu-open');
         const shouldOpen = forceState !== null ? forceState : !isOpen;
 
-        [navLinks, navActions].forEach(el => {
-            if (el) {
-                el.style.display = el.style.display === 'flex' ? 'none' : 'flex';
-            }
-        });
+        document.body.classList.toggle('menu-open', shouldOpen);
+
+        if (navLinks) navLinks.style.display = shouldOpen ? 'flex' : 'none';
+        if (navActions) navActions.style.display = shouldOpen ? 'flex' : 'none';
+        if (mobileNavOverlay) mobileNavOverlay.style.display = shouldOpen ? 'block' : 'none';
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.setAttribute('aria-expanded', shouldOpen.toString());
+        }
     }
 }
 
