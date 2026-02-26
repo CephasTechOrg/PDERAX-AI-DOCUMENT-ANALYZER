@@ -11,6 +11,7 @@ import requests
 from io import BytesIO
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from utils.file_utils import FileUtils
 
 class ExportUtils:
     @staticmethod
@@ -255,8 +256,10 @@ class ExportUtils:
         return filename
 
     @staticmethod
-    def export_analysis(analysis_result: dict, output_dir: str = "static/temp") -> dict:
+    def export_analysis(analysis_result: dict, output_dir: str | None = None) -> dict:
         """Export analysis in multiple formats"""
+        if output_dir is None:
+            output_dir = FileUtils.get_temp_dir()
         os.makedirs(output_dir, exist_ok=True)
         
         return {

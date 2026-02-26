@@ -1,4 +1,40 @@
+# Environment variables
 .env
-node_modules/ 
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Temporary files
+static/temp/*.txt
+static/temp/*.pdf
+static/temp/*.docx
+static/temp/*.xlsx
+
+# Keep the temp directory structure
+!static/temp/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
 dist/
-.env        
+build/
+*.egg-info/
+
+# Node (if any)
+node_modules/        

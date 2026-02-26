@@ -22,3 +22,13 @@ services:
         value: 1   # keep memory footprint low on free plan
       - key: MISE_PYTHON_COMPILE
         value: "false"   # ✅ helps avoid Rust build issues
+      - key: DEEPSEEK_API_KEY
+        sync: false   # ⚠️ Add this secret in Render dashboard
+      - key: DEEPSEEK_API_URL
+        value: https://api.deepseek.com/v1/chat/completions
+      - key: AI_REQUEST_TIMEOUT
+        value: 20
+      - key: MAX_UPLOAD_SIZE_MB
+        value: 50
+      - key: ENVIRONMENT
+        value: production

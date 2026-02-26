@@ -3,13 +3,14 @@ import uuid
 from typing import Dict, Any
 
 import fitz  # PyMuPDF
+from utils.file_utils import FileUtils
 
 
 class CompressionService:
     """Handles PDF compression tasks."""
 
-    def __init__(self, output_dir: str = "static/temp"):
-        self.output_dir = output_dir
+    def __init__(self, output_dir: str | None = None):
+        self.output_dir = output_dir or FileUtils.get_temp_dir()
         os.makedirs(self.output_dir, exist_ok=True)
 
     def compress_pdf(

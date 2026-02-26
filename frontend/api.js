@@ -5,18 +5,25 @@ const LOCAL_API_BASE_URL = 'http://localhost:8000/api/v1';
 const RENDER_API_BASE_URL = 'https://ai-pdf-analyzer-backend.onrender.com/api/v1';
 
 function resolveBaseURL() {
-    const host = window.location.hostname;
-
     // Explicit override via query param (?api=local|render)
     const params = new URLSearchParams(window.location.search);
     const apiTarget = params.get('api');
     if (apiTarget === 'local') return LOCAL_API_BASE_URL;
     if (apiTarget === 'render') return RENDER_API_BASE_URL;
 
+    const host = window.location.hostname;
+    const protocol = window.location.protocol;
+
+    // If opened directly (file://) or host is empty, default to local backend
+    if (!host || protocol === 'file:') {
+        return LOCAL_API_BASE_URL;
+    }
+
     // Default: use local in dev, Render in production/hosted
     const isLocal =
         host === 'localhost' ||
         host === '127.0.0.1' ||
+        host === '0.0.0.0' ||
         host.endsWith('.local') ||
         host.startsWith('192.168.') ||
         host.startsWith('10.') ||
@@ -30,6 +37,12 @@ class APIService {
         this.baseURL = resolveBaseURL();
     }
 
+    getAuthHeader() {
+        const token = localStorage.getItem('pderax_access_token');
+        if (!token) return {};
+        return { Authorization: `Bearer ${token}` };
+    }
+
     /**
      * Upload and analyze a file
      * @param {File} file - The file to analyze
@@ -41,6 +54,9 @@ class APIService {
 
         const response = await fetch(`${this.baseURL}/upload`, {
             method: 'POST',
+            headers: {
+                ...this.getAuthHeader()
+            },
             body: formData
         });
 
@@ -58,7 +74,11 @@ class APIService {
      * @returns {Promise<Blob>} File blob
      */
     async downloadFile(filename) {
-        const response = await fetch(`${this.baseURL}/download/${filename}`);
+        const response = await fetch(`${this.baseURL}/download/${filename}`, {
+            headers: {
+                ...this.getAuthHeader()
+            }
+        });
         
         if (!response.ok) {
             throw new Error(`Download failed: ${response.status}`);

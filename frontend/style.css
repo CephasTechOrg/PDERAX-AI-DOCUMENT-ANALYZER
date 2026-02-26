@@ -398,7 +398,6 @@ body {
 
 /* Mobile Navigation Overlay */
 .mobile-nav-overlay {
-    display: block;
     position: fixed;
     top: 0;
     left: 0;
@@ -2511,6 +2510,82 @@ body {
     }
 }
 
+/* Toast Notifications */
+.toast-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10000;
+    box-shadow: var(--shadow-xl);
+    opacity: 0;
+    transform: translateX(400px);
+    transition: var(--transition);
+    max-width: 350px;
+    min-width: 250px;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-notification i {
+    font-size: 1.2rem;
+}
+
+.toast-success {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.toast-success i {
+    color: var(--success);
+}
+
+.toast-error {
+    border-color: var(--error);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.toast-error i {
+    color: var(--error);
+}
+
+.toast-warning {
+    border-color: var(--warning);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.toast-warning i {
+    color: var(--warning);
+}
+
+.toast-info {
+    border-color: var(--info);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.toast-info i {
+    color: var(--info);
+}
+
+/* Utility classes for responsive button text */
+.btn-text-mobile {
+    display: none;
+}
+
+.btn-text-desktop {
+    display: inline;
+}
+
 /* Enhanced Responsive Design - MOBILE NAVIGATION FIXES */
 @media (max-width: 1200px) {
     .container {
@@ -2537,6 +2612,14 @@ body {
 }
 
 @media (max-width: 768px) {
+    /* Toast notifications mobile */
+    .toast-notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        top: 80px;
+    }
+    
     .container {
         padding: 0 20px;
     }
@@ -2663,15 +2746,18 @@ body {
     }
 
     .stats-bar {
-        flex-direction: column;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
         padding: 20px;
     }
 
+    .stat {
+        min-width: auto;
+    }
+
     .stat-divider {
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(to right, transparent, var(--border), transparent);
+        display: none;
     }
 
     .floating-features {
@@ -2800,6 +2886,29 @@ body {
         padding: 16px;
     }
 
+    /* Mobile button text switching */
+    .btn-text-mobile {
+        display: inline;
+    }
+
+    .btn-text-desktop {
+        display: none;
+    }
+
+    /* Download buttons responsive */
+    .download-options {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .download-options .action-btn {
+        flex: 1;
+        min-width: 70px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
     .footer-main {
         grid-template-columns: 1fr;
         gap: 40px;
@@ -2881,7 +2990,8 @@ body {
     }
 
     .title-gradient {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+        line-height: 1.2;
     }
 
     .title-sub {
@@ -2889,7 +2999,27 @@ body {
     }
 
     .hero-description {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .hero-badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+    }
+
+    .stats-bar {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
     }
 
     .upload-area {
@@ -2908,6 +3038,11 @@ body {
     .progress-stages {
         grid-template-columns: 1fr;
         gap: 12px;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
     .footer-links {
@@ -3196,6 +3331,87 @@ html,
 body {
     max-width: 100%;
     overflow-x: hidden;
+}
+
+/* Auth Page */
+.auth-page .upload-card {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 16px 0 24px;
+    flex-wrap: wrap;
+}
+
+.auth-tab {
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auth-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: transparent;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-input {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 16px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.auth-message {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    min-height: 20px;
+}
+
+.auth-message.success {
+    color: #10b981;
+}
+
+.auth-message.error {
+    color: #ef4444;
 }
 
 /* Touch-friendly tap targets */

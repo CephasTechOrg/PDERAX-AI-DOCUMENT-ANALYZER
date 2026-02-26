@@ -661,12 +661,21 @@ class PDERAXApp {
     }
 
     init() {
+        this.ensureAuthenticated();
         this.initializeDragAndDrop();
         this.initializeFileInput();
         this.initializeEventListeners();
         this.checkBackendStatus();
         
         console.log('PDERAX Initialized');
+    }
+
+    ensureAuthenticated() {
+        const token = localStorage.getItem('pderax_access_token');
+        if (!token) {
+            const redirect = encodeURIComponent(window.location.href);
+            window.location.href = `frontend/login.html?redirect=${redirect}`;
+        }
     }
 
     initializeDragAndDrop() {
@@ -979,7 +988,7 @@ class PDERAXApp {
 
         // Add timeout to API call
         const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Request timeout')), 30000); // 30 second timeout
+            setTimeout(() => reject(new Error('Request timeout')), 90000); // 90 second timeout
         });
 
         const apiPromise = window.apiService.uploadAndAnalyze(file);
@@ -1288,6 +1297,40 @@ class PDERAXApp {
         }
     }
 
+    copyToClipboard(section) {
+        let textToCopy = '';
+        
+        if (section === 'summary' && this.currentAnalysis?.analysis?.summary) {
+            textToCopy = this.currentAnalysis.analysis.summary;
+        }
+        
+        if (!textToCopy) {
+            this.showToast('No content to copy', 'warning');
+            return;
+        }
+        
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                this.showToast('Copied to clipboard!', 'success');
+            })
+            .catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    this.showToast('Copied to clipboard!', 'success');
+                } catch (err) {
+                    this.showToast('Failed to copy', 'error');
+                }
+                document.body.removeChild(textarea);
+            });
+    }
+
     resetApp() {
         this.currentAnalysis = null;
         this.isProcessing = false;
@@ -1344,8 +1387,38 @@ class PDERAXApp {
     }
 
     showToast(message, type = 'info') {
-        // Simple toast implementation
-        console.log(`${type.toUpperCase()}: ${message}`);
+        // Remove existing toasts
+        const existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+            existingToast.remove();
+        }
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast-notification toast-${type}`;
+        
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        
+        toast.innerHTML = `
+            <i class="fas ${icons[type] || icons.info}"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     toggleMobileMenu(forceState = null) {
@@ -1357,13 +1430,17 @@ class PDERAXApp {
         const isOpen = document.body.classList.contains('menu-open');
         const shouldOpen = forceState !== null ? forceState : !isOpen;
 
+        // Toggle body class
         document.body.classList.toggle('menu-open', shouldOpen);
 
-        if (navLinks) navLinks.style.display = shouldOpen ? 'flex' : 'none';
-        if (navActions) navActions.style.display = shouldOpen ? 'flex' : 'none';
-        if (mobileNavOverlay) mobileNavOverlay.style.display = shouldOpen ? 'block' : 'none';
+        // Toggle active classes for CSS animations
+        if (navLinks) navLinks.classList.toggle('active', shouldOpen);
+        if (navActions) navActions.classList.toggle('active', shouldOpen);
+        if (mobileNavOverlay) mobileNavOverlay.classList.toggle('active', shouldOpen);
 
+        // Update button state
         if (mobileMenuBtn) {
+            mobileMenuBtn.classList.toggle('active', shouldOpen);
             mobileMenuBtn.setAttribute('aria-expanded', shouldOpen.toString());
         }
     }

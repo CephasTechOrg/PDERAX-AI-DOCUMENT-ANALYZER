@@ -46,10 +46,10 @@
                     <a href="frontend/documentation.html" class="nav-link" data-text="Docs">Docs</a>
                 </nav>
                 <div class="nav-actions">
-                    <button class="nav-btn">
+                    <a class="nav-btn" href="frontend/login.html">
                         <i class="fas fa-user"></i>
                         Sign In
-                    </button>
+                    </a>
                 </div>
                 <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
                     aria-controls="primary-navigation">
@@ -57,7 +57,6 @@
                     <i class="fas fa-times icon-close" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="mobile-nav-overlay" aria-hidden="true"></div>
             <div class="mobile-nav-overlay" aria-hidden="true"></div>
         </header>
 
@@ -369,12 +368,14 @@
                     <div class="results-actions">
                         <button class="action-btn secondary back-btn" onclick="app.goBackToUpload()">
                             <i class="fas fa-arrow-left"></i>
-                            Back to Upload
+                            <span class="btn-text-mobile">Back</span>
+                            <span class="btn-text-desktop">Back to Upload</span>
                         </button>
                         <div class="download-buttons" id="downloadButtons"></div>
                         <button class="action-btn primary" onclick="resetApp()">
                             <i class="fas fa-plus"></i>
-                            New Analysis
+                            <span class="btn-text-mobile">New</span>
+                            <span class="btn-text-desktop">New Analysis</span>
                         </button>
                         </div>
                     </div>
@@ -413,13 +414,9 @@
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <button class="card-action"
-                                        onclick="app.copyToClipboard(app.currentAnalysis.analysis.summary)">
+                                    <button class="card-action" onclick="app.copyToClipboard('summary')">
                                         <i class="fas fa-copy"></i>
                                         Copy
-                                    </button>
-                                    <button class="card-action" onclick="app.expandSection('summary')">
-                                        <i class="fas fa-expand"></i>
                                     </button>
                                 </div>
                             </div>
@@ -548,10 +545,6 @@
                                 <i class="fas fa-file-pdf"></i>
                                 Download Full Report (PDF)
                             </button>
-                            <button class="action-btn secondary" onclick="app.shareAnalysis()">
-                                <i class="fas fa-share-alt"></i>
-                                Share Results
-                            </button>
                         </div>
                         <div class="action-group">
                             <button class="action-btn outline" onclick="resetApp()">
@@ -594,10 +587,6 @@
                                 <button class="action-btn primary" onclick="resetApp()">
                                     <i class="fas fa-redo"></i>
                                     Try Again
-                                </button>
-                                <button class="action-btn secondary" onclick="app.showHelp()">
-                                    <i class="fas fa-question-circle"></i>
-                                    Get Help
                                 </button>
                             </div>
                         </div>
