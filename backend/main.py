@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -14,6 +15,7 @@ import models.db_models  # noqa: F401
 from routes.auth import auth_router
 from routes.upload import upload_router
 from routes.compression import compression_router
+from routes.flashcards import flashcard_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -30,17 +32,25 @@ if ENVIRONMENT == "production":
         "https://ai-pdf-analyzer-backend.onrender.com",
         # Add your frontend domain here
     ]
-    allow_credentials = True
 else:
-    allowed_origins = ["*"]
-    allow_credentials = False
+    # Development: allow all origins including file:// and localhost
+    allowed_origins = [
+        "http://localhost:*",
+        "http://127.0.0.1:*",
+        "http://localhost:3000",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:8080",
+        "null",  # For file:// protocol
+    ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=allow_credentials,
+    allow_origins=["*"] if ENVIRONMENT == "development" else allowed_origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Session middleware required for OAuth flows
@@ -57,17 +67,28 @@ else:
 
 # Ensure static directory exists
 BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent  # Parent of backend folder
 STATIC_DIR = BASE_DIR / "static"
 TEMP_DIR = STATIC_DIR / "temp"
 TEMP_DIR.mkdir(parents=True, exist_ok=True)
+
+# Frontend directories
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
+INDEX_HTML = PROJECT_ROOT / "index.html"
 
 # Include routers
 app.include_router(auth_router, prefix="/api/v1", tags=["Auth"])
 app.include_router(upload_router, prefix="/api/v1", tags=["File Upload & Analysis"])
 app.include_router(compression_router, prefix="/api/v1", tags=["Compression"])
+app.include_router(flashcard_router, prefix="/api/v1/flashcards", tags=["Flashcards"])
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# Mount frontend static files (CSS, JS, images)
+if FRONTEND_DIR.exists():
+    app.mount("/frontend", StaticFiles(directory=str(FRONTEND_DIR)), name="frontend")
+    print(f"✅ Frontend directory mounted: {FRONTEND_DIR}")
 
 @app.on_event("startup")
 async def startup_event():
@@ -90,6 +111,26 @@ async def startup_event():
 
 @app.get("/")
 async def root():
+    """Serve the main index.html page"""
+    if INDEX_HTML.exists():
+        return FileResponse(str(INDEX_HTML))
+    return {
+        "message": "AI PDF Analyzer API", 
+        "status": "running",
+        "version": "1.0.0",
+        "environment": os.getenv("ENVIRONMENT", "development")
+    }
+
+@app.get("/index.html")
+async def serve_index():
+    """Serve index.html at /index.html path"""
+    if INDEX_HTML.exists():
+        return FileResponse(str(INDEX_HTML))
+    return {"error": "index.html not found"}
+
+@app.get("/api")
+async def api_info():
+    """API information endpoint"""
     return {
         "message": "AI PDF Analyzer API", 
         "status": "running",

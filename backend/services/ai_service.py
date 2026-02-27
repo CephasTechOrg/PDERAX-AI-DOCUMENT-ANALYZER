@@ -286,3 +286,198 @@ class AIService:
             ]
 
         return sections
+
+    def generate_flashcards(self, text: str, count: int = 10, difficulty: str = "medium", focus_topics: list = None) -> dict:
+        """Generate flashcards from text using DeepSeek AI."""
+        import json
+        
+        text = (text or "").strip()
+        
+        if not text or len(text) < 50:
+            return self._build_fallback_flashcards(text, reason="Insufficient text for flashcard generation.")
+        
+        # Truncate very long texts
+        if len(text) > 6000:
+            text = text[:6000] + "... [content truncated]"
+        
+        # Check AI credentials
+        if not self.api_key or not self.api_url:
+            return self._build_fallback_flashcards(text, reason="AI credentials not configured.")
+        
+        # Build flashcard-specific prompt
+        difficulty_instructions = {
+            "easy": "Use simple, straightforward questions with clear, concise answers. Focus on basic definitions and key facts.",
+            "medium": "Create balanced questions that test understanding. Include some conceptual questions.",
+            "hard": "Create challenging questions that test deep understanding, application, and analysis of concepts."
+        }
+        
+        focus_instruction = ""
+        if focus_topics:
+            focus_instruction = f"\nFocus particularly on these topics: {', '.join(focus_topics)}"
+        
+        prompt = f"""Generate exactly {count} educational flashcards from the following text.
+        
+Difficulty level: {difficulty}
+{difficulty_instructions.get(difficulty, difficulty_instructions["medium"])}
+{focus_instruction}
+
+IMPORTANT: Return ONLY a valid JSON array with no additional text. Each flashcard must have:
+- "front": The question or term (string)
+- "back": The answer or definition (string)  
+- "category": The topic/category this relates to (string)
+
+Example format:
+[
+  {{"front": "What is photosynthesis?", "back": "The process by which plants convert sunlight into energy.", "category": "Biology"}},
+  {{"front": "Define GDP", "back": "Gross Domestic Product - the total value of goods and services produced by a country.", "category": "Economics"}}
+]
+
+Source text:
+{text}
+
+Generate {count} flashcards as a JSON array:"""
+
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are an expert educator creating study flashcards. Always respond with valid JSON only, no markdown or extra text."
+                },
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.4,
+            "max_tokens": 2000,
+        }
+        
+        try:
+            response = requests.post(
+                self.api_url,
+                headers=self.headers,
+                json=payload,
+                timeout=self.request_timeout,
+            )
+            response.raise_for_status()
+            
+            result = response.json()
+            ai_response = (
+                result.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
+            
+            if not ai_response:
+                return self._build_fallback_flashcards(text, reason="Empty response from AI service.")
+            
+            # Parse the JSON response
+            flashcards = self._parse_flashcard_response(ai_response)
+            
+            if not flashcards:
+                return self._build_fallback_flashcards(text, reason="Could not parse AI response into flashcards.")
+            
+            # Generate a brief summary of the source
+            words = text.split()
+            source_summary = " ".join(words[:50]) + "..." if len(words) > 50 else text
+            
+            return {
+                "flashcards": flashcards,
+                "source_summary": source_summary,
+                "total_count": len(flashcards),
+                "source": "ai",
+                "difficulty": difficulty
+            }
+            
+        except requests.exceptions.Timeout:
+            return self._build_fallback_flashcards(text, reason="AI service timed out.")
+        except requests.exceptions.RequestException as exc:
+            return self._build_fallback_flashcards(text, reason=f"AI service unavailable: {exc}")
+        except Exception as exc:
+            return self._build_fallback_flashcards(text, reason=f"Flashcard generation error: {exc}")
+    
+    def _parse_flashcard_response(self, response: str) -> list:
+        """Parse AI response into flashcard list."""
+        import json
+        import re
+        
+        # Clean up the response - remove markdown code blocks if present
+        response = response.strip()
+        response = re.sub(r'^```json\s*', '', response)
+        response = re.sub(r'^```\s*', '', response)
+        response = re.sub(r'\s*```$', '', response)
+        
+        try:
+            flashcards = json.loads(response)
+            if isinstance(flashcards, list):
+                # Validate and clean each flashcard
+                valid_cards = []
+                for card in flashcards:
+                    if isinstance(card, dict) and "front" in card and "back" in card:
+                        valid_cards.append({
+                            "front": str(card.get("front", "")).strip(),
+                            "back": str(card.get("back", "")).strip(),
+                            "category": str(card.get("category", "General")).strip()
+                        })
+                return valid_cards
+        except json.JSONDecodeError:
+            pass
+        
+        # Fallback: try to extract flashcards from text format
+        flashcards = []
+        lines = response.split('\n')
+        current_card = {}
+        
+        for line in lines:
+            line = line.strip()
+            if line.lower().startswith(('front:', 'q:', 'question:')):
+                if current_card.get('front') and current_card.get('back'):
+                    flashcards.append(current_card)
+                current_card = {'front': line.split(':', 1)[1].strip() if ':' in line else '', 'category': 'General'}
+            elif line.lower().startswith(('back:', 'a:', 'answer:')):
+                current_card['back'] = line.split(':', 1)[1].strip() if ':' in line else ''
+            elif line.lower().startswith(('category:', 'topic:')):
+                current_card['category'] = line.split(':', 1)[1].strip() if ':' in line else 'General'
+        
+        if current_card.get('front') and current_card.get('back'):
+            flashcards.append(current_card)
+        
+        return flashcards
+    
+    def _build_fallback_flashcards(self, text: str, reason: str = "") -> dict:
+        """Generate basic flashcards without AI when service is unavailable."""
+        words = text.split()
+        
+        # Create simple flashcards from the text
+        flashcards = []
+        
+        if len(words) >= 20:
+            # Create a basic "what is this about" card
+            preview = " ".join(words[:30])
+            flashcards.append({
+                "front": "What is the main topic of this document?",
+                "back": preview + "...",
+                "category": "Overview"
+            })
+            
+            # Add a card about document length
+            flashcards.append({
+                "front": "How long is this document?",
+                "back": f"Approximately {len(words)} words",
+                "category": "Document Info"
+            })
+            
+            flashcards.append({
+                "front": "Why are these flashcards limited?",
+                "back": reason or "AI service was unavailable for full flashcard generation.",
+                "category": "System"
+            })
+        
+        source_summary = " ".join(words[:50]) + "..." if len(words) > 50 else text
+        
+        return {
+            "flashcards": flashcards,
+            "source_summary": source_summary,
+            "total_count": len(flashcards),
+            "source": "fallback",
+            "notice": reason,
+            "difficulty": "easy"
+        }

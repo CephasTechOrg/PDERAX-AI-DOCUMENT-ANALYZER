@@ -14,6 +14,7 @@ from models.db_models import EmailVerification, OAuthAccount, User
 from schemas.auth import (
     LoginRequest,
     MessageResponse,
+    ProfileUpdateRequest,
     RegisterRequest,
     ResendRequest,
     TokenResponse,
@@ -22,6 +23,7 @@ from schemas.auth import (
 )
 from services.auth_service import create_access_token, create_refresh_token, hash_password, verify_password
 from services.email_service import send_verification_email
+from auth_dependencies import get_current_user
 
 
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -77,8 +79,11 @@ def _issue_tokens(user: User) -> TokenResponse:
         user=UserOut(
             id=str(user.id),
             email=user.email,
+            full_name=user.full_name,
+            avatar_url=user.avatar_url,
             is_verified=user.is_verified,
             is_active=user.is_active,
+            created_via=user.created_via or "email",
         ),
     )
 
@@ -129,7 +134,9 @@ async def register(payload: RegisterRequest, db: Session = Depends(get_db)):
 
     user = User(
         email=payload.email,
+        full_name=payload.full_name,
         password_hash=hash_password(payload.password),
+        created_via="email",
         is_verified=False,
         is_active=True,
     )
@@ -232,7 +239,51 @@ async def login(payload: LoginRequest, db: Session = Depends(get_db)):
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account disabled")
 
+    # Update last login timestamp
+    user.last_login_at = _utc_now()
+    db.commit()
+
     return _issue_tokens(user)
+
+
+@auth_router.get("/me", response_model=UserOut)
+async def get_current_user_profile(current_user: User = Depends(get_current_user)):
+    """Get the current authenticated user's profile."""
+    return UserOut(
+        id=str(current_user.id),
+        email=current_user.email,
+        full_name=current_user.full_name,
+        avatar_url=current_user.avatar_url,
+        is_verified=current_user.is_verified,
+        is_active=current_user.is_active,
+        created_via=current_user.created_via or "email",
+    )
+
+
+@auth_router.put("/profile", response_model=UserOut)
+async def update_profile(
+    payload: ProfileUpdateRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Update the current user's profile."""
+    if payload.full_name is not None:
+        current_user.full_name = payload.full_name.strip()
+    if payload.avatar_url is not None:
+        current_user.avatar_url = payload.avatar_url
+
+    db.commit()
+    db.refresh(current_user)
+
+    return UserOut(
+        id=str(current_user.id),
+        email=current_user.email,
+        full_name=current_user.full_name,
+        avatar_url=current_user.avatar_url,
+        is_verified=current_user.is_verified,
+        is_active=current_user.is_active,
+        created_via=current_user.created_via or "email",
+    )
 
 
 @auth_router.get("/google/login")
