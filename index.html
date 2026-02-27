@@ -32,7 +32,20 @@
             <div class="nav-container">
                 <div class="logo">
                     <div class="logo-icon">
-                        <img src="https://i.imgur.com/nBy9at5.png" alt="PDERAX Logo" class="logo-img">
+                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
+                            <path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/>
+                            <path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/>
+                            <path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/>
+                            <circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/>
+                            <path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
+                                    <stop offset="0%" stop-color="#6366f1"/>
+                                    <stop offset="100%" stop-color="#8b5cf6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
                     </div>
                     <div class="logo-text">
                         <span class="logo-primary">PDERAX</span>
@@ -41,9 +54,10 @@
                 </div>
                 <nav class="nav-links" id="primary-navigation">
                     <a href="index.html" class="nav-link active" data-text="Analyzer">Analyzer</a>
-                    <a href="frontend/features.html" class="nav-link" data-text="Features">Features</a>
+                    <a href="frontend/ai-assistant.html" class="nav-link" data-text="AI Assistant">AI Assistant</a>
+                    <a href="frontend/study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
+                    <a href="frontend/history.html" class="nav-link" data-text="History">History</a>
                     <a href="frontend/pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
-                    <a href="frontend/documentation.html" class="nav-link" data-text="Docs">Docs</a>
                 </nav>
                 <div class="nav-actions">
                     <a class="nav-btn" href="frontend/login.html">
@@ -60,77 +74,69 @@
             <div class="mobile-nav-overlay" aria-hidden="true"></div>
         </header>
 
-        <!-- Enhanced Hero Section -->
-        <section class="hero-section">
+        <!-- Welcome Dashboard (shown for logged-in users) -->
+        <section class="welcome-dashboard" id="welcomeDashboard" style="display: none;">
+            <div class="welcome-content">
+                <div class="welcome-greeting">
+                    <h1>Welcome, <span id="welcomeUserName">User</span></h1>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hero Section (shown for non-logged users / landing page) -->
+        <section class="hero-section" id="heroSection">
             <div class="hero-content">
-                <div class="hero-badge animate__animated animate__fadeInDown">
+                <div class="hero-badge">
                     <i class="fas fa-brain"></i>
                     <span>Advanced AI Analysis</span>
-                    <div class="pulse-dot"></div>
                 </div>
                 <h1 class="hero-title">
-                    <span class="title-gradient animate__animated animate__fadeInUp">PDERAX</span>
-                    <span class="title-sub animate__animated animate__fadeInUp animate__delay-1s">AI that understands
-                        your document</span>
+                    <span class="title-gradient">PDERAX</span>
+                    <span class="title-sub">AI that understands your document</span>
                 </h1>
-                <p class="hero-description animate__animated animate__fadeInUp animate__delay-2s">
+                <p class="hero-description">
                     Transform your documents into actionable insights with our advanced AI analysis platform.
                     Upload PDFs, Word documents, or Excel files and get instant intelligent summaries, key insights,
                     and interactive Q&A.
                 </p>
 
-                <!-- Enhanced Stats Bar -->
-                <div class="stats-bar animate__animated animate__fadeInUp animate__delay-3s">
+                <!-- Stats Bar -->
+                <div class="stats-bar">
                     <div class="stat">
-                        <div class="stat-number" id="documentsProcessed">10K+</div>
+                        <div class="stat-number">10K+</div>
                         <div class="stat-label">Documents Analyzed</div>
                     </div>
                     <div class="stat-divider"></div>
                     <div class="stat">
-                        <div class="stat-number" id="analysisAccuracy">99.8%</div>
+                        <div class="stat-number">99.8%</div>
                         <div class="stat-label">Accuracy Rate</div>
                     </div>
                     <div class="stat-divider"></div>
                     <div class="stat">
-                        <div class="stat-number" id="processingTime">2.3s</div>
+                        <div class="stat-number">2.3s</div>
                         <div class="stat-label">Avg. Processing</div>
                     </div>
                 </div>
 
                 <!-- CTA Button -->
-                <div class="hero-cta animate__animated animate__fadeInUp animate__delay-4s">
+                <div class="hero-cta">
                     <button class="cta-btn" onclick="document.getElementById('fileInput').click()">
                         <span class="btn-text">Start Analyzing</span>
-                        <div class="btn-shine"></div>
                         <i class="fas fa-arrow-right btn-icon"></i>
                     </button>
                 </div>
             </div>
-
-            <!-- Floating Features -->
-            <div class="floating-features">
-                <div class="feature-orb orb-1">
-                    <i class="fas fa-rocket"></i>
-                </div>
-                <div class="feature-orb orb-2">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="feature-orb orb-3">
-                    <i class="fas fa-bolt"></i>
-                </div>
-            </div>
         </section>
 
-        <!-- Enhanced Main Content -->
+        <!-- Main Content -->
         <main class="main-content">
             <!-- Upload Section -->
             <section class="upload-section" id="uploadSection">
                 <div class="upload-container">
-                    <div class="upload-card glass-card animate__animated animate__fadeIn">
+                    <div class="upload-card glass-card">
                         <div class="upload-header">
                             <div class="upload-icon">
                                 <i class="fas fa-cloud-upload-alt"></i>
-                                <div class="icon-pulse"></div>
                             </div>
                             <h2>Upload Your Document</h2>
                             <p>Supported formats: PDF, DOCX, XLSX, and more</p>
@@ -469,6 +475,70 @@
                             </div>
                         </div>
 
+                        <!-- Flashcards Card -->
+                        <div class="result-card glass-card flashcards-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <div class="card-icon">
+                                        <i class="fas fa-layer-group"></i>
+                                        <div class="icon-glow"></div>
+                                    </div>
+                                    <div class="title-content">
+                                        <h3>Study Flashcards</h3>
+                                        <p>AI-generated study cards</p>
+                                    </div>
+                                </div>
+                                <div class="card-badge">
+                                    <span class="flashcard-count" id="flashcardCountBadge">0</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="flashcard-controls" id="flashcardControls" style="display: none;">
+                                    <div class="flashcard-settings">
+                                        <select id="flashcardDifficulty" class="flashcard-select">
+                                            <option value="easy">Easy</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="hard">Hard</option>
+                                        </select>
+                                        <select id="flashcardCountSelect" class="flashcard-select">
+                                            <option value="5">5 cards</option>
+                                            <option value="10" selected>10 cards</option>
+                                            <option value="15">15 cards</option>
+                                            <option value="20">20 cards</option>
+                                        </select>
+                                    </div>
+                                    <button class="action-btn primary" onclick="app.generateFlashcards()">
+                                        <i class="fas fa-magic"></i>
+                                        Generate Flashcards
+                                    </button>
+                                </div>
+                                <div class="flashcard-container" id="flashcardContainer">
+                                    <div class="flashcard-deck" id="flashcardDeck">
+                                        <!-- Flashcards will be inserted here -->
+                                    </div>
+                                    <div class="flashcard-navigation" id="flashcardNavigation" style="display: none;">
+                                        <button class="nav-btn" onclick="app.prevFlashcard()">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <span class="flashcard-progress">
+                                            <span id="currentCardIndex">1</span> / <span id="totalCards">0</span>
+                                        </span>
+                                        <button class="nav-btn" onclick="app.nextFlashcard()">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flashcard-placeholder" id="flashcardPlaceholder">
+                                    <i class="fas fa-layer-group"></i>
+                                    <p>Click "Generate Flashcards" to create study cards from your document</p>
+                                    <button class="action-btn primary" onclick="app.showFlashcardControls()">
+                                        <i class="fas fa-magic"></i>
+                                        Generate Flashcards
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Enhanced Visualization Card -->
                         <div class="result-card glass-card visualization-card">
                             <div class="card-header">
@@ -543,13 +613,17 @@
                         <div class="action-group">
                             <button class="action-btn primary large" onclick="app.downloadFile('pdf')">
                                 <i class="fas fa-file-pdf"></i>
-                                Download Full Report (PDF)
+                                Download Report
+                            </button>
+                            <button class="action-btn secondary large" onclick="goToFlashcardsWithContext()">
+                                <i class="fas fa-layer-group"></i>
+                                Generate Flashcards
                             </button>
                         </div>
                         <div class="action-group">
                             <button class="action-btn outline" onclick="resetApp()">
                                 <i class="fas fa-redo"></i>
-                                Analyze Another Document
+                                Analyze Another
                             </button>
                         </div>
                     </div>
@@ -602,7 +676,7 @@
                     <div class="footer-brand">
                         <div class="logo">
                             <div class="logo-icon small">
-                                <img src="https://i.imgur.com/nBy9at5.png" alt="PDERAX Logo" class="logo-img">
+                                <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="url(#logo-gradient-footer)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
                             </div>
                             <span class="logo-primary">PDERAX</span>
                         </div>
@@ -639,7 +713,7 @@
                             <a href="#">Help Center</a>
                             <a href="#">Contact</a>
                             <a href="#">Status</a>
-                            <a href="#">Documentation</a>
+                            <a href="#">FAQ</a>
                         </div>
                         <div class="footer-column">
                             <h4>Legal</h4>
@@ -671,6 +745,100 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="frontend/api.js"></script>
+    <script src="frontend/auth.js"></script>
+    <script>
+        // Route protection - check auth after app.js loads
+        // Auth check is handled by app.js checkAuthentication()
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Only run these if auth.js AuthService exists
+            if (typeof AuthService === 'undefined') {
+                console.error('[Auth] AuthService not loaded');
+                return;
+            }
+            
+            // Check if localStorage is available
+            try {
+                localStorage.getItem('test');
+            } catch (e) {
+                console.error('[Auth] localStorage not available:', e);
+                document.body.innerHTML = '<div style="padding: 40px; text-align: center;"><h2>Storage Access Required</h2><p>Please enable cookies/storage or open this page via a web server (not file://).</p></div>';
+                return;
+            }
+
+            // If already authenticated, update UI
+            if (AuthService.isAuthenticated()) {
+                updateNavForAuthenticatedUser();
+                showWelcomeDashboard();
+            }
+        });
+
+        function showWelcomeDashboard() {
+            const user = AuthService.getUser();
+            const welcomeDashboard = document.getElementById('welcomeDashboard');
+            const heroSection = document.getElementById('heroSection');
+            
+            if (welcomeDashboard && user) {
+                // Update welcome message
+                const welcomeUserName = document.getElementById('welcomeUserName');
+                if (welcomeUserName) {
+                    welcomeUserName.textContent = user.full_name || user.email.split('@')[0];
+                }
+                
+                // Update last active time
+                const lastActiveTime = document.getElementById('lastActiveTime');
+                if (lastActiveTime && user.last_login_at) {
+                    lastActiveTime.textContent = formatRelativeTime(user.last_login_at);
+                }
+                
+                // Show dashboard, hide hero
+                welcomeDashboard.style.display = 'block';
+                if (heroSection) {
+                    heroSection.style.display = 'none';
+                }
+            }
+        }
+        
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString();
+        }
+        
+        function showRecentDocuments() {
+            // TODO: Implement recent documents modal/view
+            alert('Recent documents feature coming soon!');
+        }
+
+        function updateNavForAuthenticatedUser() {
+            AuthService.updateNavForAuthenticatedUser();
+        }
+
+        function toggleUserMenu() {
+            AuthService.toggleUserMenu();
+        }
+
+        function handleLogout() {
+            AuthService.handleLogout();
+        }
+
+        function showProfile() {
+            AuthService.showProfile();
+        }
+
+        function showSettings() {
+            AuthService.showSettings();
+        }
+    </script>
     <script src="frontend/app.js"></script>
 </body>
 

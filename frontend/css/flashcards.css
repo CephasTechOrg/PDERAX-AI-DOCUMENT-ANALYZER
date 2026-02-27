@@ -1,0 +1,762 @@
+/* ==========================================
+   FLASHCARDS WORKSPACE STYLES
+   ======================================== */
+
+/* Workspace Layout */
+.flashcard-workspace {
+    min-height: calc(100vh - 200px);
+    padding: 100px 20px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Hub Cards */
+.workspace-hub {
+    margin-bottom: 40px;
+}
+
+.hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.hub-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hub-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: white;
+    box-shadow: var(--glow);
+}
+
+.hub-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.hub-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 20, 0.7);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 24px;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 720px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 16px;
+}
+
+.modal-header h3 {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.modal-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.modal-close {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--bg-glass-hover);
+    border-color: var(--primary);
+}
+
+/* Workspace Header */
+.workspace-header {
+    margin-bottom: 32px;
+}
+
+.workspace-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.workspace-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    box-shadow: var(--glow);
+}
+
+.workspace-title h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.workspace-title p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Upload Section Compact */
+.workspace-upload .upload-card {
+    padding: 40px;
+}
+
+.workspace-upload .upload-area {
+    padding: 50px 30px;
+    margin-bottom: 0;
+}
+
+.workspace-upload .upload-main-icon {
+    font-size: 3.5rem;
+}
+
+.upload-footer {
+    padding: 16px 24px;
+    background: var(--bg-glass-light);
+    border-top: 1px solid var(--border-light);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.upload-footer i {
+    margin-right: 6px;
+}
+
+/* Processing Section */
+.workspace-processing .processing-card {
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.processing-animation {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 30px;
+}
+
+.processing-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    color: var(--primary);
+    z-index: 2;
+}
+
+.p-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
+.p-ring-1 {
+    width: 80px;
+    height: 80px;
+    animation: pulse-ring 2s ease-out infinite;
+}
+
+.p-ring-2 {
+    width: 100px;
+    height: 100px;
+    animation: pulse-ring 2s ease-out infinite 0.5s;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+    }
+}
+
+.workspace-processing h3 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.workspace-processing p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.progress-bar {
+    width: 100%;
+    max-width: 400px;
+    height: 6px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.progress-bar .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Settings Section */
+.workspace-settings .settings-card {
+    padding: 40px;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.settings-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--success), #059669);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.settings-header h3 {
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.settings-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.form-select {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0a0c0' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+}
+
+.form-select:hover,
+.form-select:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.generate-btn {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--glow);
+}
+
+.generate-btn i {
+    font-size: 1rem;
+}
+
+/* Generating Section */
+.workspace-generating .generating-card {
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.generating-animation {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 24px;
+    animation: brain-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes brain-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+.generating-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.generating-dots span {
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: dot-bounce 1.4s infinite ease-in-out both;
+}
+
+.generating-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.generating-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes dot-bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* Results Section */
+.workspace-results {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.results-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.results-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.results-info h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.results-info h2 i {
+    color: var(--primary);
+}
+
+.card-count {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.results-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Flashcard Viewer */
+.flashcard-viewer {
+    background: var(--bg-glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 40px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.flashcard-deck {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+.flashcard {
+    width: 100%;
+    max-width: 480px;
+    height: 280px;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.flashcard.active {
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.flashcard-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+}
+
+.flashcard-front {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
+.flashcard-back {
+    background: linear-gradient(135deg, var(--secondary), #059669);
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.flashcard-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.85;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+}
+
+.flashcard-text {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    font-weight: 500;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+}
+
+.flashcard-hint {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-top: 16px;
+}
+
+.flashcard-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 24px 0 8px;
+}
+
+.flashcard-viewer .nav-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg-glass);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+}
+
+.flashcard-viewer .nav-btn:hover:not(:disabled) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.flashcard-viewer .nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.flashcard-progress {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 70px;
+}
+
+.flip-hint {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 8px;
+}
+
+.flip-hint i {
+    margin-right: 6px;
+}
+
+/* Study Progress */
+.study-progress {
+    padding: 24px;
+}
+
+.study-progress h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.progress-stat {
+    text-align: center;
+}
+
+.progress-stat .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+}
+
+.progress-stat .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flashcard-workspace {
+        padding: 90px 16px 30px;
+    }
+    
+    .workspace-title {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .workspace-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+    }
+    
+    .workspace-title h1 {
+        font-size: 1.6rem;
+    }
+    
+    .workspace-upload .upload-card,
+    .settings-card,
+    .processing-card,
+    .generating-card {
+        padding: 24px;
+    }
+    
+    .workspace-upload .upload-area {
+        padding: 40px 20px;
+    }
+    
+    .settings-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .results-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .results-info {
+        justify-content: center;
+    }
+    
+    .results-actions {
+        justify-content: center;
+    }
+    
+    .flashcard-viewer {
+        padding: 24px 16px;
+    }
+    
+    .flashcard {
+        height: 260px;
+    }
+    
+    .flashcard-text {
+        font-size: 1.1rem;
+    }
+    
+    .flashcard-navigation {
+        gap: 20px;
+    }
+    
+    .flashcard-viewer .nav-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .progress-stats {
+        gap: 12px;
+    }
+    
+    .progress-stat .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .flashcard {
+        height: 240px;
+    }
+    
+    .flashcard-text {
+        font-size: 1rem;
+    }
+    
+    .flashcard-front,
+    .flashcard-back {
+        padding: 20px;
+    }
+}

@@ -52,20 +52,53 @@ class APIService {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch(`${this.baseURL}/upload`, {
-            method: 'POST',
-            headers: {
-                ...this.getAuthHeader()
-            },
-            body: formData
-        });
+        console.log('[API] Uploading file:', file.name, 'to:', `${this.baseURL}/upload`);
+        console.log('[API] Auth token present:', !!localStorage.getItem('pderax_access_token'));
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+        try {
+            const response = await fetch(`${this.baseURL}/upload`, {
+                method: 'POST',
+                headers: {
+                    ...this.getAuthHeader()
+                },
+                body: formData
+            });
+
+            console.log('[API] Response status:', response.status);
+
+            if (!response.ok) {
+                let errorMessage = `HTTP error! status: ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.detail || errorMessage;
+                    console.error('[API] Error response:', errorData);
+                } catch (e) {
+                    console.error('[API] Could not parse error response');
+                }
+                
+                // Handle specific auth errors
+                if (response.status === 401) {
+                    console.error('[API] Authentication failed - token may be invalid or expired');
+                    localStorage.removeItem('pderax_access_token');
+                    throw new Error('Session expired. Please log in again.');
+                }
+                if (response.status === 403) {
+                    throw new Error('Access denied. Please verify your email or check permissions.');
+                }
+                
+                throw new Error(errorMessage);
+            }
+
+            const data = await response.json();
+            console.log('[API] Success response:', data);
+            return data;
+        } catch (error) {
+            console.error('[API] Upload error:', error);
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                throw new Error('Cannot connect to server. Make sure the backend is running on ' + this.baseURL);
+            }
+            throw error;
         }
-
-        return await response.json();
     }
 
     /**
@@ -112,6 +145,35 @@ class APIService {
         } catch (error) {
             throw new Error('Backend connection failed');
         }
+    }
+
+    /**
+     * Generate flashcards from text
+     * @param {string} text - Source text for flashcard generation
+     * @param {number} count - Number of flashcards to generate
+     * @param {string} difficulty - Difficulty level (easy, medium, hard)
+     * @returns {Promise<Object>} Generated flashcards
+     */
+    async generateFlashcards(text, count = 10, difficulty = 'medium') {
+        const response = await fetch(`${this.baseURL}/flashcards/generate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...this.getAuthHeader()
+            },
+            body: JSON.stringify({
+                text: text,
+                count: count,
+                difficulty: difficulty
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `Flashcard generation failed: ${response.status}`);
+        }
+
+        return await response.json();
     }
 }
 

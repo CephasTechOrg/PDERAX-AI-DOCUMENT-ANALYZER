@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant — PDERAX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="animated-bg">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+                <div class="shape shape-5"></div>
+            </div>
+            <div class="particles" id="particles"></div>
+        </div>
+
+        <header class="header">
+            <div class="nav-container">
+                <a href="../index.html" class="logo">
+                    <div class="logo-icon">
+                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
+                            <path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/>
+                            <path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/>
+                            <path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/>
+                            <circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/>
+                            <path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
+                                    <stop offset="0%" stop-color="#6366f1"/>
+                                    <stop offset="100%" stop-color="#8b5cf6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-primary">PDERAX</span>
+                        <span class="logo-subtitle">AI Document Intelligence</span>
+                    </div>
+                </a>
+                <nav class="nav-links" id="primary-navigation">
+                    <a href="../index.html" class="nav-link" data-text="Analyzer">Analyzer</a>
+                    <a href="ai-assistant.html" class="nav-link active" data-text="AI Assistant">AI Assistant</a>
+                    <a href="study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
+                    <a href="history.html" class="nav-link" data-text="History">History</a>
+                    <a href="pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
+                </nav>
+                <div class="nav-actions">
+                    <a class="nav-btn" href="login.html">
+                        <i class="fas fa-user"></i>
+                        Sign In
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
+                    aria-controls="primary-navigation">
+                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
+                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-overlay" aria-hidden="true"></div>
+        </header>
+
+        <section class="hero-section subpage-hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-comments"></i>
+                    <span>AI Assistant</span>
+                    <div class="pulse-dot"></div>
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-gradient">Your AI chat assistant is coming</span>
+                    <span class="title-sub">Ask questions, get instant answers about your documents.</span>
+                </h1>
+                <p class="hero-description">
+                    This workspace will deliver an intelligent AI chat assistant to help you interact with your documents through natural conversation.
+                </p>
+                <div class="hero-cta">
+                    <a class="cta-btn" href="study-tools.html">Use Study Tools</a>
+                    <a class="ghost-btn" href="../index.html">
+                        <i class="fas fa-file-alt"></i>
+                        Analyzer
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Update navigation for authenticated users
+        document.addEventListener('DOMContentLoaded', () => {
+            if (AuthService.isAuthenticated()) {
+                AuthService.updateNavForAuthenticatedUser();
+            }
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+
+</html>

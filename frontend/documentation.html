@@ -30,7 +30,7 @@
             <div class="nav-container">
                 <div class="logo">
                     <div class="logo-icon">
-                        <img src="https://i.imgur.com/nBy9at5.png" alt="PDERAX Logo" class="logo-img">
+                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
                     </div>
                     <div class="logo-text">
                         <span class="logo-primary">PDERAX</span>
@@ -39,9 +39,10 @@
                 </div>
                 <nav class="nav-links" id="primary-navigation">
                     <a href="../index.html" class="nav-link" data-text="Analyzer">Analyzer</a>
-                    <a href="features.html" class="nav-link" data-text="Features">Features</a>
+                    <a href="ai-assistant.html" class="nav-link" data-text="AI Assistant">AI Assistant</a>
+                    <a href="study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
+                    <a href="history.html" class="nav-link" data-text="History">History</a>
                     <a href="pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
-                    <a href="documentation.html" class="nav-link active" data-text="Docs">Docs</a>
                 </nav>
                 <div class="nav-actions">
                     <a class="nav-btn" href="login.html">
@@ -228,7 +229,7 @@
                 <div class="footer-brand">
                     <div class="footer-logo">
                         <div class="logo-icon small">
-                            <img src="https://i.imgur.com/nBy9at5.png" alt="PDERAX Logo" class="logo-img">
+                            <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="url(#logo-gradient-footer)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
                         </div>
                         <span class="logo-primary">PDERAX</span>
                     </div>
@@ -265,7 +266,7 @@
                         <a href="#">Help Center</a>
                         <a href="#">Contact</a>
                         <a href="#">Status</a>
-                        <a href="documentation.html">Documentation</a>
+                        <a href="#">FAQ</a>
                     </div>
                     <div class="footer-column">
                         <h4>Legal</h4>
@@ -294,6 +295,15 @@
 
     <script src="api.js"></script>
     <script src="app.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Update navigation for authenticated users
+        document.addEventListener('DOMContentLoaded', () => {
+            if (AuthService.isAuthenticated()) {
+                AuthService.updateNavForAuthenticatedUser();
+            }
+        });
+    </script>
 </body>
 
 </html>
