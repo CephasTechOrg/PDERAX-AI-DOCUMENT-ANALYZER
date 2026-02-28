@@ -26,38 +26,8 @@
             <div class="particles" id="particles"></div>
         </div>
 
-        <header class="header">
-            <div class="nav-container">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
-                    </div>
-                    <div class="logo-text">
-                        <span class="logo-primary">PDERAX</span>
-                        <span class="logo-subtitle">AI Document Intelligence</span>
-                    </div>
-                </div>
-                <nav class="nav-links" id="primary-navigation">
-                    <a href="../index.html" class="nav-link" data-text="Analyzer">Analyzer</a>
-                    <a href="ai-assistant.html" class="nav-link" data-text="AI Assistant">AI Assistant</a>
-                    <a href="study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
-                    <a href="history.html" class="nav-link" data-text="History">History</a>
-                    <a href="pricing.html" class="nav-link active" data-text="Pricing">Pricing</a>
-                </nav>
-                <div class="nav-actions">
-                    <a class="nav-btn" href="login.html">
-                        <i class="fas fa-user"></i>
-                        Sign In
-                    </a>
-                </div>
-                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
-                    aria-controls="primary-navigation">
-                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
-                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="mobile-nav-overlay" aria-hidden="true"></div>
-        </header>
+        <!-- Navigation injected by nav.js -->
+        <div id="nav-root"></div>
 
         <section class="hero-section subpage-hero">
             <div class="hero-content">
@@ -90,115 +60,63 @@
                     <i class="fas fa-cubes"></i>
                     Plans
                 </span>
-                <h2>Simple tiers, transparent usage</h2>
-                <p>Pick the tier that fits your stage. Upgrade anytime, or contact us for tailored enterprise pricing.</p>
+                <h2>Choose the plan that fits your learning</h2>
+                <p>Start free, upgrade when you need more. No hidden fees, cancel anytime.</p>
             </div>
             <div class="pricing-plans">
                 <div class="pricing-card">
                     <span class="plan-badge">
-                        <i class="fas fa-rocket"></i>
-                        Starter
+                        <i class="fas fa-gift"></i>
+                        Free
                     </span>
-                    <h3>Launch</h3>
-                    <p class="plan-price">$49 <span>/seat per month</span></p>
-                    <p class="plan-description">Perfect for small teams validating AI-assisted workflows.</p>
+                    <h3>Free</h3>
+                    <p class="plan-price">$0 <span>/month</span></p>
+                    <p class="plan-description">Get started with AI-powered document analysis at no cost.</p>
                     <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> 1 workspace / 5 seats</li>
-                        <li><i class="fas fa-check"></i> 500 pages per month</li>
-                        <li><i class="fas fa-check"></i> Email + chat support</li>
-                        <li><i class="fas fa-check"></i> Export Studio</li>
+                        <li><i class="fas fa-check"></i> 5 documents per day</li>
+                        <li><i class="fas fa-check"></i> AI summaries & insights</li>
+                        <li><i class="fas fa-check"></i> Flashcards & quizzes</li>
+                        <li><i class="fas fa-check"></i> Export to PDF, DOCX, TXT</li>
                     </ul>
                     <div class="plan-cta">
-                        <a class="cta-btn" href="index.html">Start Free Trial</a>
-                        <button class="ghost-btn">Schedule demo</button>
+                        <a class="cta-btn" href="../index.html">Get Started Free</a>
                     </div>
                 </div>
                 <div class="pricing-card highlight">
                     <span class="plan-badge">
                         <i class="fas fa-star"></i>
-                        Most Popular
+                        Popular
                     </span>
-                    <h3>Growth</h3>
-                    <p class="plan-price">$199 <span>/workspace per month</span></p>
-                    <p class="plan-description">Advanced automation, multi-team governance, and premium support.</p>
+                    <h3>Startup</h3>
+                    <p class="plan-price">$7 <span>/month</span></p>
+                    <p class="plan-description">More power for serious learners who study daily.</p>
                     <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> 3 workspaces / 20 seats</li>
-                        <li><i class="fas fa-check"></i> Unlimited uploads</li>
-                        <li><i class="fas fa-check"></i> Webhooks + API access</li>
-                        <li><i class="fas fa-check"></i> Dedicated success manager</li>
+                        <li><i class="fas fa-check"></i> 20 documents per day</li>
+                        <li><i class="fas fa-check"></i> Advanced AI analysis</li>
+                        <li><i class="fas fa-check"></i> Flashcard generation</li>
+                        <li><i class="fas fa-check"></i> Priority support</li>
                     </ul>
                     <div class="plan-cta">
-                        <a class="cta-btn" href="index.html">Upgrade Now</a>
-                        <button class="ghost-btn">Compare with Starter</button>
+                        <a class="cta-btn" href="../index.html">Upgrade Now</a>
                     </div>
                 </div>
                 <div class="pricing-card">
                     <span class="plan-badge">
                         <i class="fas fa-building"></i>
-                        Enterprise
+                        Pro
                     </span>
-                    <h3>Enterprise</h3>
-                    <p class="plan-price">Custom <span>/annual agreement</span></p>
-                    <p class="plan-description">Global deployments with bespoke security, compliance, and onboarding.</p>
+                    <h3>Pro</h3>
+                    <p class="plan-price coming-soon-price"><span>Coming Soon</span></p>
+                    <p class="plan-description">Advanced features for power users and professionals.</p>
                     <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Unlimited workspaces</li>
-                        <li><i class="fas fa-check"></i> On-prem or VPC isolation</li>
-                        <li><i class="fas fa-check"></i> Advanced compliance toolkit</li>
-                        <li><i class="fas fa-check"></i> 24/7 white-glove support</li>
+                        <li><i class="fas fa-clock"></i> AI Study Chatbot</li>
+                        <li><i class="fas fa-clock"></i> Quiz Generation</li>
+                        <li><i class="fas fa-clock"></i> Analytics Dashboard</li>
+                        <li><i class="fas fa-clock"></i> Team Collaboration</li>
                     </ul>
                     <div class="plan-cta">
-                        <a class="cta-btn" href="mailto:hello@pderax.ai">Talk to Sales</a>
-                        <button class="ghost-btn">Download security brief</button>
+                        <button class="ghost-btn" disabled>Coming Soon</button>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="subpage-section">
-            <div class="section-header">
-                <span class="section-label">
-                    <i class="fas fa-check-double"></i>
-                    Included in every plan
-                </span>
-                <h2>Enterprise DNA from day one</h2>
-                <p>Regardless of tier, you get the same secure architecture plus flexible deployment choices.</p>
-            </div>
-            <div class="info-grid">
-                <div class="info-card glass-card">
-                    <div class="info-card-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h3>Security</h3>
-                    <p>Encryption in transit & at rest, granular roles, audit logs, and retention controls.</p>
-                    <ul class="info-list">
-                        <li><i class="fas fa-check"></i> SOC2 controls</li>
-                        <li><i class="fas fa-check"></i> Bring-your-own-key</li>
-                        <li><i class="fas fa-check"></i> SSO / SCIM</li>
-                    </ul>
-                </div>
-                <div class="info-card glass-card">
-                    <div class="info-card-icon">
-                        <i class="fas fa-plug"></i>
-                    </div>
-                    <h3>Integrations</h3>
-                    <p>Native connectors for Slack, Teams, Salesforce, and secure webhooks for custom workflows.</p>
-                    <ul class="info-list">
-                        <li><i class="fas fa-check"></i> API first</li>
-                        <li><i class="fas fa-check"></i> Real-time alerts</li>
-                        <li><i class="fas fa-check"></i> Data warehouse sync</li>
-                    </ul>
-                </div>
-                <div class="info-card glass-card">
-                    <div class="info-card-icon">
-                        <i class="fas fa-hands-helping"></i>
-                    </div>
-                    <h3>Success</h3>
-                    <p>Live chat, office hours, enablement library, and roadmap access with quarterly reviews.</p>
-                    <ul class="info-list">
-                        <li><i class="fas fa-check"></i> 24/5 global coverage</li>
-                        <li><i class="fas fa-check"></i> Change management kit</li>
-                        <li><i class="fas fa-check"></i> Shared Slack channel</li>
-                    </ul>
                 </div>
             </div>
         </section>
@@ -279,7 +197,7 @@
             </div>
             <div class="footer-bottom">
                 <div class="footer-copyright">
-                    <p>&copy; 2024 PDERAX. All rights reserved.</p>
+                    <p>&copy; <span id="footer-year"></span> PDERAX. All rights reserved.</p>
                 </div>
                 <div class="footer-credits">
                     <p>
@@ -293,11 +211,10 @@
         </footer>
     </div>
 
+    <script src="nav.js"></script>
     <script src="api.js"></script>
-    <script src="app.js"></script>
     <script src="auth.js"></script>
     <script>
-        // Update navigation for authenticated users
         document.addEventListener('DOMContentLoaded', () => {
             if (AuthService.isAuthenticated()) {
                 AuthService.updateNavForAuthenticatedUser();

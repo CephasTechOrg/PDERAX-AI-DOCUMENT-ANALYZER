@@ -1036,16 +1036,17 @@ window.resetApp = () => {
 // Navigate to flashcards page with current document context
 window.goToFlashcardsWithContext = () => {
     if (window.app && window.app.currentAnalysis) {
+        const analysis = window.app.currentAnalysis.analysis || {};
         const context = {
             filename: window.app.currentAnalysis.filename || 'document',
-            summary: window.app.currentAnalysis.summary || '',
-            text: window.app.currentAnalysis.text || window.app.currentAnalysis.summary || '',
-            insights: window.app.currentAnalysis.key_insights || []
+            summary: analysis.summary || '',
+            insights: analysis.insights || [],
+            questions_answers: analysis.questions_answers || []
         };
-        
+
         // Store in sessionStorage for the flashcards page
         sessionStorage.setItem('flashcard_document', JSON.stringify(context));
-        
+
         // Navigate to study tools page
         window.location.href = 'frontend/study-tools.html';
     } else {

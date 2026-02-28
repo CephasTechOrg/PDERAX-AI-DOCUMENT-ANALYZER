@@ -27,52 +27,8 @@
             <div class="particles" id="particles"></div>
         </div>
 
-        <!-- Enhanced Header -->
-        <header class="header">
-            <div class="nav-container">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
-                            <path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/>
-                            <path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/>
-                            <path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/>
-                            <circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/>
-                            <path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
-                                    <stop offset="0%" stop-color="#6366f1"/>
-                                    <stop offset="100%" stop-color="#8b5cf6"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <div class="logo-text">
-                        <span class="logo-primary">PDERAX</span>
-                        <span class="logo-subtitle">AI Document Intelligence</span>
-                    </div>
-                </div>
-                <nav class="nav-links" id="primary-navigation">
-                    <a href="index.html" class="nav-link active" data-text="Analyzer">Analyzer</a>
-                    <a href="frontend/ai-assistant.html" class="nav-link" data-text="AI Assistant">AI Assistant</a>
-                    <a href="frontend/study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
-                    <a href="frontend/history.html" class="nav-link" data-text="History">History</a>
-                    <a href="frontend/pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
-                </nav>
-                <div class="nav-actions">
-                    <a class="nav-btn" href="frontend/login.html">
-                        <i class="fas fa-user"></i>
-                        Sign In
-                    </a>
-                </div>
-                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
-                    aria-controls="primary-navigation">
-                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
-                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="mobile-nav-overlay" aria-hidden="true"></div>
-        </header>
+        <!-- Navigation injected by nav.js -->
+        <div id="nav-root"></div>
 
         <!-- Welcome Dashboard (shown for logged-in users) -->
         <section class="welcome-dashboard" id="welcomeDashboard" style="display: none;">
@@ -726,7 +682,7 @@
                 </div>
                 <div class="footer-bottom">
                     <div class="footer-copyright">
-                        <p>&copy; 2024 PDERAX. All rights reserved.</p>
+                        <p>&copy; <span id="footer-year"></span> PDERAX. All rights reserved.</p>
                     </div>
                     <div class="footer-credits">
                         <p>
@@ -744,6 +700,7 @@
     <!-- Enhanced Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="frontend/nav.js"></script>
     <script src="frontend/api.js"></script>
     <script src="frontend/auth.js"></script>
     <script>

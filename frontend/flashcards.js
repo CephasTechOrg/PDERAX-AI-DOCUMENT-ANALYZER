@@ -1,7 +1,7 @@
 // Flashcard Workspace JavaScript
 // Handles document upload, processing, and flashcard generation
 
-const API = window.APIService ? new window.APIService() : null;
+const API = window.apiService || null;
 
 // State management
 let currentDocument = null;
@@ -30,25 +30,31 @@ document.addEventListener('DOMContentLoaded', () => {
 function checkForDocumentContext() {
     const urlParams = new URLSearchParams(window.location.search);
     const docContext = urlParams.get('context');
+    const autoOpen = urlParams.get('open') === 'true';
     
-    if (docContext) {
+    // Only auto-open modal if explicitly requested via URL param
+    if (docContext && autoOpen) {
         try {
             const context = JSON.parse(decodeURIComponent(docContext));
             currentDocument = context;
             openFlashcardModal();
             showSettingsSection();
+            // Clear sessionStorage to prevent re-opening on refresh
+            sessionStorage.removeItem('flashcard_document');
+            return;
         } catch (e) {
             console.log('No valid document context');
         }
     }
     
-    // Also check sessionStorage for document data
+    // Don't auto-open from sessionStorage - only restore document data silently
+    // The user must click the "Create Flashcards" button to open the modal
     const storedDoc = sessionStorage.getItem('flashcard_document');
     if (storedDoc) {
         try {
             currentDocument = JSON.parse(storedDoc);
-            openFlashcardModal();
-            showSettingsSection();
+            // Don't auto-open - just keep the document ready
+            console.log('Document context restored from session');
         } catch (e) {
             console.log('No stored document');
         }
@@ -126,12 +132,13 @@ async function handleFileUpload(file) {
         
         updateProgress(100, 'Document ready!');
         
-        // Store document context
+        // Store document context — use correct API response shape
+        const analysis = result.analysis || {};
         currentDocument = {
-            filename: file.name,
-            summary: result.summary || '',
-            text: result.text || result.summary || '',
-            insights: result.key_insights || []
+            filename: result.filename || file.name,
+            summary: analysis.summary || '',
+            insights: analysis.insights || [],
+            questions_answers: analysis.questions_answers || []
         };
         
         // Store in session for persistence
@@ -166,11 +173,14 @@ async function generateFlashcards() {
     showSection('generating');
     
     try {
+        // Build source text from all available content
+        let sourceText = currentDocument.summary || '';
+        if (currentDocument.insights && currentDocument.insights.length) {
+            sourceText += '\n\n' + currentDocument.insights.join('\n');
+        }
+
         // Call API to generate flashcards
-        const response = await API.generateFlashcards(
-            currentDocument.text || currentDocument.summary,
-            count
-        );
+        const response = await API.generateFlashcards(sourceText, count, difficulty);
         
         if (response && response.flashcards) {
             flashcards = response.flashcards;
@@ -205,7 +215,7 @@ async function generateFlashcards() {
 function generateFallbackFlashcards(doc, count) {
     const cards = [];
     
-    // Generate from insights
+    // Generate from insights (array of strings)
     if (doc.insights && doc.insights.length > 0) {
         doc.insights.slice(0, count).forEach((insight, i) => {
             cards.push({

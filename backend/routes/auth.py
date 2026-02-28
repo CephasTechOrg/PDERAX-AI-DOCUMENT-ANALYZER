@@ -15,13 +15,14 @@ from schemas.auth import (
     LoginRequest,
     MessageResponse,
     ProfileUpdateRequest,
+    RefreshRequest,
     RegisterRequest,
     ResendRequest,
     TokenResponse,
     UserOut,
     VerifyRequest,
 )
-from services.auth_service import create_access_token, create_refresh_token, hash_password, verify_password
+from services.auth_service import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
 from services.email_service import send_verification_email
 from auth_dependencies import get_current_user
 
@@ -69,6 +70,22 @@ def _resend_cooldown_seconds() -> int:
     return int(os.getenv("EMAIL_VERIFY_RESEND_COOLDOWN_SECONDS", "60"))
 
 
+def _user_out(user: User) -> UserOut:
+    prefs = user.preferences or {}
+    return UserOut(
+        id=str(user.id),
+        email=user.email,
+        full_name=user.full_name,
+        avatar_url=user.avatar_url,
+        is_verified=user.is_verified,
+        is_active=user.is_active,
+        created_via=user.created_via or "email",
+        university=prefs.get("university"),
+        field_of_study=prefs.get("field_of_study"),
+        academic_level=prefs.get("academic_level"),
+    )
+
+
 def _issue_tokens(user: User) -> TokenResponse:
     access_token, access_expires = create_access_token(str(user.id), user.email)
     refresh_token, _ = create_refresh_token(str(user.id), user.email)
@@ -76,15 +93,7 @@ def _issue_tokens(user: User) -> TokenResponse:
         access_token=access_token,
         refresh_token=refresh_token,
         expires_in=access_expires,
-        user=UserOut(
-            id=str(user.id),
-            email=user.email,
-            full_name=user.full_name,
-            avatar_url=user.avatar_url,
-            is_verified=user.is_verified,
-            is_active=user.is_active,
-            created_via=user.created_via or "email",
-        ),
+        user=_user_out(user),
     )
 
 
@@ -246,18 +255,25 @@ async def login(payload: LoginRequest, db: Session = Depends(get_db)):
     return _issue_tokens(user)
 
 
+@auth_router.post("/refresh", response_model=TokenResponse)
+async def refresh_token(payload: RefreshRequest, db: Session = Depends(get_db)):
+    """Exchange a valid refresh token for a new access token."""
+    try:
+        claims = decode_token(payload.refresh_token, token_type="refresh")
+    except ValueError as exc:
+        raise HTTPException(status_code=401, detail=str(exc))
+
+    user = db.query(User).filter(User.id == claims["sub"]).first()
+    if not user or not user.is_active:
+        raise HTTPException(status_code=401, detail="User not found or inactive")
+
+    return _issue_tokens(user)
+
+
 @auth_router.get("/me", response_model=UserOut)
 async def get_current_user_profile(current_user: User = Depends(get_current_user)):
     """Get the current authenticated user's profile."""
-    return UserOut(
-        id=str(current_user.id),
-        email=current_user.email,
-        full_name=current_user.full_name,
-        avatar_url=current_user.avatar_url,
-        is_verified=current_user.is_verified,
-        is_active=current_user.is_active,
-        created_via=current_user.created_via or "email",
-    )
+    return _user_out(current_user)
 
 
 @auth_router.put("/profile", response_model=UserOut)
@@ -272,18 +288,18 @@ async def update_profile(
     if payload.avatar_url is not None:
         current_user.avatar_url = payload.avatar_url
 
+    # Persist extra profile fields in the preferences JSONB column
+    prefs = dict(current_user.preferences or {})
+    for field in ("university", "field_of_study", "academic_level"):
+        val = getattr(payload, field, None)
+        if val is not None:
+            prefs[field] = val.strip() if val.strip() else None
+    current_user.preferences = prefs
+
     db.commit()
     db.refresh(current_user)
 
-    return UserOut(
-        id=str(current_user.id),
-        email=current_user.email,
-        full_name=current_user.full_name,
-        avatar_url=current_user.avatar_url,
-        is_verified=current_user.is_verified,
-        is_active=current_user.is_active,
-        created_via=current_user.created_via or "email",
-    )
+    return _user_out(current_user)
 
 
 @auth_router.get("/google/login")

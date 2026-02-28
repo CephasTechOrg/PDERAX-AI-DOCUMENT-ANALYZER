@@ -148,6 +148,56 @@ class APIService {
     }
 
     /**
+     * Fetch the user's analysis history
+     * @returns {Promise<Array>} List of saved analyses
+     */
+    async getAnalysisHistory() {
+        const response = await fetch(`${this.baseURL}/history/analyses`, {
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Failed to load history: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Delete a saved analysis by ID
+     * @param {string} id - Analysis UUID
+     */
+    async deleteAnalysis(id) {
+        const response = await fetch(`${this.baseURL}/history/analyses/${id}`, {
+            method: 'DELETE',
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Fetch the user's flashcard set history
+     * @returns {Promise<Array>} List of saved flashcard sets
+     */
+    async getFlashcardHistory() {
+        const response = await fetch(`${this.baseURL}/history/flashcard-sets`, {
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Failed to load flashcard history: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Delete a saved flashcard set by ID
+     * @param {string} id - FlashcardSet UUID
+     */
+    async deleteFlashcardSet(id) {
+        const response = await fetch(`${this.baseURL}/history/flashcard-sets/${id}`, {
+            method: 'DELETE',
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
      * Generate flashcards from text
      * @param {string} text - Source text for flashcard generation
      * @param {number} count - Number of flashcards to generate
@@ -173,6 +223,173 @@ class APIService {
             throw new Error(errorData.detail || `Flashcard generation failed: ${response.status}`);
         }
 
+        return await response.json();
+    }
+
+    /**
+     * Generate quiz questions from text
+     * @param {string} text - Source text for quiz generation
+     * @param {number} count - Number of questions to generate
+     * @param {string} difficulty - Difficulty level (easy, medium, hard)
+     * @returns {Promise<Object>} Generated quiz questions
+     */
+    async generateQuiz(text, count = 10, difficulty = 'medium') {
+        const response = await fetch(`${this.baseURL}/quiz/generate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...this.getAuthHeader()
+            },
+            body: JSON.stringify({
+                text: text,
+                count: count,
+                difficulty: difficulty
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.detail || `Quiz generation failed: ${response.status}`);
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Fetch the user's quiz set history
+     * @returns {Promise<Array>} List of saved quiz sets
+     */
+    async getQuizHistory() {
+        const response = await fetch(`${this.baseURL}/history/quiz-sets`, {
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Failed to load quiz history: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Delete a saved quiz set by ID
+     * @param {string} id - QuizSet UUID
+     */
+    async deleteQuizSet(id) {
+        const response = await fetch(`${this.baseURL}/history/quiz-sets/${id}`, {
+            method: 'DELETE',
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+        return await response.json();
+    }
+
+    // ── Chat Assistant ────────────────────────────────────────────────────────
+
+    /**
+     * Create a new chat session
+     * @param {string} mode - "teacher" or "helper"
+     * @returns {Promise<Object>} New session object
+     */
+    async createChatSession(mode = 'teacher') {
+        const response = await fetch(`${this.baseURL}/chat/sessions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...this.getAuthHeader() },
+            body: JSON.stringify({ mode })
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.detail || `Failed to create session: ${response.status}`);
+        }
+        return await response.json();
+    }
+
+    /**
+     * List all chat sessions for current user
+     * @returns {Promise<Array>}
+     */
+    async listChatSessions() {
+        const response = await fetch(`${this.baseURL}/chat/sessions`, {
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Failed to load sessions: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Get a chat session with full message history
+     * @param {string} sessionId
+     * @returns {Promise<Object>}
+     */
+    async getChatSession(sessionId) {
+        const response = await fetch(`${this.baseURL}/chat/sessions/${sessionId}`, {
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Session not found: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Update a chat session (mode or title)
+     * @param {string} sessionId
+     * @param {Object} updates - { mode?, title? }
+     */
+    async updateChatSession(sessionId, updates) {
+        const response = await fetch(`${this.baseURL}/chat/sessions/${sessionId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', ...this.getAuthHeader() },
+            body: JSON.stringify(updates)
+        });
+        if (!response.ok) throw new Error(`Update failed: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Delete a chat session
+     * @param {string} sessionId
+     */
+    async deleteChatSession(sessionId) {
+        const response = await fetch(`${this.baseURL}/chat/sessions/${sessionId}`, {
+            method: 'DELETE',
+            headers: { ...this.getAuthHeader() }
+        });
+        if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
+        return await response.json();
+    }
+
+    /**
+     * Upload a document into a chat session
+     * @param {string} sessionId
+     * @param {File} file
+     * @returns {Promise<Object>}
+     */
+    async uploadDocumentToSession(sessionId, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${this.baseURL}/chat/sessions/${sessionId}/upload`, {
+            method: 'POST',
+            headers: { ...this.getAuthHeader() },
+            body: formData
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.detail || `Upload failed: ${response.status}`);
+        }
+        return await response.json();
+    }
+
+    /**
+     * Send a message in a chat session
+     * @param {string} sessionId
+     * @param {string} content
+     * @returns {Promise<Object>} { message, session_id }
+     */
+    async sendChatMessage(sessionId, content) {
+        const response = await fetch(`${this.baseURL}/chat/sessions/${sessionId}/message`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...this.getAuthHeader() },
+            body: JSON.stringify({ content })
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.detail || `Send failed: ${response.status}`);
+        }
         return await response.json();
     }
 }

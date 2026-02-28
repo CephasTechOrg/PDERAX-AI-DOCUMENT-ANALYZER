@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -16,6 +19,12 @@ from routes.auth import auth_router
 from routes.upload import upload_router
 from routes.compression import compression_router
 from routes.flashcards import flashcard_router
+from routes.quiz import quiz_router
+from routes.history import history_router
+from routes.chat import chat_router
+
+# Rate limiter — keyed by IP
+limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,6 +32,8 @@ app = FastAPI(
     description="Advanced AI-powered document analysis system",
     version="1.0.0"
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Configure CORS based on environment
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
@@ -81,6 +92,9 @@ app.include_router(auth_router, prefix="/api/v1", tags=["Auth"])
 app.include_router(upload_router, prefix="/api/v1", tags=["File Upload & Analysis"])
 app.include_router(compression_router, prefix="/api/v1", tags=["Compression"])
 app.include_router(flashcard_router, prefix="/api/v1/flashcards", tags=["Flashcards"])
+app.include_router(quiz_router, prefix="/api/v1/quiz", tags=["Quiz"])
+app.include_router(history_router, prefix="/api/v1", tags=["History"])
+app.include_router(chat_router, prefix="/api/v1/chat", tags=["Chat"])
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")

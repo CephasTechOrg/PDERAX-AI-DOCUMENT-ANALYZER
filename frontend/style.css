@@ -1,3 +1,5 @@
+@import url('css/variables.css');
+
 * {
     margin: 0;
     padding: 0;
@@ -208,9 +210,9 @@ body {
 }
 
 .glass-card:hover {
-    border-color: var(--primary);
-    box-shadow: var(--shadow-lg), var(--glow);
-    transform: translateY(-4px);
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(99, 102, 241, 0.12), var(--glow);
+    transform: translateY(-2px);
 }
 
 /* Enhanced Header - MOBILE NAVIGATION FIXES */
@@ -344,15 +346,31 @@ body {
     transition: var(--transition);
 }
 
-.nav-link:hover,
-.nav-link.active {
+.nav-link:hover {
     color: var(--text-primary);
     background: var(--bg-glass-hover);
 }
 
-.nav-link:hover::before,
+.nav-link:hover::before {
+    opacity: 1;
+}
+
+.nav-link.active {
+    color: var(--text-primary);
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15));
+    border: 1px solid rgba(99,102,241,0.35);
+    box-shadow: 0 0 12px rgba(99,102,241,0.15);
+}
+
 .nav-link.active::before {
     opacity: 1;
+}
+
+/* Groups nav-links and nav-actions side by side on desktop */
+.nav-panel {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .nav-actions {
@@ -1521,6 +1539,19 @@ body {
 
 .action-btn.primary:hover {
     box-shadow: var(--shadow-lg), var(--glow);
+    filter: brightness(1.08);
+}
+
+.action-btn.secondary:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    background: var(--bg-glass-hover);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+}
+
+.action-btn.outline:hover {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.07);
+    color: var(--primary-light);
 }
 
 @keyframes success-bounce {
@@ -2478,8 +2509,10 @@ body {
 }
 
 .ghost-btn:hover {
-    border-color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.4);
     color: var(--text-primary);
+    background: rgba(99, 102, 241, 0.07);
+    transform: translateY(-1px);
 }
 
 .subpage-footer {
@@ -2639,111 +2672,145 @@ body {
         padding: 0 20px;
     }
 
-    /* Mobile Navigation - COMPLETE OVERHAUL */
-    .nav-links {
-        display: flex;
+    /* Mobile Navigation */
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    /* The unified slide-down panel (contains both links + actions) */
+    .nav-panel {
         position: fixed;
-        top: 80px;
+        top: 72px;
         left: 0;
-        width: 100%;
-        background: rgba(15, 15, 35, 0.98);
-        backdrop-filter: blur(30px);
-        border: none;
-        border-radius: 0;
-        padding: 30px 20px;
-        flex-direction: column;
-        gap: 15px;
-        z-index: 1000;
-        box-shadow: var(--shadow-xl);
-        border-top: 1px solid var(--border);
+        right: 0;
+        background: rgba(10, 10, 25, 0.98);
+        backdrop-filter: blur(20px) saturate(180%);
         border-bottom: 1px solid var(--border);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        z-index: 999;
         opacity: 0;
         visibility: hidden;
-        pointer-events: none;
-        transform: translateY(-12px);
+        transform: translateY(-8px);
         transition: var(--transition);
-        max-height: calc(100vh - 200px);
+        max-height: calc(100dvh - 72px);
         overflow-y: auto;
     }
 
-    .nav-links.active {
-        visibility: visible;
+    .nav-panel.active {
         opacity: 1;
-        pointer-events: auto;
+        visibility: visible;
         transform: translateY(0);
-        animation: slideDown 0.3s ease-out;
+    }
+
+    /* Reset .nav-links inside the panel */
+    .nav-links {
+        position: static;
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: none;
+        max-height: none;
+        overflow-y: visible;
+        box-shadow: none;
+        border-radius: 0;
     }
 
     .nav-link {
-        padding: 16px 20px;
-        text-align: center;
-        background: var(--bg-glass);
-        border: 1px solid var(--border);
-        font-size: 1.1rem;
-        border-radius: var(--radius-lg);
-        transition: all 0.3s ease;
+        padding: 0.875rem 1rem;
+        text-align: left;
+        background: transparent;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        color: var(--text-secondary);
     }
 
     .nav-link:hover,
     .nav-link.active {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border-color: var(--primary);
-        transform: translateY(-2px);
+        background: var(--bg-glass);
+        color: var(--text-primary);
+        transform: none;
+        border-color: transparent;
     }
 
+    /* Reset .nav-actions inside the panel */
     .nav-actions {
-        display: flex;
-        position: fixed;
-        bottom: 30px;
-        left: 20px;
-        right: 20px;
-        width: auto;
-        background: rgba(15, 15, 35, 0.98);
-        backdrop-filter: blur(30px);
-        padding: 20px;
+        position: static;
+        background: transparent;
+        backdrop-filter: none;
+        padding: 0.875rem 0 0;
+        margin-top: 0.5rem;
+        border: none;
+        border-top: 1px solid var(--border);
         flex-direction: column;
-        gap: 12px;
-        z-index: 1000;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-xl);
-        box-shadow: var(--shadow-xl);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transform: translateY(20px);
-        transition: var(--transition);
-    }
-
-    .nav-actions.active {
+        gap: 0.5rem;
+        width: 100%;
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
-        transform: translateY(0);
-        animation: slideDown 0.4s ease-out;
+        transform: none;
+        box-shadow: none;
+        border-radius: 0;
     }
 
     .nav-btn {
         width: 100%;
         justify-content: center;
-        padding: 16px 20px;
-        font-size: 1.1rem;
-        background: var(--bg-glass);
-        border: 1px solid var(--border);
+        padding: 0.875rem;
+        font-size: 1rem;
         border-radius: var(--radius-lg);
     }
 
-    .nav-btn:hover {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        border-color: var(--primary);
-        transform: translateY(-2px);
+    /* User menu inside mobile panel */
+    .user-menu {
+        width: 100%;
     }
 
-    .mobile-menu-btn {
-        display: block;
+    .user-menu-btn {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 0.75rem 1rem;
     }
 
-    /* Prevent body scroll when menu is open */
+    .user-name {
+        display: inline;
+    }
+
+    .user-menu-btn i.fa-chevron-down {
+        display: inline;
+        margin-left: auto;
+    }
+
+    /* In mobile panel, dropdown is inline (not floating) */
+    .user-dropdown {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border-top: 1px solid var(--border);
+        border-radius: 0;
+        background: transparent;
+        display: none;
+        margin-top: 0.25rem;
+        min-width: unset;
+    }
+
+    .user-dropdown.show {
+        display: flex;
+        flex-direction: column;
+    }
+
     body.menu-open {
         overflow: hidden;
     }
@@ -3570,24 +3637,7 @@ body {
     margin: 0.5rem 0;
 }
 
-/* Responsive user menu */
-@media (max-width: 768px) {
-    .user-name {
-        display: none;
-    }
-    
-    .user-menu-btn {
-        padding: 0.5rem;
-    }
-    
-    .user-menu-btn i.fa-chevron-down {
-        display: none;
-    }
-    
-    .user-dropdown {
-        right: -1rem;
-    }
-}
+/* User menu responsive — handled inside the mobile .nav-panel block above */
 
 /* ==========================================
    Welcome Dashboard Styles

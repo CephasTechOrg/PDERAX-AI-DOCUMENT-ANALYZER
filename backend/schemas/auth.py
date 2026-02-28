@@ -37,6 +37,10 @@ class ResendRequest(BaseModel):
     email: EmailStr
 
 
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
 class UserOut(BaseModel):
     id: str
     email: EmailStr
@@ -45,11 +49,17 @@ class UserOut(BaseModel):
     is_verified: bool
     is_active: bool
     created_via: str = "email"
+    university: Optional[str] = None
+    field_of_study: Optional[str] = None
+    academic_level: Optional[str] = None
 
 
 class ProfileUpdateRequest(BaseModel):
     full_name: Optional[str] = Field(None, min_length=2, max_length=100)
     avatar_url: Optional[str] = Field(None, max_length=500)
+    university: Optional[str] = Field(None, max_length=200)
+    field_of_study: Optional[str] = Field(None, max_length=200)
+    academic_level: Optional[str] = Field(None, max_length=50)
 
 
 class TokenResponse(BaseModel):

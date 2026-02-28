@@ -1,8 +1,5 @@
 import os
-import requests
-from dotenv import load_dotenv
-
-load_dotenv()
+import httpx
 
 
 class AIService:
@@ -18,7 +15,7 @@ class AIService:
             "Authorization": f"Bearer {self.api_key}" if self.api_key else "",
         }
 
-    def analyze_text(self, text: str, analysis_type: str = "full") -> dict:
+    async def analyze_text(self, text: str, analysis_type: str = "full") -> dict:
         """Analyze text using DeepSeek AI or fall back to a local summary."""
         text = (text or "").strip()
 
@@ -57,12 +54,12 @@ class AIService:
         }
 
         try:
-            response = requests.post(
-                self.api_url,
-                headers=self.headers,
-                json=payload,
-                timeout=self.request_timeout,
-            )
+            async with httpx.AsyncClient(timeout=self.request_timeout) as client:
+                response = await client.post(
+                    self.api_url,
+                    headers=self.headers,
+                    json=payload,
+                )
             response.raise_for_status()
 
             result = response.json()
@@ -82,9 +79,9 @@ class AIService:
             parsed_response["source"] = "ai"
             return parsed_response
 
-        except requests.exceptions.Timeout:
+        except httpx.TimeoutException:
             return self._build_local_analysis(text, reason="AI service timed out.")
-        except requests.exceptions.RequestException as exc:
+        except httpx.HTTPError as exc:
             return self._build_local_analysis(
                 text,
                 reason=f"AI service unavailable: {exc}",
@@ -287,10 +284,10 @@ class AIService:
 
         return sections
 
-    def generate_flashcards(self, text: str, count: int = 10, difficulty: str = "medium", focus_topics: list = None) -> dict:
+    async def generate_flashcards(self, text: str, count: int = 10, difficulty: str = "medium", focus_topics: list = None) -> dict:
         """Generate flashcards from text using DeepSeek AI."""
         import json
-        
+
         text = (text or "").strip()
         
         if not text or len(text) < 50:
@@ -351,34 +348,34 @@ Generate {count} flashcards as a JSON array:"""
         }
         
         try:
-            response = requests.post(
-                self.api_url,
-                headers=self.headers,
-                json=payload,
-                timeout=self.request_timeout,
-            )
+            async with httpx.AsyncClient(timeout=self.request_timeout) as client:
+                response = await client.post(
+                    self.api_url,
+                    headers=self.headers,
+                    json=payload,
+                )
             response.raise_for_status()
-            
+
             result = response.json()
             ai_response = (
                 result.get("choices", [{}])[0]
                 .get("message", {})
                 .get("content", "")
             )
-            
+
             if not ai_response:
                 return self._build_fallback_flashcards(text, reason="Empty response from AI service.")
-            
+
             # Parse the JSON response
             flashcards = self._parse_flashcard_response(ai_response)
-            
+
             if not flashcards:
                 return self._build_fallback_flashcards(text, reason="Could not parse AI response into flashcards.")
-            
+
             # Generate a brief summary of the source
             words = text.split()
             source_summary = " ".join(words[:50]) + "..." if len(words) > 50 else text
-            
+
             return {
                 "flashcards": flashcards,
                 "source_summary": source_summary,
@@ -386,10 +383,10 @@ Generate {count} flashcards as a JSON array:"""
                 "source": "ai",
                 "difficulty": difficulty
             }
-            
-        except requests.exceptions.Timeout:
+
+        except httpx.TimeoutException:
             return self._build_fallback_flashcards(text, reason="AI service timed out.")
-        except requests.exceptions.RequestException as exc:
+        except httpx.HTTPError as exc:
             return self._build_fallback_flashcards(text, reason=f"AI service unavailable: {exc}")
         except Exception as exc:
             return self._build_fallback_flashcards(text, reason=f"Flashcard generation error: {exc}")
@@ -477,6 +474,186 @@ Generate {count} flashcards as a JSON array:"""
             "flashcards": flashcards,
             "source_summary": source_summary,
             "total_count": len(flashcards),
+            "source": "fallback",
+            "notice": reason,
+            "difficulty": "easy"
+        }
+
+    async def generate_quiz(self, text: str, count: int = 10, difficulty: str = "medium") -> dict:
+        """Generate multiple choice quiz questions from text using DeepSeek AI."""
+        import json
+
+        text = (text or "").strip()
+        
+        if not text or len(text) < 50:
+            return self._build_fallback_quiz(text, reason="Insufficient text for quiz generation.")
+        
+        # Truncate very long texts
+        if len(text) > 6000:
+            text = text[:6000] + "... [content truncated]"
+        
+        # Check AI credentials
+        if not self.api_key or not self.api_url:
+            return self._build_fallback_quiz(text, reason="AI credentials not configured.")
+        
+        difficulty_instructions = {
+            "easy": "Create straightforward questions testing basic recall and simple concepts.",
+            "medium": "Create questions that test understanding and require some analysis.",
+            "hard": "Create challenging questions requiring deep understanding, application, and critical thinking."
+        }
+        
+        prompt = f"""Generate exactly {count} multiple choice quiz questions from the following text.
+
+Difficulty level: {difficulty}
+{difficulty_instructions.get(difficulty, difficulty_instructions["medium"])}
+
+IMPORTANT: Return ONLY a valid JSON array with no additional text. Each question must have:
+- "question": The question text (string)
+- "options": Array of exactly 4 options, each with "label" (A/B/C/D), "text" (the option text)
+- "correct_answer": The correct option label (A, B, C, or D)
+- "explanation": Brief explanation of why the answer is correct (string)
+- "category": The topic this question relates to (string)
+
+Example format:
+[
+  {{
+    "question": "What is the primary function of mitochondria?",
+    "options": [
+      {{"label": "A", "text": "Protein synthesis"}},
+      {{"label": "B", "text": "Energy production"}},
+      {{"label": "C", "text": "Cell division"}},
+      {{"label": "D", "text": "Waste removal"}}
+    ],
+    "correct_answer": "B",
+    "explanation": "Mitochondria are known as the powerhouse of the cell because they produce ATP through cellular respiration.",
+    "category": "Cell Biology"
+  }}
+]
+
+Source text:
+{text}
+
+Generate {count} quiz questions as a JSON array:"""
+
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are an expert educator creating multiple choice quiz questions. Always respond with valid JSON only, no markdown or extra text."
+                },
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.4,
+            "max_tokens": 3000,
+        }
+        
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=self.request_timeout) as client:
+                response = await client.post(
+                    self.api_url,
+                    headers=self.headers,
+                    json=payload,
+                )
+            response.raise_for_status()
+
+            result = response.json()
+            ai_response = (
+                result.get("choices", [{}])[0]
+                .get("message", {})
+                .get("content", "")
+            )
+
+            if not ai_response:
+                return self._build_fallback_quiz(text, reason="Empty response from AI service.")
+
+            # Parse the JSON response
+            questions = self._parse_quiz_response(ai_response)
+
+            if not questions:
+                return self._build_fallback_quiz(text, reason="Could not parse AI response into quiz questions.")
+
+            words = text.split()
+            source_summary = " ".join(words[:50]) + "..." if len(words) > 50 else text
+
+            return {
+                "questions": questions,
+                "source_summary": source_summary,
+                "total_count": len(questions),
+                "source": "ai",
+                "difficulty": difficulty
+            }
+
+        except httpx.TimeoutException:
+            return self._build_fallback_quiz(text, reason="AI service timed out.")
+        except httpx.HTTPError as exc:
+            return self._build_fallback_quiz(text, reason=f"AI service unavailable: {exc}")
+        except Exception as exc:
+            return self._build_fallback_quiz(text, reason=f"Quiz generation error: {exc}")
+
+    def _parse_quiz_response(self, response: str) -> list:
+        """Parse AI response into quiz question list."""
+        import json
+        import re
+        
+        response = response.strip()
+        response = re.sub(r'^```json\s*', '', response)
+        response = re.sub(r'^```\s*', '', response)
+        response = re.sub(r'\s*```$', '', response)
+        
+        try:
+            questions = json.loads(response)
+            if isinstance(questions, list):
+                valid_questions = []
+                for q in questions:
+                    if isinstance(q, dict) and "question" in q and "options" in q and "correct_answer" in q:
+                        # Ensure options are properly formatted
+                        options = []
+                        for opt in q.get("options", []):
+                            if isinstance(opt, dict) and "label" in opt and "text" in opt:
+                                options.append({
+                                    "label": str(opt["label"]).strip().upper(),
+                                    "text": str(opt["text"]).strip()
+                                })
+                        
+                        if len(options) >= 2:  # Need at least 2 options
+                            valid_questions.append({
+                                "question": str(q.get("question", "")).strip(),
+                                "options": options,
+                                "correct_answer": str(q.get("correct_answer", "A")).strip().upper(),
+                                "explanation": str(q.get("explanation", "")).strip(),
+                                "category": str(q.get("category", "General")).strip()
+                            })
+                return valid_questions
+        except json.JSONDecodeError:
+            pass
+        
+        return []
+
+    def _build_fallback_quiz(self, text: str, reason: str = "") -> dict:
+        """Generate basic quiz when AI service is unavailable."""
+        words = text.split()
+        
+        questions = [{
+            "question": "What type of content does this document contain?",
+            "options": [
+                {"label": "A", "text": "Educational material"},
+                {"label": "B", "text": "News article"},
+                {"label": "C", "text": "Technical documentation"},
+                {"label": "D", "text": "General information"}
+            ],
+            "correct_answer": "D",
+            "explanation": reason or "AI service was unavailable for full quiz generation.",
+            "category": "System"
+        }]
+        
+        source_summary = " ".join(words[:50]) + "..." if len(words) > 50 else text
+        
+        return {
+            "questions": questions,
+            "source_summary": source_summary,
+            "total_count": len(questions),
             "source": "fallback",
             "notice": reason,
             "difficulty": "easy"

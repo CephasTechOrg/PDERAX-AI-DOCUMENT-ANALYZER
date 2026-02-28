@@ -291,17 +291,205 @@ const AuthService = (() => {
     }
 
     /**
-     * Show profile settings
+     * Show profile modal with current user data and edit capability
      */
     function showProfile() {
-        alert('Profile settings coming soon!');
+        const user = getUser();
+        if (!user) return;
+
+        const existing = document.getElementById('pderax-profile-modal');
+        if (existing) existing.remove();
+
+        const displayName  = user.full_name || '';
+        const email        = user.email || '';
+        const createdVia   = user.created_via || 'email';
+        const university   = user.university || '';
+        const fieldOfStudy = user.field_of_study || '';
+        const academicLevel = user.academic_level || '';
+        const avatarUrl   = user.avatar_url ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName || email)}&background=4f46e5&color=fff&size=80`;
+
+        // Check if mobile
+        const isMobile = window.innerWidth <= 640;
+
+        const modal = document.createElement('div');
+        modal.id = 'pderax-profile-modal';
+        modal.style.cssText = [
+            'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999',
+            'display:flex;align-items:flex-start;justify-content:center',
+            'padding:2rem 1rem;overflow-y:auto'
+        ].join(';');
+
+        modal.innerHTML = `
+            <div style="
+                background:#1e293b;border:1px solid #334155;border-radius:1rem;
+                padding:${isMobile ? '1.5rem 1rem' : '2rem'};width:100%;max-width:440px;
+                box-shadow:0 25px 50px rgba(0,0,0,0.6);position:relative;
+                margin:auto 0;
+            ">
+                <button id="pm-close" style="
+                    position:absolute;top:1rem;right:1rem;
+                    background:none;border:none;color:#94a3b8;
+                    font-size:1.5rem;cursor:pointer;padding:0.5rem;
+                    line-height:1;
+                " aria-label="Close">&times;</button>
+
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                    <img src="${avatarUrl}" alt="${displayName}"
+                        style="width:72px;height:72px;border-radius:50%;margin-bottom:0.75rem;display:block;margin-left:auto;margin-right:auto;">
+                    <p style="color:#94a3b8;font-size:0.8125rem;">
+                        ${createdVia === 'google' ? '<i class="fab fa-google" style="margin-right:4px;"></i>Google account' : 'Email account'}
+                    </p>
+                </div>
+
+                <form id="pm-form" style="display:flex;flex-direction:column;gap:1rem;">
+                    <div style="display:flex;flex-direction:column;gap:0.375rem;">
+                        <label style="font-size:0.875rem;font-weight:500;color:#f8fafc;">Full Name</label>
+                        <input id="pm-name" type="text" value="${displayName}"
+                            placeholder="Your full name"
+                            style="
+                                padding:0.75rem 1rem;background:#0f172a;
+                                border:1px solid #334155;border-radius:0.5rem;
+                                color:#f8fafc;font-size:0.9375rem;width:100%;
+                                box-sizing:border-box;
+                            ">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:0.375rem;">
+                        <label style="font-size:0.875rem;font-weight:500;color:#94a3b8;">Email</label>
+                        <input type="email" value="${email}" disabled
+                            style="
+                                padding:0.75rem 1rem;background:#0f172a;
+                                border:1px solid #334155;border-radius:0.5rem;
+                                color:#6b7280;font-size:0.9375rem;width:100%;
+                                cursor:not-allowed;box-sizing:border-box;
+                            ">
+                        <p style="font-size:0.75rem;color:#6b7280;">Email cannot be changed</p>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:0.375rem;">
+                        <label style="font-size:0.875rem;font-weight:500;color:#f8fafc;">University / Institution</label>
+                        <input id="pm-university" type="text" value="${university}"
+                            placeholder="e.g. MIT, Oxford…"
+                            style="
+                                padding:0.75rem 1rem;background:#0f172a;
+                                border:1px solid #334155;border-radius:0.5rem;
+                                color:#f8fafc;font-size:0.9375rem;width:100%;
+                                box-sizing:border-box;
+                            ">
+                    </div>
+                    <div style="display:flex;gap:0.75rem;flex-direction:${isMobile ? 'column' : 'row'};">
+                        <div style="display:flex;flex-direction:column;gap:0.375rem;flex:1;">
+                            <label style="font-size:0.875rem;font-weight:500;color:#f8fafc;">Field of Study</label>
+                            <input id="pm-field" type="text" value="${fieldOfStudy}"
+                                placeholder="e.g. Computer Science"
+                                style="
+                                    padding:0.75rem 1rem;background:#0f172a;
+                                    border:1px solid #334155;border-radius:0.5rem;
+                                    color:#f8fafc;font-size:0.9375rem;width:100%;
+                                    box-sizing:border-box;
+                                ">
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:0.375rem;flex:1;">
+                            <label style="font-size:0.875rem;font-weight:500;color:#f8fafc;">Academic Level</label>
+                            <select id="pm-level" style="
+                                padding:0.75rem 1rem;background:#0f172a;
+                                border:1px solid #334155;border-radius:0.5rem;
+                                color:#f8fafc;font-size:0.9375rem;width:100%;
+                                box-sizing:border-box;
+                            ">
+                                <option value="">— select —</option>
+                                <option value="high_school" ${academicLevel === 'high_school' ? 'selected' : ''}>High School</option>
+                                <option value="undergraduate" ${academicLevel === 'undergraduate' ? 'selected' : ''}>Undergraduate</option>
+                                <option value="graduate" ${academicLevel === 'graduate' ? 'selected' : ''}>Graduate</option>
+                                <option value="phd" ${academicLevel === 'phd' ? 'selected' : ''}>PhD</option>
+                                <option value="professional" ${academicLevel === 'professional' ? 'selected' : ''}>Professional</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="pm-msg" style="display:none;padding:0.625rem 0.875rem;border-radius:0.5rem;font-size:0.875rem;"></div>
+
+                    <div style="display:flex;gap:0.75rem;margin-top:0.5rem;flex-direction:${isMobile ? 'column-reverse' : 'row'};">
+                        <button type="button" id="pm-cancel" style="
+                            flex:1;padding:0.75rem;border-radius:0.5rem;
+                            border:1px solid #334155;background:transparent;
+                            color:#94a3b8;font-size:0.9375rem;font-weight:500;
+                            cursor:pointer;
+                        ">Cancel</button>
+                        <button type="submit" id="pm-save" style="
+                            flex:1;padding:0.75rem;border-radius:0.5rem;
+                            border:none;background:#4f46e5;
+                            color:white;font-size:0.9375rem;font-weight:600;
+                            cursor:pointer;
+                        ">Save Changes</button>
+                    </div>
+                </form>
+
+                <div style="text-align:center;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid #334155;">
+                    <button id="pm-logout" style="
+                        background:none;border:none;color:#ef4444;
+                        font-size:0.875rem;cursor:pointer;
+                    "><i class="fas fa-sign-out-alt" style="margin-right:6px;"></i>Sign Out</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Wire up events
+        document.getElementById('pm-close').onclick  = () => modal.remove();
+        document.getElementById('pm-cancel').onclick = () => modal.remove();
+        document.getElementById('pm-logout').onclick = () => { modal.remove(); handleLogout(); };
+
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+        document.getElementById('pm-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('pm-save');
+            const msgEl   = document.getElementById('pm-msg');
+            const newName = document.getElementById('pm-name').value.trim();
+
+            if (!newName) {
+                showModalMsg(msgEl, 'Full name cannot be empty', 'error');
+                return;
+            }
+
+            saveBtn.disabled    = true;
+            saveBtn.textContent = 'Saving…';
+
+            try {
+                const payload = {
+                    full_name:      newName,
+                    university:     document.getElementById('pm-university').value.trim() || null,
+                    field_of_study: document.getElementById('pm-field').value.trim() || null,
+                    academic_level: document.getElementById('pm-level').value || null,
+                };
+                await updateProfile(payload);
+                showModalMsg(msgEl, 'Profile updated successfully!', 'success');
+                updateNavForAuthenticatedUser();
+                setTimeout(() => modal.remove(), 1200);
+            } catch (err) {
+                showModalMsg(msgEl, err.message || 'Update failed', 'error');
+                saveBtn.disabled    = false;
+                saveBtn.textContent = 'Save Changes';
+            }
+        });
+
+        function showModalMsg(el, text, type) {
+            el.style.display = 'block';
+            el.textContent   = text;
+            el.style.background = type === 'success'
+                ? 'rgba(16,185,129,0.1)'  : 'rgba(239,68,68,0.1)';
+            el.style.border = type === 'success'
+                ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(239,68,68,0.3)';
+            el.style.color = type === 'success' ? '#10b981' : '#ef4444';
+        }
     }
 
     /**
-     * Show general settings
+     * Show settings (placeholder — Settings page coming in Phase 3)
      */
     function showSettings() {
-        alert('Settings coming soon!');
+        showProfile();
     }
 
     /**

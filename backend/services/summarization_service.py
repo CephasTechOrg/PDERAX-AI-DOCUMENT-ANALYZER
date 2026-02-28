@@ -34,7 +34,7 @@ class SummarizationService:
         if len(text) > 15000:
             text = text[:15000] + "... [content further truncated for analysis]"
         
-        analysis_result = self.ai_service.analyze_text(text, analysis_type)
+        analysis_result = await self.ai_service.analyze_text(text, analysis_type)
         
         # Add word count information to the analysis result
         analysis_result["word_count_info"] = {

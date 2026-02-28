@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/history.css">
 </head>
 
 <body>
@@ -23,87 +24,251 @@
             <div class="particles" id="particles"></div>
         </div>
 
-        <header class="header">
-            <div class="nav-container">
-                <a href="../index.html" class="logo">
-                    <div class="logo-icon">
-                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
-                            <path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/>
-                            <path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/>
-                            <path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/>
-                            <circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/>
-                            <path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
-                                    <stop offset="0%" stop-color="#6366f1"/>
-                                    <stop offset="100%" stop-color="#8b5cf6"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <div class="logo-text">
-                        <span class="logo-primary">PDERAX</span>
-                        <span class="logo-subtitle">AI Document Intelligence</span>
-                    </div>
-                </a>
-                <nav class="nav-links" id="primary-navigation">
-                    <a href="../index.html" class="nav-link" data-text="Analyzer">Analyzer</a>
-                    <a href="ai-assistant.html" class="nav-link" data-text="AI Assistant">AI Assistant</a>
-                    <a href="study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
-                    <a href="history.html" class="nav-link active" data-text="History">History</a>
-                    <a href="pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
-                </nav>
-                <div class="nav-actions">
-                    <a class="nav-btn" href="login.html">
-                        <i class="fas fa-user"></i>
-                        Sign In
-                    </a>
-                </div>
-                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
-                    aria-controls="primary-navigation">
-                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
-                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
+        <!-- Navigation injected by nav.js -->
+        <div id="nav-root"></div>
+
+        <div class="history-section">
+
+            <!-- Page Header -->
+            <div class="history-page-header">
+                <h1>Your History</h1>
+                <p>All your analysed documents and generated study sets in one place.</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="history-tabs">
+                <button class="history-tab-btn active" data-tab="analyses" onclick="switchTab('analyses')">
+                    <i class="fas fa-file-alt"></i> Analyses
+                    <span class="count-badge" id="analyses-count">0</span>
+                </button>
+                <button class="history-tab-btn" data-tab="flashcards" onclick="switchTab('flashcards')">
+                    <i class="fas fa-layer-group"></i> Flashcard Sets
+                    <span class="count-badge" id="flashcards-count">0</span>
                 </button>
             </div>
-            <div class="mobile-nav-overlay" aria-hidden="true"></div>
-        </header>
 
-        <section class="hero-section subpage-hero">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-history"></i>
-                    <span>History & Library</span>
-                    <div class="pulse-dot"></div>
+            <!-- Analyses panel -->
+            <div class="history-panel active" id="panel-analyses">
+                <div class="section-header">
+                    <h2>Document Analyses</h2>
                 </div>
-                <h1 class="hero-title">
-                    <span class="title-gradient">Your document library is coming</span>
-                    <span class="title-sub">Access past analyses, saved flashcards, and more.</span>
-                </h1>
-                <p class="hero-description">
-                    This workspace will store all your analyzed documents, generated flashcards, and study materials for easy access and organization.
-                </p>
-                <div class="hero-cta">
-                    <a class="cta-btn" href="study-tools.html">Use Study Tools</a>
-                    <a class="ghost-btn" href="../index.html">
-                        <i class="fas fa-file-alt"></i>
-                        Analyzer
-                    </a>
+                <div id="analyses-list">
+                    <div class="state-box">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                        <p>Loading your analyses…</p>
+                    </div>
                 </div>
             </div>
-        </section>
+
+            <!-- Flashcards panel -->
+            <div class="history-panel" id="panel-flashcards">
+                <div class="section-header">
+                    <h2>Flashcard Sets</h2>
+                </div>
+                <div id="flashcards-list">
+                    <div class="state-box">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                        <p>Loading your flashcard sets…</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
+    <script src="nav.js"></script>
+    <script src="api.js"></script>
     <script src="auth.js"></script>
     <script>
-        // Update navigation for authenticated users
-        document.addEventListener('DOMContentLoaded', () => {
-            if (AuthService.isAuthenticated()) {
-                AuthService.updateNavForAuthenticatedUser();
-            }
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+            AuthService.updateNavForAuthenticatedUser();
+            await loadAll();
         });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.history-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            document.querySelectorAll('.history-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+        }
+
+        async function loadAll() {
+            await Promise.all([loadAnalyses(), loadFlashcards()]);
+        }
+
+        // ── Analyses ──────────────────────────────────────────────────────────
+
+        async function loadAnalyses() {
+            const el = document.getElementById('analyses-list');
+            try {
+                const analyses = await window.apiService.getAnalysisHistory();
+                document.getElementById('analyses-count').textContent = analyses.length;
+
+                if (!analyses.length) {
+                    el.innerHTML = `
+                        <div class="state-box">
+                            <i class="fas fa-file-alt"></i>
+                            <p>No analyses yet. <a href="../index.html">Analyze a document</a> to get started.</p>
+                        </div>`;
+                    return;
+                }
+
+                el.innerHTML = `<div class="history-list">${analyses.map(renderAnalysis).join('')}</div>`;
+            } catch (err) {
+                el.innerHTML = `
+                    <div class="state-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load analyses: ${err.message}</p>
+                    </div>`;
+            }
+        }
+
+        function renderAnalysis(a) {
+            const date = new Date(a.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            const words = a.word_count ? `${a.word_count.toLocaleString()} words` : '';
+            const summary = a.analysis?.summary ? a.analysis.summary.slice(0, 200) : '';
+
+            return `
+                <div class="history-card" id="analysis-${a.id}">
+                    <div class="history-card-icon analysis"><i class="fas fa-file-alt"></i></div>
+                    <div class="history-card-body">
+                        <div class="history-card-title">${escHtml(a.filename)}</div>
+                        <div class="history-card-meta">
+                            <span><i class="fas fa-calendar-alt"></i> ${date}</span>
+                            ${words ? `<span><i class="fas fa-align-left"></i> ${words}</span>` : ''}
+                        </div>
+                        ${summary ? `<div class="analysis-summary">${escHtml(summary)}…</div>` : ''}
+                    </div>
+                    <div class="history-card-actions">
+                        <button class="btn-icon" title="Load into study tools" onclick="loadAnalysisToStudy('${a.id}')">
+                            <i class="fas fa-bolt"></i>
+                        </button>
+                        <button class="btn-icon danger" title="Delete" onclick="deleteAnalysis('${a.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>`;
+        }
+
+        async function loadAnalysisToStudy(id) {
+            try {
+                const analyses = await window.apiService.getAnalysisHistory();
+                const a = analyses.find(x => x.id === id);
+                if (!a) return;
+                const ctx = {
+                    filename: a.filename,
+                    summary: a.analysis?.summary || '',
+                    insights: a.analysis?.insights || [],
+                    questions_answers: a.analysis?.questions_answers || [],
+                    analysis_id: a.id,
+                };
+                sessionStorage.setItem('flashcard_document', JSON.stringify(ctx));
+                window.location.href = 'study-tools.html';
+            } catch (err) {
+                alert('Could not load analysis: ' + err.message);
+            }
+        }
+
+        async function deleteAnalysis(id) {
+            if (!confirm('Delete this analysis? This will also remove any linked flashcard sets.')) return;
+            try {
+                await window.apiService.deleteAnalysis(id);
+                document.getElementById(`analysis-${id}`)?.remove();
+                const list = document.getElementById('analyses-list').querySelector('.history-list');
+                if (list && !list.children.length) {
+                    document.getElementById('analyses-list').innerHTML = `
+                        <div class="state-box">
+                            <i class="fas fa-file-alt"></i>
+                            <p>No analyses yet. <a href="../index.html">Analyze a document</a> to get started.</p>
+                        </div>`;
+                }
+                const count = document.getElementById('analyses-count');
+                count.textContent = Math.max(0, parseInt(count.textContent) - 1);
+            } catch (err) {
+                alert('Delete failed: ' + err.message);
+            }
+        }
+
+        // ── Flashcard sets ────────────────────────────────────────────────────
+
+        async function loadFlashcards() {
+            const el = document.getElementById('flashcards-list');
+            try {
+                const sets = await window.apiService.getFlashcardHistory();
+                document.getElementById('flashcards-count').textContent = sets.length;
+
+                if (!sets.length) {
+                    el.innerHTML = `
+                        <div class="state-box">
+                            <i class="fas fa-layer-group"></i>
+                            <p>No flashcard sets yet. <a href="study-tools.html">Generate flashcards</a> to get started.</p>
+                        </div>`;
+                    return;
+                }
+
+                el.innerHTML = `<div class="history-list">${sets.map(renderFlashcardSet).join('')}</div>`;
+            } catch (err) {
+                el.innerHTML = `
+                    <div class="state-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load flashcard sets: ${err.message}</p>
+                    </div>`;
+            }
+        }
+
+        function renderFlashcardSet(s) {
+            const date = new Date(s.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            const title = s.title || 'Untitled flashcard set';
+            const diffClass = `badge-${s.difficulty}`;
+
+            return `
+                <div class="history-card" id="flashcard-set-${s.id}">
+                    <div class="history-card-icon flashcard"><i class="fas fa-layer-group"></i></div>
+                    <div class="history-card-body">
+                        <div class="history-card-title">${escHtml(title)}</div>
+                        <div class="history-card-meta">
+                            <span><i class="fas fa-calendar-alt"></i> ${date}</span>
+                            <span><i class="fas fa-clone"></i> ${s.card_count} cards</span>
+                            <span class="badge ${diffClass}">${s.difficulty}</span>
+                        </div>
+                    </div>
+                    <div class="history-card-actions">
+                        <button class="btn-icon danger" title="Delete" onclick="deleteFlashcardSet('${s.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>`;
+        }
+
+        async function deleteFlashcardSet(id) {
+            if (!confirm('Delete this flashcard set?')) return;
+            try {
+                await window.apiService.deleteFlashcardSet(id);
+                document.getElementById(`flashcard-set-${id}`)?.remove();
+                const list = document.getElementById('flashcards-list').querySelector('.history-list');
+                if (list && !list.children.length) {
+                    document.getElementById('flashcards-list').innerHTML = `
+                        <div class="state-box">
+                            <i class="fas fa-layer-group"></i>
+                            <p>No flashcard sets yet. <a href="study-tools.html">Generate flashcards</a> to get started.</p>
+                        </div>`;
+                }
+                const count = document.getElementById('flashcards-count');
+                count.textContent = Math.max(0, parseInt(count.textContent) - 1);
+            } catch (err) {
+                alert('Delete failed: ' + err.message);
+            }
+        }
+
+        // ── Utility ───────────────────────────────────────────────────────────
+
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
     </script>
-    <script src="app.js"></script>
 </body>
 
 </html>

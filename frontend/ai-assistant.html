@@ -6,104 +6,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Assistant — PDERAX</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/ai-assistant.css">
 </head>
 
 <body>
-    <div class="container">
+    <div class="container chat-page">
+        <!-- Animated Background -->
         <div class="animated-bg">
             <div class="floating-shapes">
                 <div class="shape shape-1"></div>
                 <div class="shape shape-2"></div>
                 <div class="shape shape-3"></div>
-                <div class="shape shape-4"></div>
-                <div class="shape shape-5"></div>
             </div>
-            <div class="particles" id="particles"></div>
         </div>
 
-        <header class="header">
-            <div class="nav-container">
-                <a href="../index.html" class="logo">
-                    <div class="logo-icon">
-                        <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/>
-                            <path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/>
-                            <path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/>
-                            <path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/>
-                            <circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/>
-                            <path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
-                                    <stop offset="0%" stop-color="#6366f1"/>
-                                    <stop offset="100%" stop-color="#8b5cf6"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <div class="logo-text">
-                        <span class="logo-primary">PDERAX</span>
-                        <span class="logo-subtitle">AI Document Intelligence</span>
-                    </div>
-                </a>
-                <nav class="nav-links" id="primary-navigation">
-                    <a href="../index.html" class="nav-link" data-text="Analyzer">Analyzer</a>
-                    <a href="ai-assistant.html" class="nav-link active" data-text="AI Assistant">AI Assistant</a>
-                    <a href="study-tools.html" class="nav-link" data-text="Study Tools">Study Tools</a>
-                    <a href="history.html" class="nav-link" data-text="History">History</a>
-                    <a href="pricing.html" class="nav-link" data-text="Pricing">Pricing</a>
-                </nav>
-                <div class="nav-actions">
-                    <a class="nav-btn" href="login.html">
-                        <i class="fas fa-user"></i>
-                        Sign In
-                    </a>
-                </div>
-                <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"
-                    aria-controls="primary-navigation">
-                    <i class="fas fa-bars icon-open" aria-hidden="true"></i>
-                    <i class="fas fa-times icon-close" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="mobile-nav-overlay" aria-hidden="true"></div>
-        </header>
+        <!-- Navigation injected by nav.js -->
+        <div id="nav-root"></div>
 
-        <section class="hero-section subpage-hero">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-comments"></i>
-                    <span>AI Assistant</span>
-                    <div class="pulse-dot"></div>
+        <!-- Main Chat Layout -->
+        <main class="chat-layout">
+
+            <!-- Sidebar -->
+            <aside class="chat-sidebar" id="chatSidebar">
+                <div class="sidebar-header">
+                    <h2><i class="fas fa-comments"></i> Conversations</h2>
+                    <button class="new-chat-btn" id="newChatBtn" title="New conversation">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
-                <h1 class="hero-title">
-                    <span class="title-gradient">Your AI chat assistant is coming</span>
-                    <span class="title-sub">Ask questions, get instant answers about your documents.</span>
-                </h1>
-                <p class="hero-description">
-                    This workspace will deliver an intelligent AI chat assistant to help you interact with your documents through natural conversation.
-                </p>
-                <div class="hero-cta">
-                    <a class="cta-btn" href="study-tools.html">Use Study Tools</a>
-                    <a class="ghost-btn" href="../index.html">
+
+                <div class="sidebar-sessions" id="sessionList">
+                    <div class="sessions-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="mode-legend">
+                        <span class="mode-dot teacher"></span> Teacher Mode
+                        <span class="mode-dot helper"></span> Helper Mode
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <section class="chat-main" id="chatMain">
+
+                <!-- Welcome Screen (shown when no session is active) -->
+                <div class="chat-welcome" id="chatWelcome">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2>PDERAX AI Assistant</h2>
+                    <p>Your intelligent learning companion. Upload a document, ask questions, and get guided through your studies.</p>
+
+                    <div class="welcome-modes">
+                        <div class="mode-card" onclick="AiAssistant.startSession('teacher')">
+                            <div class="mode-card-icon teacher">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h3>Teacher Mode</h3>
+                            <p>Guided learning through the Socratic method. The AI asks questions and gives hints to help you discover answers yourself.</p>
+                            <span class="mode-badge teacher">Recommended for studying</span>
+                        </div>
+                        <div class="mode-card" onclick="AiAssistant.startSession('helper')">
+                            <div class="mode-card-icon helper">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Helper Mode</h3>
+                            <p>Direct, clear explanations and answers. Perfect when you need quick help understanding a concept.</p>
+                            <span class="mode-badge helper">Quick answers</span>
+                        </div>
+                    </div>
+
+                    <div class="welcome-tips">
+                        <h4><i class="fas fa-info-circle"></i> Tips</h4>
+                        <ul>
+                            <li>Upload a document (PDF, DOCX, TXT) so the AI can reference it in answers</li>
+                            <li>Use Teacher Mode for homework and assignments to deepen understanding</li>
+                            <li>Switch between modes any time during a conversation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Active Chat -->
+                <div class="chat-active" id="chatActive" style="display:none;">
+                    <!-- Chat Header -->
+                    <div class="chat-header">
+                        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="chat-header-info">
+                            <span class="chat-title" id="chatTitle">New Conversation</span>
+                            <span class="chat-doc" id="chatDoc"></span>
+                        </div>
+                        <div class="chat-header-actions">
+                            <!-- Mode Toggle -->
+                            <div class="mode-toggle" id="modeToggle">
+                                <button class="mode-btn active" id="modeTeacherBtn" onclick="AiAssistant.setMode('teacher')">
+                                    <i class="fas fa-chalkboard-teacher"></i> Teacher
+                                </button>
+                                <button class="mode-btn" id="modeHelperBtn" onclick="AiAssistant.setMode('helper')">
+                                    <i class="fas fa-lightbulb"></i> Helper
+                                </button>
+                            </div>
+                            <button class="header-icon-btn" onclick="AiAssistant.triggerDocUpload()" title="Upload document">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="header-icon-btn danger" onclick="AiAssistant.deleteCurrentSession()" title="Delete conversation">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Document Context Banner -->
+                    <div class="doc-banner" id="docBanner" style="display:none;">
                         <i class="fas fa-file-alt"></i>
-                        Analyzer
-                    </a>
+                        <span id="docBannerName">document.pdf</span>
+                        <span class="doc-banner-tag">Context loaded</span>
+                        <button onclick="AiAssistant.triggerDocUpload()" title="Replace document">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Messages -->
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages rendered here -->
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typingIndicator" style="display:none;">
+                        <div class="typing-bubble">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="typing-label">PDERAX is thinking...</span>
+                    </div>
+
+                    <!-- Suggested Questions -->
+                    <div class="suggested-chips" id="suggestedChips">
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Explain this concept</button>
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Give me a hint</button>
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Summarise the document</button>
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Quiz me on this</button>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="chat-input-area">
+                        <input type="file" id="docFileInput"
+                               accept=".pdf,.docx,.doc,.txt,.xlsx,.xls" style="display:none;"
+                               onchange="AiAssistant.handleDocUpload(this)">
+                        <button class="input-attach-btn" onclick="AiAssistant.triggerDocUpload()" title="Attach document">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <div class="input-wrapper">
+                            <textarea
+                                id="messageInput"
+                                placeholder="Ask a question about your document, homework, or any topic..."
+                                rows="1"
+                                onkeydown="AiAssistant.handleKey(event)"
+                                oninput="AiAssistant.autoResize(this)"
+                            ></textarea>
+                        </div>
+                        <button class="input-send-btn" id="sendBtn" onclick="AiAssistant.sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer subpage-footer">
+            <div class="footer-content container">
+                <div class="footer-bottom">
+                    <div class="footer-credits">
+                        <span>© <span id="footer-year"></span> PDERAX. Powered by</span>
+                        <a href="#" class="credit-link">DeepSeek AI</a>
+                    </div>
+                    <div class="footer-legal">
+                        <a href="#">Privacy</a>
+                        <span>•</span>
+                        <a href="#">Terms</a>
+                    </div>
                 </div>
             </div>
-        </section>
+        </footer>
     </div>
 
+    <!-- Toast -->
+    <div class="toast-notification" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <!-- marked.js + DOMPurify for safe markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+    <script src="nav.js"></script>
+    <script src="api.js"></script>
     <script src="auth.js"></script>
     <script>
-        // Update navigation for authenticated users
         document.addEventListener('DOMContentLoaded', () => {
-            if (AuthService.isAuthenticated()) {
-                AuthService.updateNavForAuthenticatedUser();
-            }
+            if (!AuthService.requireAuth()) return;
+            AuthService.updateNavForAuthenticatedUser();
         });
     </script>
-    <script src="app.js"></script>
+    <script src="js/ai-assistant.js"></script>
 </body>
 
 </html>

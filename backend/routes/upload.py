@@ -1,18 +1,27 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks, Depends
+from fastapi import APIRouter, Request, UploadFile, File, HTTPException, BackgroundTasks, Depends
 from fastapi.responses import FileResponse
 import os
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from sqlalchemy.orm import Session
 from services.file_processing import FileProcessingService
 from utils.file_utils import FileUtils
 from auth_dependencies import get_current_user
-from models.db_models import User
+from dependencies import get_db
+from models.db_models import AnalysisResult, User
 
 upload_router = APIRouter()
+_limiter = Limiter(key_func=get_remote_address)
+
 
 @upload_router.post("/upload")
+@_limiter.limit("20/hour")
 async def upload_file(
+    request: Request,
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """Handle file upload and analysis"""
 
@@ -37,6 +46,22 @@ async def upload_file(
 
         if result["status"] == "error":
             raise HTTPException(status_code=500, detail=result["error"])
+
+        # Persist to history
+        try:
+            word_info = result.get("word_count_info") or {}
+            record = AnalysisResult(
+                user_id=current_user.id,
+                filename=file.filename,
+                analysis=result.get("analysis", {}),
+                word_count=word_info.get("processed_word_count"),
+            )
+            db.add(record)
+            db.commit()
+            db.refresh(record)
+            result["analysis_id"] = str(record.id)
+        except Exception as exc:
+            print(f"Warning: could not save analysis to history: {exc}")
 
         background_tasks.add_task(FileUtils.cleanup_old_files)
         return result
