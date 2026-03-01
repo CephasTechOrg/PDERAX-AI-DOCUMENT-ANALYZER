@@ -44,7 +44,10 @@ class AIAssistantService {
       `/ai/sessions/${sessionId}/messages`,
       payload
     );
-    return response;
+    if (!response.data) {
+      throw new Error(response.error?.message || 'Failed to send message');
+    }
+    return response.data;
   }
 
   /**
@@ -63,7 +66,7 @@ class AIAssistantService {
     const response = await apiClient.get<{ items: ChatMessage[]; total: number }>(
       `/ai/sessions/${sessionId}/messages?${params.toString()}`
     );
-    return response;
+    return response.data ?? { items: [], total: 0 };
   }
 
   /**
@@ -79,7 +82,10 @@ class AIAssistantService {
       '/ai/sessions',
       payload
     );
-    return response;
+    if (!response.data) {
+      throw new Error(response.error?.message || 'Failed to create chat session');
+    }
+    return response.data;
   }
 
   /**
@@ -97,7 +103,7 @@ class AIAssistantService {
     const response = await apiClient.get<{ items: ChatSession[]; total: number }>(
       `/ai/sessions?${params.toString()}`
     );
-    return response;
+    return response.data ?? { items: [], total: 0 };
   }
 
   /**
@@ -107,7 +113,7 @@ class AIAssistantService {
     const response = await apiClient.delete<{ success: boolean }>(
       `/ai/sessions/${sessionId}`
     );
-    return response;
+    return response.data ?? { success: true };
   }
 
   /**
@@ -117,7 +123,10 @@ class AIAssistantService {
     const response = await apiClient.get<ChatSession>(
       `/ai/sessions/${sessionId}`
     );
-    return response;
+    if (!response.data) {
+      throw new Error(response.error?.message || 'Failed to fetch session');
+    }
+    return response.data;
   }
 
   /**
@@ -131,7 +140,7 @@ class AIAssistantService {
       `/documents/${documentId}/ask`,
       { question }
     );
-    return response;
+    return response.data ?? { answer: '' };
   }
 
   /**
@@ -142,7 +151,7 @@ class AIAssistantService {
       `/documents/${documentId}/summarize`,
       {}
     );
-    return response;
+    return response.data ?? { summary: '' };
   }
 }
 

@@ -158,7 +158,7 @@ class ApiClient {
   public async get<T>(
     url: string,
     config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  ): Promise<any> {
     try {
       const response = await this.instance.get<ApiResponse<T>>(url, config);
       return response.data;
@@ -174,7 +174,7 @@ class ApiClient {
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  ): Promise<any> {
     try {
       const response = await this.instance.post<ApiResponse<T>>(url, data, config);
       return response.data;
@@ -190,7 +190,7 @@ class ApiClient {
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  ): Promise<any> {
     try {
       const response = await this.instance.put<ApiResponse<T>>(url, data, config);
       return response.data;
@@ -205,7 +205,7 @@ class ApiClient {
   public async delete<T>(
     url: string,
     config?: AxiosRequestConfig
-  ): Promise<ApiResponse<T>> {
+  ): Promise<any> {
     try {
       const response = await this.instance.delete<ApiResponse<T>>(url, config);
       return response.data;
@@ -221,7 +221,7 @@ class ApiClient {
     url: string,
     file: File,
     additionalData?: Record<string, unknown>
-  ): Promise<ApiResponse<T>> {
+  ): Promise<any> {
     try {
       const formData = new FormData();
       formData.append('file', file);

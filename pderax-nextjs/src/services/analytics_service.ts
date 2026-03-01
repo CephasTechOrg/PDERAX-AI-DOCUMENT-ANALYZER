@@ -44,7 +44,10 @@ class AnalyticsService {
    */
   async getStudyStats(): Promise<StudyStats> {
     const response = await apiClient.get<StudyStats>('/user/stats');
-    return response;
+    if (!response.data) {
+      throw new Error(response.error?.message || 'Failed to load study stats');
+    }
+    return response.data;
   }
 
   /**
@@ -54,7 +57,10 @@ class AnalyticsService {
     const response = await apiClient.get<DocumentStats>(
       `/documents/${documentId}/stats`
     );
-    return response;
+    if (!response.data) {
+      throw new Error(response.error?.message || 'Failed to load document stats');
+    }
+    return response.data;
   }
 
   /**
@@ -72,7 +78,7 @@ class AnalyticsService {
     const response = await apiClient.get<DailyProgress[]>(
       `/user/progress/daily?${params.toString()}`
     );
-    return response;
+    return response.data ?? [];
   }
 
   /**
@@ -86,7 +92,7 @@ class AnalyticsService {
     const response = await apiClient.get<LearningTrend[]>(
       `/user/progress/trends?${params.toString()}`
     );
-    return response;
+    return response.data ?? [];
   }
 
   /**
@@ -98,7 +104,7 @@ class AnalyticsService {
       best: number;
       last_study: string;
     }>('/user/streak');
-    return response;
+    return response.data ?? { current: 0, best: 0, last_study: '' };
   }
 
   /**
@@ -112,7 +118,7 @@ class AnalyticsService {
     const response = await apiClient.get<DocumentStats[]>(
       `/user/documents/most-studied?${params.toString()}`
     );
-    return response;
+    return response.data ?? [];
   }
 
   /**
@@ -134,7 +140,14 @@ class AnalyticsService {
       monthly_goal: number;
       monthly_progress: number;
     }>('/user/goals');
-    return response;
+    return response.data ?? {
+      daily_goal: 0,
+      daily_progress: 0,
+      weekly_goal: 0,
+      weekly_progress: 0,
+      monthly_goal: 0,
+      monthly_progress: 0,
+    };
   }
 
   /**
@@ -150,7 +163,7 @@ class AnalyticsService {
       medium: number;
       hard: number;
     }>('/user/difficulty-distribution');
-    return response;
+    return response.data ?? { easy: 0, medium: 0, hard: 0 };
   }
 }
 

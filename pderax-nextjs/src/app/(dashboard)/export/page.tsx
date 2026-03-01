@@ -348,7 +348,8 @@ export default function ExportPage() {
                   <div className={styles.documentInfo}>
                     <div className={styles.documentName}>{doc.filename}</div>
                     <div className={styles.documentMeta}>
-                      {doc.flashcard_count || 0} flashcards • {new Date(doc.created_at).toLocaleDateString()}
+                      {(doc.file_size / 1024).toFixed(1)} KB •{' '}
+                      {new Date(doc.uploaded_at).toLocaleDateString()}
                     </div>
                   </div>
                   <div className={styles.documentStatus}>
