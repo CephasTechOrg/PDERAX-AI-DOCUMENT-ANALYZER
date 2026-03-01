@@ -104,8 +104,8 @@
   text-align: center;
   color: #9ca3af;
   font-size: 0.875rem;
+}
 
-  p {
-    margin: 0;
-  }
+.copyright p {
+  margin: 0;
 }

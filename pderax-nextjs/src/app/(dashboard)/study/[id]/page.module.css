@@ -184,10 +184,10 @@
   font-size: 1.125rem;
   font-weight: 500;
   color: var(--success, #10b981);
+}
 
-  p {
-    margin: 0;
-  }
+.encouragement p {
+  margin: 0;
 }
 
 .loading,
@@ -203,28 +203,28 @@
 
 .error {
   color: var(--error, #ef4444);
+}
 
-  h2 {
-    margin: 0 0 1rem 0;
-  }
+.error h2 {
+  margin: 0 0 1rem 0;
+}
 
-  p {
-    margin: 0 0 1.5rem 0;
-    color: var(--text-secondary, #6b7280);
-  }
+.error p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-secondary, #6b7280);
 }
 
 .empty {
   color: var(--text-secondary, #6b7280);
+}
 
-  h2 {
-    margin: 0 0 0.5rem 0;
-    color: var(--text-primary, #1f2937);
-  }
+.empty h2 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #1f2937);
+}
 
-  p {
-    margin: 0 0 1.5rem 0;
-  }
+.empty p {
+  margin: 0 0 1.5rem 0;
 }
 
 .spinner {

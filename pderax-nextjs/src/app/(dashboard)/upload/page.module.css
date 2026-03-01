@@ -91,13 +91,13 @@
   align-items: center;
   gap: 1rem;
   flex: 1;
+}
 
-  svg {
-    width: 2rem;
-    height: 2rem;
-    color: var(--primary, #4f46e5);
-    flex-shrink: 0;
-  }
+.selectedFileInfo svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary, #4f46e5);
+  flex-shrink: 0;
 }
 
 .selectedFileName {
@@ -162,14 +162,14 @@
   color: var(--text-secondary, #6b7280);
   font-size: 0.95rem;
   line-height: 1.7;
+}
 
-  li {
-    margin-bottom: 0.75rem;
+.infoList li {
+  margin-bottom: 0.75rem;
+}
 
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
+.infoList li:last-child {
+  margin-bottom: 0;
 }
 
 .loading {
