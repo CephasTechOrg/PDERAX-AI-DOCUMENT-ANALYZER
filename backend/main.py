@@ -22,6 +22,7 @@ from routes.flashcards import flashcard_router
 from routes.quiz import quiz_router
 from routes.history import history_router
 from routes.chat import chat_router
+from routes.analytics import router as analytics_router
 
 # Rate limiter — keyed by IP
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
@@ -98,6 +99,7 @@ app.include_router(flashcard_router, prefix="/api/v1/flashcards", tags=["Flashca
 app.include_router(quiz_router, prefix="/api/v1/quiz", tags=["Quiz"])
 app.include_router(history_router, prefix="/api/v1", tags=["History"])
 app.include_router(chat_router, prefix="/api/v1/chat", tags=["Chat"])
+app.include_router(analytics_router, tags=["Analytics"])
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
