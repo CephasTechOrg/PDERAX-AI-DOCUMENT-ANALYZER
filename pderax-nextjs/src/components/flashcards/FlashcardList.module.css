@@ -109,16 +109,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
 
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-
   &:hover {
     background: var(--error, #ef4444);
     color: white;
     border-color: var(--error, #ef4444);
   }
+}
+
+.deleteButton svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .loading {
@@ -157,25 +157,25 @@
   border-radius: var(--radius-lg, 12px);
   text-align: center;
   color: var(--text-secondary, #6b7280);
+}
 
-  svg {
-    width: 3rem;
-    height: 3rem;
-    color: var(--text-tertiary, #9ca3af);
-    margin-bottom: 1rem;
-  }
+.empty svg {
+  width: 3rem;
+  height: 3rem;
+  color: var(--text-tertiary, #9ca3af);
+  margin-bottom: 1rem;
+}
 
-  h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-primary, #1f2937);
-  }
+.empty h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
 
-  p {
-    margin: 0.5rem 0 0 0;
-    font-size: 0.875rem;
-  }
+.empty p {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
 }
 
 @media (max-width: 640px) {

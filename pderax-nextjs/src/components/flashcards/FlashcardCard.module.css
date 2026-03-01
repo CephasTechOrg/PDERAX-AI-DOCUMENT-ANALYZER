@@ -75,18 +75,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  p {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 500;
-    line-height: 1.6;
-    word-wrap: break-word;
-    hyphens: auto;
+.cardContent p {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.6;
+  word-wrap: break-word;
+  hyphens: auto;
+}
 
-    @media (max-width: 640px) {
-      font-size: 1.125rem;
-    }
+@media (max-width: 640px) {
+  .cardContent p {
+    font-size: 1.125rem;
   }
 }
 
@@ -117,11 +119,6 @@
   transition: all 0.2s ease;
   color: white;
 
-  svg {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -146,6 +143,11 @@
       background: #dc2626;
     }
   }
+}
+
+.actionButton svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .difficulty {
