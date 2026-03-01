@@ -19,8 +19,8 @@ import styles from './page.module.css';
 type TabType = 'overview' | 'submissions' | 'submissions-detail';
 
 interface SubmissionWithGrade extends Submission {
-  student_name?: string;
-  student_email?: string;
+  student_name: string;
+  student_email: string;
 }
 
 export default function AssignmentDetailPage() {
@@ -122,18 +122,11 @@ export default function AssignmentDetailPage() {
       setIsSubmitting(true);
       setError(null);
 
-      const formData = new FormData();
-      formData.append('content', submissionContent);
-      if (submissionFile) {
-        formData.append('file', submissionFile);
-      }
-
       await assignmentService.submitAssignment(
         classroomId,
         assignmentId,
-        {
-          content: submissionContent,
-        }
+        submissionContent,
+        submissionFile ? [submissionFile] : undefined
       );
 
       setSubmissionContent('');
@@ -156,9 +149,9 @@ export default function AssignmentDetailPage() {
       setError(null);
 
       const gradeRequest: GradeRequest = {
-        points: gradeData.points,
+        grade: gradeData.points,
         feedback: gradeData.feedback,
-        status: 'graded',
+        return_for_revision: false,
       };
 
       await assignmentService.gradeSubmission(

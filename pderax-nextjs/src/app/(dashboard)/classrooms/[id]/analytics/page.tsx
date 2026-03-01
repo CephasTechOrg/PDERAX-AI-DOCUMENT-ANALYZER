@@ -9,10 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/forms/Button';
-import gradeService, {
-  PerformanceAnalytics,
-  ClassPerformance,
-} from '@/services/grade_service';
+import gradeService from '@/services/grade_service';
 import styles from './page.module.css';
 
 type AnalyticsTab = 'overview' | 'students' | 'trends';
@@ -32,8 +29,7 @@ export default function PerformanceAnalyticsPage() {
   const classroomId = params.id as string;
   const { isLoading: authLoading } = useAuth();
 
-  const [classPerformance, setClassPerformance] =
-    useState<ClassPerformance | null>(null);
+  const [classPerformance, setClassPerformance] = useState<any | null>(null);
   const [studentAnalytics, setStudentAnalytics] = useState<StudentAnalytics[]>(
     []
   );
@@ -56,10 +52,36 @@ export default function PerformanceAnalyticsPage() {
     try {
       setIsLoading(true);
       const classData = await gradeService.getClassPerformance(classroomId);
-      setClassPerformance(classData);
+      const normalizedClassData = {
+        ...classData,
+        average: (classData as any).average ?? classData.class_average ?? 0,
+        median: (classData as any).median ?? classData.class_average ?? 0,
+        highest: (classData as any).highest ?? classData.highest_score ?? 0,
+        lowest: (classData as any).lowest ?? classData.lowest_score ?? 0,
+        std_dev: (classData as any).std_dev ?? 0,
+        grade_distribution:
+          (classData as any).grade_distribution ??
+          (classData as any).score_distribution ??
+          { a: 0, b: 0, c: 0, d: 0, f: 0 },
+        trend_data: (classData as any).trend_data ?? [],
+      };
+      setClassPerformance(normalizedClassData);
 
       // Get individual student analytics
-      const students = await gradeService.getStudentsByPerformance(classroomId);
+      const studentsRaw = await gradeService.getStudentsByPerformance(
+        classroomId,
+        'average',
+        100
+      );
+      const students: StudentAnalytics[] = studentsRaw.map((student) => ({
+        student_id: student.student_id,
+        student_name: student.student_name,
+        average: student.class_average ?? 0,
+        trend: student.trend ?? 0,
+        strengths: [],
+        improvements: [],
+        predicted_grade: student.class_average ?? 0,
+      }));
       setStudentAnalytics(students);
     } catch (err) {
       const errorMessage =
@@ -458,7 +480,7 @@ export default function PerformanceAnalyticsPage() {
             <div className={styles.card}>
               <h2>Performance Trends</h2>
               <div className={styles.trendsList}>
-                {classPerformance.trend_data.map((trend, idx) => (
+                {classPerformance.trend_data.map((trend: any, idx: number) => (
                   <div key={idx} className={styles.trendItem}>
                     <div className={styles.trendLabel}>{trend.period}</div>
                     <div className={styles.trendBar}>

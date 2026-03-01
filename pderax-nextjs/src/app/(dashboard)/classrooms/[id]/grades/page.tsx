@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/forms/Button';
-import gradeService, { GradebookEntry } from '@/services/grade_service';
+import gradeService from '@/services/grade_service';
 import styles from './page.module.css';
 
 type SortField = 'name' | 'grade' | 'average';
@@ -28,7 +28,7 @@ export default function GradesPage() {
   const classroomId = params.id as string;
   const { isLoading: authLoading } = useAuth();
 
-  const [gradebook, setGradebook] = useState<GradebookEntry[]>([]);
+  const [gradebook, setGradebook] = useState<StudentGradeRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>('name');
@@ -57,15 +57,28 @@ export default function GradesPage() {
     try {
       setIsLoading(true);
       const data = await gradeService.getGradebook(classroomId);
-      setGradebook(data.entries);
+      const rows: StudentGradeRow[] = data.students.map((student) => {
+        const gradeMap: Record<string, number | null> = {};
+        student.grades.forEach((grade) => {
+          gradeMap[grade.assignment_id] = grade.percentage ?? null;
+        });
+
+        return {
+          student_id: student.student_id,
+          student_name: student.student_name,
+          student_email: student.student_email,
+          grades: gradeMap,
+          average: student.class_average ?? 0,
+        };
+      });
+
+      setGradebook(rows);
 
       // Extract unique assignments
-      const uniqueAssignments = Array.from(
-        new Set(
-          data.entries
-            .flatMap((entry) => (entry.grades ? Object.keys(entry.grades) : []))
-        )
-      ).map((id) => ({ id, title: `Assignment ${id.slice(0, 8)}` }));
+      const uniqueAssignments = data.assignments.map((assignment) => ({
+        id: assignment.assignment_id,
+        title: assignment.assignment_title,
+      }));
 
       setAssignments(uniqueAssignments);
     } catch (err) {
@@ -141,7 +154,7 @@ export default function GradesPage() {
 
   const handleBulkExport = async () => {
     try {
-      const data = await gradeService.exportGradebook(classroomId, exportFormat);
+      const data = await gradeService.exportGradebook(classroomId);
       // Handle download based on format
       const blob = new Blob([data], {
         type: exportFormat === 'csv' ? 'text/csv' : 'application/json',

@@ -11,7 +11,7 @@ import { Button } from '@/components/forms/Button';
 import documentService from '@/services/document_service';
 import flashcardService from '@/services/flashcard_service';
 import exportService, { ExportFormat } from '@/services/export_service';
-import { Document } from '@/models/types';
+import { Document } from '@/types';
 import styles from './page.module.css';
 
 interface ExportJob {
