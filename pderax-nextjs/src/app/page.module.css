@@ -62,9 +62,10 @@
   @media (max-width: 568px) {
     flex-direction: column;
     width: 100%;
+  }
 
-    :global(a),
-    :global(button) {
+  @media (max-width: 640px) {
+    :global(a, button) {
       width: 100%;
     }
   }
