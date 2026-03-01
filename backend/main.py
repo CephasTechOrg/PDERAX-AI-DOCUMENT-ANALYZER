@@ -23,6 +23,9 @@ from routes.quiz import quiz_router
 from routes.history import history_router
 from routes.chat import chat_router
 from routes.analytics import router as analytics_router
+from routes.classrooms import classroom_router
+from routes.assignments import assignment_router
+from routes.grades import grade_router
 
 # Rate limiter — keyed by IP
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
@@ -100,6 +103,9 @@ app.include_router(quiz_router, prefix="/api/v1/quiz", tags=["Quiz"])
 app.include_router(history_router, prefix="/api/v1", tags=["History"])
 app.include_router(chat_router, prefix="/api/v1/chat", tags=["Chat"])
 app.include_router(analytics_router, tags=["Analytics"])
+app.include_router(classroom_router, prefix="/api/v1", tags=["Classrooms"])
+app.include_router(assignment_router, prefix="/api/v1", tags=["Assignments"])
+app.include_router(grade_router, prefix="/api/v1", tags=["Grades"])
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
