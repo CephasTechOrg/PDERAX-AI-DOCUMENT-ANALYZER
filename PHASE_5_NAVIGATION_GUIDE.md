@@ -3,34 +3,34 @@
 ## Quick Access Routes
 
 ### Classroom Management
+
 - **All Classrooms:** `/classrooms`
   - View all classrooms in grid layout
   - Create new classrooms
   - Join existing classrooms with invite code
-  
 - **Classroom Detail:** `/classrooms/[id]`
   - Overview: Classroom info, invite codes, quick actions
   - Students: Roster management, student removal
   - Settings: 5 configurable classroom settings
 
 ### Assignment Management
+
 - **All Assignments:** `/classrooms/[id]/assignments`
   - List assignments with status filter (draft, published, closed)
   - Create new assignments
   - View grading progress
-  
 - **Assignment Detail:** `/classrooms/[id]/assignments/[assignment]`
   - Student view: Submit assignments, view feedback, track grades
   - Teacher view: View submissions, grade assignments, add feedback
 
 ### Grading & Performance
+
 - **Gradebook:** `/classrooms/[id]/grades`
   - View all student grades by assignment
   - Filter by assignment or student
   - Sort by name, grade, or average
   - Bulk grade operations
   - Export grades (CSV/JSON)
-  
 - **Analytics:** `/classrooms/[id]/analytics`
   - Overview: Class average, median, grade distribution, insights
   - Student Performance: Individual student progress, trends, predictions
@@ -106,6 +106,7 @@ Dashboard
 ## Feature Access by Role
 
 ### Teacher Features
+
 ✅ Create and manage classrooms  
 ✅ Invite and manage students  
 ✅ Create assignments  
@@ -114,29 +115,32 @@ Dashboard
 ✅ View and export gradebook  
 ✅ Access performance analytics  
 ✅ Manage classroom settings  
-✅ Export rosters and grades  
+✅ Export rosters and grades
 
 ### Student Features
+
 ✅ Join classrooms with invite code  
 ✅ View assigned assignments  
 ✅ Submit assignments  
 ✅ View submission status and feedback  
 ✅ View personal grades  
 ✅ View personal performance trends  
-✅ Access personal analytics  
+✅ Access personal analytics
 
 ### Admin Features
+
 ✅ Full platform access  
 ✅ All teacher features  
 ✅ All student features  
 ✅ System-wide analytics  
-✅ User management  
+✅ User management
 
 ---
 
 ## Common Workflows
 
 ### Creating a Classroom
+
 1. Navigate to `/classrooms`
 2. Click "New Classroom" button
 3. Fill in classroom details
@@ -144,6 +148,7 @@ Dashboard
 5. View classroom at `/classrooms/[id]`
 
 ### Inviting Students
+
 1. Go to classroom detail page
 2. Click "Overview" tab
 3. Click "Invite Student" or copy invite code
@@ -151,6 +156,7 @@ Dashboard
 5. Students use code to join at `/classrooms` → "Join Classroom"
 
 ### Creating an Assignment
+
 1. Go to `/classrooms/[id]/assignments`
 2. Click "New Assignment" button
 3. Fill assignment details (title, description, due date, points)
@@ -159,6 +165,7 @@ Dashboard
 6. Click assignment to view details and publish
 
 ### Grading Submissions
+
 1. Navigate to assignment detail page
 2. Switch to "Submissions" tab (teacher view)
 3. Click on student submission
@@ -168,6 +175,7 @@ Dashboard
 7. Grade appears in gradebook
 
 ### Viewing Gradebook
+
 1. Go to `/classrooms/[id]/grades`
 2. Use filters to find specific assignments or students
 3. Sort by name, grade, or average
@@ -175,6 +183,7 @@ Dashboard
 5. Or select students and use bulk edit
 
 ### Analyzing Performance
+
 1. Navigate to `/classrooms/[id]/analytics`
 2. Review "Overview" for class statistics
 3. Click "Student Performance" to see individual students
@@ -186,11 +195,13 @@ Dashboard
 ## UI Component Reference
 
 ### Buttons
+
 - **Primary Button:** Main actions (Create, Save, Submit)
 - **Secondary Button:** Alternative actions (Cancel, Back)
 - **Icon Buttons:** Quick actions with tooltips
 
 ### Forms
+
 - **Input Fields:** Text with validation feedback
 - **Text Areas:** Multi-line text for descriptions
 - **Select Dropdowns:** For filtering and selection
@@ -198,17 +209,20 @@ Dashboard
 - **File Uploads:** For assignment submissions
 
 ### Tables
+
 - **Sortable Columns:** Click to sort ascending/descending
 - **Checkboxes:** For bulk operations
 - **Status Badges:** Color-coded status indicators
 - **Grade Display:** Color-coded by letter grade
 
 ### Modals
+
 - **Create/Edit Forms:** Full-screen on mobile
 - **Confirmations:** Inline with action buttons
 - **Detail Panels:** Sticky on desktop, full-width on mobile
 
 ### Indicators
+
 - **Progress Bars:** Submission and grading progress
 - **Status Badges:** Draft, Published, Closed, Graded
 - **Trend Icons:** 📈 Improving, 📉 Declining, → Stable
@@ -219,18 +233,21 @@ Dashboard
 ## Responsive Design
 
 ### Desktop (1024px+)
+
 - Multi-column layouts
 - Sticky sidebars and panels
 - Horizontal tabs
 - Full table views
 
 ### Tablet (768px - 1023px)
+
 - 2-column layouts
 - Scrollable sidebars
 - Tab navigation with overflow scroll
 - Simplified table views
 
 ### Mobile (< 768px)
+
 - Single column layouts
 - Collapsible sections
 - Full-width modals
@@ -242,17 +259,20 @@ Dashboard
 ## Keyboard Navigation
 
 ### Global
+
 - **Tab:** Move focus between elements
 - **Enter:** Activate buttons and links
 - **Escape:** Close modals and menus
 - **Space:** Toggle checkboxes
 
 ### Form Navigation
+
 - **Tab:** Move to next field
 - **Shift+Tab:** Move to previous field
 - **Enter:** Submit form
 
 ### Table Navigation
+
 - **Arrow Keys:** Move focus between cells
 - **Ctrl/Cmd+A:** Select all rows
 - **Space:** Toggle row selection
@@ -262,21 +282,25 @@ Dashboard
 ## Troubleshooting
 
 ### Classroom Not Found
+
 - Ensure you have invite code if joining someone else's class
 - Check that classroom ID in URL is correct
 - Verify you have access to this classroom
 
 ### Assignment Submission Error
+
 - Check file size (if uploading)
 - Verify you're submitting to correct assignment
 - Check assignment hasn't been closed
 
 ### Grade Not Showing
+
 - Ensure assignment has been graded (status = "graded")
 - Refresh page to see latest data
 - Check that your classroom settings allow grade visibility
 
 ### Export Failed
+
 - Verify internet connection
 - Try different export format
 - Clear browser cache and retry
@@ -305,6 +329,7 @@ Dashboard
 ## Getting Help
 
 For issues or questions:
+
 1. Check [PHASE_5_COMPLETION_REPORT.md](../PHASE_5_COMPLETION_REPORT.md) for detailed documentation
 2. Review service method reference in completion report
 3. Check browser console for error messages

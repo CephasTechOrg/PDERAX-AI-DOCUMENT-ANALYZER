@@ -21,12 +21,12 @@
 
 ## 📱 User Journey
 
-1. **Landing:** Hero section with stats & CTA  
-2. **Upload:** Drag & drop with file validation  
-3. **Processing:** Animated AI brain showing progress stages  
-4. **Results:** Comprehensive analysis in multiple formats  
-5. **Export:** Download summaries with branding  
-6. **New Analysis:** Reset for another document  
+1. **Landing:** Hero section with stats & CTA
+2. **Upload:** Drag & drop with file validation
+3. **Processing:** Animated AI brain showing progress stages
+4. **Results:** Comprehensive analysis in multiple formats
+5. **Export:** Download summaries with branding
+6. **New Analysis:** Reset for another document
 
 ---
 
@@ -49,38 +49,41 @@
   <img src="https://github.com/CephasTechOrg/PDERAX-AI-DOCUMENT-ANALYZER/blob/main/README/Screenshot_2-11-2025_13293_.jpeg" width="800" alt="Desktop View Screenshot"/>
 </p>
 
-
 ---
 
 ## ⚡ Project Overview
 
 **PDERAX AI Document Analyzer** is a modern AI-powered web application built using **FastAPI (Python)** as the backend framework. It connects with **DeepSeek AI API** to intelligently process and summarize your documents in real-time.
 
-Key points:  
-- ✅ No database required — lightweight & fast  
-- ✅ AI-powered summarization via **DeepSeek AI API**  
-- ✅ Multi-format exports: PDF, DOCX, TXT  
-- ✅ Branding included on downloaded files  
+Key points:
+
+- ✅ No database required — lightweight & fast
+- ✅ AI-powered summarization via **DeepSeek AI API**
+- ✅ Multi-format exports: PDF, DOCX, TXT
+- ✅ Branding included on downloaded files
 
 ---
 
 ## 🎨 Technical & Design Strengths
 
 ### 💻 Backend
-- FastAPI (Python) for API endpoints and processing  
-- File validation & async processing  
-- Seamless integration with DeepSeek AI  
+
+- FastAPI (Python) for API endpoints and processing
+- File validation & async processing
+- Seamless integration with DeepSeek AI
 
 ### 🎨 Frontend
-- Modern UI with smooth animations  
-- Animated AI brain during processing  
-- Consistent branding & professional design  
+
+- Modern UI with smooth animations
+- Animated AI brain during processing
+- Consistent branding & professional design
 
 ### ⚙️ Features
-- Drag-and-drop document uploads  
-- Real-time processing feedback  
-- Multi-format results export with watermark/logo  
-- Quick reset for new analyses  
+
+- Drag-and-drop document uploads
+- Real-time processing feedback
+- Multi-format results export with watermark/logo
+- Quick reset for new analyses
 
 ---
 
@@ -98,13 +101,13 @@ Key points:
 
 ## � Project Phases
 
-| Phase | Focus | Status | Files | Lines |
-|-------|-------|--------|-------|-------|
-| **1** | Infrastructure & Auth | ✅ Complete | 18 | 5,200+ |
-| **2** | Authentication Pages | ✅ Complete | 15 | 2,200+ |
-| **3** | Documents & Flashcards | ✅ Complete | 24 | 3,600+ |
-| **4** | AI Chat & Analytics | ✅ Complete | 19 | 3,800+ |
-| **5** | Classroom Management | ✅ Complete | 11 | 5,850+ |
+| Phase | Focus                  | Status      | Files | Lines  |
+| ----- | ---------------------- | ----------- | ----- | ------ |
+| **1** | Infrastructure & Auth  | ✅ Complete | 18    | 5,200+ |
+| **2** | Authentication Pages   | ✅ Complete | 15    | 2,200+ |
+| **3** | Documents & Flashcards | ✅ Complete | 24    | 3,600+ |
+| **4** | AI Chat & Analytics    | ✅ Complete | 19    | 3,800+ |
+| **5** | Classroom Management   | ✅ Complete | 11    | 5,850+ |
 
 ---
 
@@ -113,6 +116,7 @@ Key points:
 PDERAX now includes comprehensive **classroom management** features for educational institutions:
 
 ### 🏫 Core Features
+
 - **Classroom Management:** Create classes, manage students, configure settings
 - **Assignment System:** Full lifecycle from creation to grading
 - **Gradebook:** Track student grades with automatic calculations
@@ -120,20 +124,23 @@ PDERAX now includes comprehensive **classroom management** features for educatio
 - **Role-Based Access:** Teacher, Student, and Admin roles
 
 ### 🔧 Phase 5 Architecture
+
 - **Services (3):** classroom_service, assignment_service, grade_service
 - **Pages (8):** Classrooms list/detail, Assignments list/detail, Gradebook, Analytics
 - **Styling (6):** Responsive CSS modules with mobile optimization
 
 ### 📊 Key Capabilities
+
 ✅ Create and manage multiple classrooms  
 ✅ Invite students via code system  
 ✅ Create, publish, and grade assignments  
 ✅ Track submissions with feedback  
 ✅ Generate gradebooks with sorting/filtering  
 ✅ Analyze class performance with predictions  
-✅ Export rosters, submissions, and grades  
+✅ Export rosters, submissions, and grades
 
 ### 📖 Full Documentation
+
 See [PHASE_5_COMPLETION_REPORT.md](PHASE_5_COMPLETION_REPORT.md) for complete API docs, service reference, and integration guidelines.
 
 ---
@@ -141,6 +148,7 @@ See [PHASE_5_COMPLETION_REPORT.md](PHASE_5_COMPLETION_REPORT.md) for complete AP
 ## 🔮 Future Enhancements
 
 ### Phase 5 Extensions
+
 - Video lesson integration
 - Discussion forums & peer interaction
 - Advanced rubric-based grading
@@ -150,11 +158,12 @@ See [PHASE_5_COMPLETION_REPORT.md](PHASE_5_COMPLETION_REPORT.md) for complete AP
 - Learning objectives mapping
 
 ### Additional Enhancements
-- AI-powered **document insight graphs**  
-- Support for additional file types: Excel, CSV, PPT  
-- Advanced summary customization & keyword highlighting  
-- Real-time collaboration for teams  
-- Mobile-first adaptive interface  
+
+- AI-powered **document insight graphs**
+- Support for additional file types: Excel, CSV, PPT
+- Advanced summary customization & keyword highlighting
+- Real-time collaboration for teams
+- Mobile-first adaptive interface
 
 ---
 

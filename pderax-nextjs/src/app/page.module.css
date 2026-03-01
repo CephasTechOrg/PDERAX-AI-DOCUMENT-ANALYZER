@@ -63,8 +63,8 @@
     flex-direction: column;
     width: 100%;
 
-    a,
-    button {
+    :global(a),
+    :global(button) {
       width: 100%;
     }
   }

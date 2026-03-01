@@ -123,33 +123,34 @@
   cursor: pointer;
   padding: 0.5rem;
 
-  span {
-    display: block;
-    width: 1.5rem;
-    height: 0.25rem;
-    background-color: #374151;
-    border-radius: 0.125rem;
-    transition: all 0.3s;
-  }
-
-  &.active span {
-    &:nth-child(1) {
-      transform: rotate(45deg) translateY(0.625rem);
-    }
-
-    &:nth-child(2) {
-      opacity: 0;
-    }
-
-    &:nth-child(3) {
-      transform: rotate(-45deg) translateY(-0.625rem);
-    }
-  }
-
   @media (min-width: 768px) {
     display: none;
   }
 }
+
+.mobileMenuButtonBar {
+  display: block;
+  width: 1.5rem;
+  height: 0.25rem;
+  background-color: #374151;
+  border-radius: 0.125rem;
+  transition: all 0.3s;
+}
+
+.mobileMenuButton:not(.active) .mobileMenuButtonBar {
+  display: block;
+}
+
+.mobileMenuButton.active .mobileMenuButtonBar:nth-child(1) {
+  transform: rotate(45deg) translateY(0.625rem);
+}
+
+.mobileMenuButton.active .mobileMenuButtonBar:nth-child(2) {
+  opacity: 0;
+}
+
+.mobileMenuButton.active .mobileMenuButtonBar:nth-child(3) {
+  transform: rotate(-45deg) translateY(-0.625rem);
 
 .mobileMenu {
   display: flex;

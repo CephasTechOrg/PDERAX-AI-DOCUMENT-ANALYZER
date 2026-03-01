@@ -1,10 +1,11 @@
 # Phase 5 Implementation Report
+
 ## Classroom Management & Learning Analytics
 
 **Status:** ✅ COMPLETE  
 **Date:** 2024  
 **Total Files Created:** 11  
-**Total Lines of Code:** 5,850+  
+**Total Lines of Code:** 5,850+
 
 ---
 
@@ -21,6 +22,7 @@ Phase 5 introduces comprehensive classroom management features to the PDERAX pla
 The service layer provides complete API integration for all classroom operations:
 
 #### 1. **classroom_service.ts** (320 lines)
+
 - **Purpose:** Manage classrooms and student enrollment
 - **Key Exports:**
   - `Classroom` interface: Core classroom data structure
@@ -35,6 +37,7 @@ The service layer provides complete API integration for all classroom operations
   - Utilities: `getClassroomStats()`, `updateClassroomSettings()`, `archiveClassroom()`, `getStudentClassrooms()`
 
 #### 2. **assignment_service.ts** (380 lines)
+
 - **Purpose:** Manage assignments, submissions, and rubric-based grading
 - **Key Exports:**
   - `Assignment` interface: Complete assignment lifecycle
@@ -50,6 +53,7 @@ The service layer provides complete API integration for all classroom operations
   - Queries: `listAssignments()`, `getAssignment()`, `updateAssignment()`
 
 #### 3. **grade_service.ts** (400 lines)
+
 - **Purpose:** Comprehensive grading, performance analytics, and report generation
 - **Key Exports:**
   - `StudentGrades` interface: Individual student grades
@@ -70,6 +74,7 @@ The service layer provides complete API integration for all classroom operations
 #### Classroom Management
 
 **classrooms/page.tsx** (350 lines)
+
 - List all classrooms with grid layout (3 columns on desktop)
 - Create classroom modal with form validation
 - Join classroom via invite code modal
@@ -82,6 +87,7 @@ The service layer provides complete API integration for all classroom operations
   - Error handling and loading states
 
 **classrooms/page.module.css** (350 lines)
+
 - Responsive grid layout: `repeat(auto-fill, minmax(300px, 1fr))`
 - Card animations and hover effects
 - Modal styling with overlay
@@ -89,6 +95,7 @@ The service layer provides complete API integration for all classroom operations
 - Mobile: Grid→1 column, stacked modals
 
 **classrooms/[id]/page.tsx** (500 lines)
+
 - Single classroom dashboard with 3 tabs: Overview, Students, Settings
 - Overview tab:
   - Classroom information display
@@ -108,6 +115,7 @@ The service layer provides complete API integration for all classroom operations
   - Comprehensive roster management
 
 **classrooms/[id]/page.module.css** (450 lines)
+
 - Tab navigation with active underline
 - Student roster with avatar circles
 - Status badges for student roles
@@ -118,6 +126,7 @@ The service layer provides complete API integration for all classroom operations
 #### Assignment Management
 
 **assignments/page.tsx** (350 lines)
+
 - List assignments with filtering by status
 - Create assignment modal
 - Assignment cards with grading progress
@@ -131,6 +140,7 @@ The service layer provides complete API integration for all classroom operations
   - Create button with icon
 
 **assignments/page.module.css** (350 lines)
+
 - Responsive grid layout
 - Assignment cards with hover effects
 - Status badge styling with colors
@@ -140,6 +150,7 @@ The service layer provides complete API integration for all classroom operations
 - Mobile optimizations
 
 **classrooms/[id]/assignments/[assignment]/page.tsx** (500 lines)
+
 - Tab-based interface: Overview, My Submission (student), Submissions (teacher)
 - Overview tab:
   - Assignment details and instructions
@@ -160,6 +171,7 @@ The service layer provides complete API integration for all classroom operations
   - Comprehensive feedback system
 
 **classrooms/[id]/assignments/[assignment]/page.module.css** (450 lines)
+
 - Header with gradient background
 - Tab navigation styling
 - Submission card layouts
@@ -171,6 +183,7 @@ The service layer provides complete API integration for all classroom operations
 #### Gradebook & Analytics
 
 **classrooms/[id]/grades/page.tsx** (350 lines)
+
 - Full gradebook with student grades by assignment
 - Filtering by assignment
 - Sorting by name, grade, average
@@ -185,6 +198,7 @@ The service layer provides complete API integration for all classroom operations
   - Export with format selection
 
 **classrooms/[id]/grades/page.module.css** (350 lines)
+
 - Responsive table layout
 - Sortable headers with indicators
 - Grade color coding
@@ -193,6 +207,7 @@ The service layer provides complete API integration for all classroom operations
 - Mobile: Horizontal scroll, collapsed columns
 
 **classrooms/[id]/analytics/page.tsx** (400 lines)
+
 - Three-tab analytics dashboard: Overview, Student Performance, Trends
 - Overview tab:
   - Key metrics: class average, median, high/low, std dev, student count
@@ -215,6 +230,7 @@ The service layer provides complete API integration for all classroom operations
   - Responsive detail panel
 
 **classrooms/[id]/analytics/page.module.css** (400 lines)
+
 - Metric cards with gradient borders
 - Distribution bar charts
 - Student list with selection
@@ -263,42 +279,47 @@ GET /api/classrooms/{classroomId}/grades
 ## Key Features
 
 ### Classroom Management
+
 ✅ Create, read, update, delete classrooms  
 ✅ Student enrollment via invite codes  
 ✅ Student roster management with roles (student, assistant)  
 ✅ Classroom settings configuration  
-✅ CSV export of class roster  
+✅ CSV export of class roster
 
 ### Assignment Management
+
 ✅ Full assignment lifecycle (draft → published → closed → archived)  
 ✅ Assignment submission tracking  
 ✅ File upload support  
 ✅ Late submission handling  
 ✅ Resubmission support  
 ✅ Rubric-based grading  
-✅ Bulk operations on submissions  
+✅ Bulk operations on submissions
 
 ### Grading System
+
 ✅ Per-assignment grades  
 ✅ Automatic grade weighting  
 ✅ Letter grade calculation (A-F)  
 ✅ Bulk grade updates  
 ✅ Grade export (CSV/JSON)  
-✅ Feedback system  
+✅ Feedback system
 
 ### Performance Analytics
+
 ✅ Class-level statistics (average, median, distribution)  
 ✅ Individual student performance tracking  
 ✅ Predicted final grades with trend analysis  
 ✅ Strength/improvement area identification  
 ✅ Performance trends over time  
 ✅ Grade distribution visualization  
-✅ Automated insights and recommendations  
+✅ Automated insights and recommendations
 
 ### Role-Based Access
+
 ✅ Teacher: Full classroom and grading access  
 ✅ Student: Submit assignments, view own grades  
-✅ Admin: Full platform access  
+✅ Admin: Full platform access
 
 ---
 
@@ -336,6 +357,7 @@ src/
 ## Design Patterns
 
 ### Service Layer
+
 - Axios HTTP client with centralized interceptors
 - Error handling with try-catch and user-friendly messages
 - Request/response interfaces for type safety
@@ -343,6 +365,7 @@ src/
 - Export functionality for CSV and JSON formats
 
 ### UI Components
+
 - React hooks for state management (useState, useEffect)
 - React Context for user authentication
 - Next.js dynamic routing with params
@@ -352,6 +375,7 @@ src/
 - Modal dialogs for confirmations
 
 ### Styling
+
 - CSS custom properties (variables) for theming
 - Flexbox and CSS Grid for layouts
 - Smooth transitions and animations
@@ -364,6 +388,7 @@ src/
 ## Code Examples
 
 ### Creating a Classroom
+
 ```typescript
 const classroom = await classroomService.createClassroom({
   name: "AP Biology",
@@ -375,23 +400,25 @@ const classroom = await classroomService.createClassroom({
     allow_peer_review: false,
     anonymous_feedback: false,
     email_notifications: true,
-    auto_grading_enabled: false
-  }
+    auto_grading_enabled: false,
+  },
 });
 ```
 
 ### Submitting an Assignment
+
 ```typescript
 const submission = await assignmentService.submitAssignment(
   classroomId,
   assignmentId,
   {
     content: "Student's answer text",
-  }
+  },
 );
 ```
 
 ### Grading a Submission
+
 ```typescript
 await assignmentService.gradeSubmission(
   classroomId,
@@ -400,12 +427,13 @@ await assignmentService.gradeSubmission(
   {
     points: 85,
     feedback: "Good understanding of photosynthesis",
-    status: "graded"
-  }
+    status: "graded",
+  },
 );
 ```
 
 ### Getting Class Performance
+
 ```typescript
 const performance = await gradeService.getClassPerformance(classroomId);
 // Returns: {
@@ -425,12 +453,14 @@ const performance = await gradeService.getClassPerformance(classroomId);
 ## Testing Considerations
 
 ### Service Tests
+
 - Mock HTTP responses for all CRUD operations
 - Test pagination with edge cases
 - Verify error handling for network failures
 - Test export functionality with different formats
 
 ### Component Tests
+
 - Test form validation for classroom creation
 - Test role-based rendering (teacher vs student)
 - Test pagination controls
@@ -438,6 +468,7 @@ const performance = await gradeService.getClassPerformance(classroomId);
 - Test responsive behavior
 
 ### Integration Tests
+
 - Complete assignment workflow (create → submit → grade)
 - Student enrollment via invite code
 - Gradebook calculation accuracy
@@ -452,7 +483,7 @@ const performance = await gradeService.getClassPerformance(classroomId);
 ✅ CSS animations for smooth transitions  
 ✅ Responsive images and optimized assets  
 ✅ Memoization of expensive calculations  
-✅ Event debouncing for search/filter  
+✅ Event debouncing for search/filter
 
 ---
 
@@ -463,13 +494,14 @@ const performance = await gradeService.getClassPerformance(classroomId);
 ✅ Keyboard navigation support  
 ✅ Focus states for all interactive elements  
 ✅ Color contrast compliance  
-✅ Form validation feedback  
+✅ Form validation feedback
 
 ---
 
 ## Future Enhancements
 
 ### Phase 5 Extensions
+
 - [ ] Video lesson integration
 - [ ] Discussion forums
 - [ ] Peer grading interface
@@ -482,6 +514,7 @@ const performance = await gradeService.getClassPerformance(classroomId);
 - [ ] Competency tracking
 
 ### Integration Opportunities
+
 - Connect with existing document analyzer
 - Integrate flashcard system with assignments
 - Link AI chat assistant for student support
@@ -493,6 +526,7 @@ const performance = await gradeService.getClassPerformance(classroomId);
 ## Summary
 
 Phase 5 successfully implements a complete classroom management system with:
+
 - **11 files** across services and UI components
 - **5,850+ lines** of production-ready TypeScript code
 - **100% type safety** with strict mode
@@ -508,42 +542,49 @@ The implementation maintains the architectural patterns and code quality establi
 ## Integration with Existing Phases
 
 ### Phase 1 (Infrastructure)
+
 ✅ Uses existing auth context  
 ✅ Leverages API client configuration  
-✅ Follows established TypeScript patterns  
+✅ Follows established TypeScript patterns
 
 ### Phase 2 (Authentication)
+
 ✅ Protected routes via auth context  
 ✅ Role-based access enforcement  
-✅ User profile integration  
+✅ User profile integration
 
 ### Phase 3 (Documents & Flashcards)
+
 ✅ Assignments can reference documents  
 ✅ Flashcards integratable with assignments  
-✅ Study tools accessible from classroom  
+✅ Study tools accessible from classroom
 
 ### Phase 4 (AI Chat & Analytics)
+
 ✅ AI assistant available for students  
 ✅ Performance analytics complement existing metrics  
-✅ Export functionality consistent with Phase 4  
+✅ Export functionality consistent with Phase 4
 
 ---
 
 ## Deployment Notes
 
 ### Environment Requirements
+
 - Node.js 18+
 - Next.js 14
 - React 18
 - TypeScript 5
 
 ### Backend API Requirements
+
 - REST API supporting classroom endpoints
 - Authentication system compatible with phases 1-4
 - Database support for classroom, assignment, submission, and grade data
 - File upload capability for assignment submissions
 
 ### Configuration
+
 - Update `.env.local` with API endpoints
 - Configure base URL for API calls
 - Set up CORS if API on different domain
