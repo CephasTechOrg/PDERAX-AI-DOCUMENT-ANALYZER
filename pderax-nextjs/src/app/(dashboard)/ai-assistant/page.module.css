@@ -41,11 +41,11 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+}
 
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
+.newChatButton svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .sessionList {
@@ -153,38 +153,38 @@
   height: 100%;
   text-align: center;
   color: var(--text-secondary, #6b7280);
+}
 
-  svg {
-    width: 3rem;
-    height: 3rem;
-    color: var(--text-tertiary, #9ca3af);
-    margin-bottom: 1rem;
-  }
+.emptyState svg {
+  width: 3rem;
+  height: 3rem;
+  color: var(--text-tertiary, #9ca3af);
+  margin-bottom: 1rem;
+}
 
-  h3 {
-    margin: 0 0 0.5rem 0;
-    color: var(--text-primary, #1f2937);
-  }
+.emptyState h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #1f2937);
+}
 
-  p {
-    margin: 0 0 1.5rem 0;
-  }
+.emptyState p {
+  margin: 0 0 1.5rem 0;
 }
 
 .newChatWelcome {
   text-align: center;
   padding: 2rem;
+}
 
-  h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
-    color: var(--text-primary, #1f2937);
-  }
+.newChatWelcome h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary, #1f2937);
+}
 
-  p {
-    margin: 0;
-    color: var(--text-secondary, #6b7280);
-  }
+.newChatWelcome p {
+  margin: 0;
+  color: var(--text-secondary, #6b7280);
 }
 
 .loading {

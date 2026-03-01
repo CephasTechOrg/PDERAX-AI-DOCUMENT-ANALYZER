@@ -69,10 +69,11 @@
     background-color: currentColor;
   }
 
-  span {
-    font-size: 0.875rem;
-    color: #9ca3af;
-  }
+}
+
+.divider span {
+  font-size: 0.875rem;
+  color: #9ca3af;
 }
 
 .links {

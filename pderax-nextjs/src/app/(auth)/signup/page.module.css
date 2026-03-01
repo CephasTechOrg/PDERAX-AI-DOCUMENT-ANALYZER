@@ -128,13 +128,14 @@
   cursor: pointer;
   user-select: none;
 
-  input {
-    margin-top: 0.25rem;
-    cursor: pointer;
-    width: 1rem;
-    height: 1rem;
-    accent-color: #4f46e5;
-  }
+}
+
+.termsLabel input {
+  margin-top: 0.25rem;
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #4f46e5;
 }
 
 .termsLink {
