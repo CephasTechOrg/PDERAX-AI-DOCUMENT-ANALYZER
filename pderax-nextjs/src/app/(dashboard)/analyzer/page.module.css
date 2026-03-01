@@ -39,17 +39,18 @@
 }
 
 .welcomeContent {
-  h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.5rem;
-    color: #1f2937;
-  }
+}
 
-  p {
-    margin: 0;
-    color: #4b5563;
-    line-height: 1.6;
-  }
+.welcomeContent h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.welcomeContent p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.6;
 }
 
 .placeholderSection {
@@ -62,26 +63,27 @@
     padding: 1.5rem;
   }
 
-  h3 {
-    margin: 0 0 1rem 0;
-    color: #1f2937;
-  }
+}
 
-  p {
-    margin: 0 0 1.5rem 0;
-    color: #6b7280;
-  }
+.placeholderSection h3 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+}
 
-  ul {
-    margin: 0;
-    padding-left: 1.5rem;
-    list-style: none;
+.placeholderSection p {
+  margin: 0 0 1.5rem 0;
+  color: #6b7280;
+}
 
-    li {
-      padding: 0.5rem 0;
-      color: #4b5563;
-    }
-  }
+.placeholderSection ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+.placeholderSection ul li {
+  padding: 0.5rem 0;
+  color: #4b5563;
 }
 
 .statusCard {
@@ -94,18 +96,19 @@
     padding: 1.5rem;
   }
 
-  h4 {
-    margin: 0 0 1rem 0;
-    color: #1f2937;
-  }
+}
 
-  p {
-    margin: 0.5rem 0;
-    color: #6b7280;
-    font-size: 0.95rem;
+.statusCard h4 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+}
 
-    strong {
-      color: #1f2937;
-    }
-  }
+.statusCard p {
+  margin: 0.5rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.statusCard p strong {
+  color: #1f2937;
 }
