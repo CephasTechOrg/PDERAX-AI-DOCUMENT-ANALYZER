@@ -46,7 +46,7 @@ export default function ExportPage() {
   const loadDocuments = async () => {
     try {
       setIsLoadingDocs(true);
-      const docs = await documentService.listDocuments(1, 100);
+      const docs = await documentService.getDocuments(1, 100);
       setDocuments(docs.items);
     } catch (err) {
       const errorMessage =
@@ -101,7 +101,7 @@ export default function ExportPage() {
         const newJob: ExportJob = {
           id: `export_${Date.now()}`,
           type: 'flashcard',
-          title: `Flashcards from ${doc.title}`,
+          title: `Flashcards from ${doc.filename}`,
           format: selectedFormat,
           status: 'processing',
           progress: 0,
@@ -113,7 +113,7 @@ export default function ExportPage() {
         try {
           const response = await exportService.exportFlashcards(
             doc.id,
-            selectedFormat
+            { format: selectedFormat }
           );
 
           exportService.downloadFile(
@@ -346,7 +346,7 @@ export default function ExportPage() {
                     onChange={() => toggleDocumentSelection(doc.id)}
                   />
                   <div className={styles.documentInfo}>
-                    <div className={styles.documentName}>{doc.title}</div>
+                    <div className={styles.documentName}>{doc.filename}</div>
                     <div className={styles.documentMeta}>
                       {doc.flashcard_count || 0} flashcards • {new Date(doc.created_at).toLocaleDateString()}
                     </div>
