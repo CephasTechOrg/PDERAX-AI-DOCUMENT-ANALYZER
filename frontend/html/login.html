@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDERAX - Sign In</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <style>
+        /* Page-specific overrides — all base styles live in css/auth.css */
+    </style>
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="auth-container">
+        <div class="logo-section">
+            <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 80px;"><rect width="40" height="40" rx="8" fill="url(#logo-gradient)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
+            <h1>PDERAX</h1>
+            <p>AI-Powered Study Platform</p>
+        </div>
+
+        <div class="auth-card">
+            <!-- Tabs -->
+            <div class="auth-tabs" id="authTabs">
+                <button class="auth-tab active" data-tab="login">Sign In</button>
+                <button class="auth-tab" data-tab="signup">Create Account</button>
+            </div>
+
+            <!-- Login Panel -->
+            <div class="auth-panel active" id="loginPanel">
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label" for="loginEmail">Email address</label>
+                        <input class="form-input" id="loginEmail" type="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <div class="input-wrapper">
+                            <input class="form-input has-icon" id="loginPassword" type="password" placeholder="••••••••" required>
+                            <button type="button" class="input-icon" onclick="togglePassword('loginPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit" id="loginBtn">
+                        <span class="btn-text">Sign In</span>
+                    </button>
+                </form>
+
+                <div class="divider">or continue with</div>
+
+                <a class="btn btn-google" id="googleLogin" href="#">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    Continue with Google
+                </a>
+            </div>
+
+            <!-- Signup Panel -->
+            <div class="auth-panel" id="signupPanel">
+                <form id="signupForm" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label" for="signupName">Full name</label>
+                        <input class="form-input" id="signupName" type="text" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signupEmail">Email address</label>
+                        <input class="form-input" id="signupEmail" type="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signupPassword">Password</label>
+                        <div class="input-wrapper">
+                            <input class="form-input has-icon" id="signupPassword" type="password" placeholder="Min 8 characters" minlength="8" required>
+                            <button type="button" class="input-icon" onclick="togglePassword('signupPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                        </div>
+                        <p class="password-hint" id="passwordHint">Use 8+ characters with a mix of letters and numbers</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signupPasswordConfirm">Confirm password</label>
+                        <div class="input-wrapper">
+                            <input class="form-input has-icon" id="signupPasswordConfirm" type="password" placeholder="••••••••" minlength="8" required>
+                            <span class="input-icon" id="passwordMatchIcon" style="display: none; cursor: default;">
+                                <i class="fas fa-check" style="color: var(--color-success);"></i>
+                            </span>
+                        </div>
+                        <p class="error-message" id="passwordMatchError" style="display: none;">Passwords do not match</p>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit" id="signupBtn">
+                        <span class="btn-text">Create Account</span>
+                    </button>
+                </form>
+
+                <div class="divider">or continue with</div>
+
+                <a class="btn btn-google" id="googleLoginSignup" href="#">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    Continue with Google
+                </a>
+            </div>
+
+            <!-- Verify Panel -->
+            <div class="auth-panel" id="verifyPanel">
+                <div class="check-email">
+                    <div class="check-email-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Check your email</h3>
+                    <p>We sent a 6-digit code to<br><strong id="verifyEmailDisplay">your email</strong></p>
+
+                    <form id="verifyForm" class="auth-form">
+                        <div class="form-group">
+                            <input type="hidden" id="verifyEmail">
+                            <div class="code-inputs">
+                                <input class="code-input" type="text" maxlength="1" data-index="0">
+                                <input class="code-input" type="text" maxlength="1" data-index="1">
+                                <input class="code-input" type="text" maxlength="1" data-index="2">
+                                <input class="code-input" type="text" maxlength="1" data-index="3">
+                                <input class="code-input" type="text" maxlength="1" data-index="4">
+                                <input class="code-input" type="text" maxlength="1" data-index="5">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" type="submit" id="verifyBtn">
+                            <span class="btn-text">Verify Email</span>
+                        </button>
+                    </form>
+
+                    <p class="text-muted mt-4">
+                        Didn't receive the code? 
+                        <button class="auth-link" id="resendCode">Resend</button>
+                        <span class="resend-timer" id="resendTimer" style="display: none;"></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Success Panel (after verification) -->
+            <div class="auth-panel" id="successPanel">
+                <div class="check-email">
+                    <div class="check-email-icon" style="background: rgba(16, 185, 129, 0.1);">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3>Email verified!</h3>
+                    <p>Your account is ready. You can now sign in.</p>
+                    <button class="btn btn-primary" onclick="showPanel('login')">
+                        Sign In to Continue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div class="auth-message" id="authMessage"></div>
+        </div>
+
+        <div class="text-center">
+            <a href="analyzer.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to PDERAX
+            </a>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        // State
+        let currentPanel = 'login';
+        let resendCooldown = 0;
+        let resendInterval = null;
+
+        // API Base
+        const apiBase = window.apiService ? window.apiService.baseURL : 'http://localhost:8000/api/v1';
+        const authBase = `${apiBase}/auth`;
+
+        // DOM Elements
+        const tabs = document.querySelectorAll('.auth-tab');
+        const panels = {
+            login: document.getElementById('loginPanel'),
+            signup: document.getElementById('signupPanel'),
+            verify: document.getElementById('verifyPanel'),
+            success: document.getElementById('successPanel')
+        };
+        const authMessage = document.getElementById('authMessage');
+        const authTabs = document.getElementById('authTabs');
+
+        // Forms
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const verifyForm = document.getElementById('verifyForm');
+        const resendBtn = document.getElementById('resendCode');
+
+        // Handle OAuth redirect
+        const frontendOrigin = window.location.origin === 'null' ? 'http://localhost:5500' : window.location.origin;
+        const params = new URLSearchParams(window.location.search);
+        const redirectParam = params.get('redirect');
+        const defaultRedirect = `${frontendOrigin}/frontend/html/analyzer.html`;
+        const redirectTarget = redirectParam && redirectParam.startsWith(frontendOrigin) ? redirectParam : defaultRedirect;
+
+        // Set Google OAuth URLs
+        const googleLoginUrl = `${authBase}/google/login?redirect=${encodeURIComponent(redirectTarget)}`;
+        document.getElementById('googleLogin').href = googleLoginUrl;
+        document.getElementById('googleLoginSignup').href = googleLoginUrl;
+
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                showPanel(tabName);
+                setMessage('');
+            });
+        });
+
+        function showPanel(panelName) {
+            currentPanel = panelName;
+            
+            // Update tabs
+            tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === panelName);
+            });
+
+            // Show/hide tabs for verify and success
+            if (panelName === 'verify' || panelName === 'success') {
+                authTabs.style.display = 'none';
+            } else {
+                authTabs.style.display = 'flex';
+            }
+
+            // Update panels
+            Object.entries(panels).forEach(([key, panel]) => {
+                panel.classList.toggle('active', key === panelName);
+            });
+        }
+
+        function setMessage(message, type = 'info') {
+            if (!message) {
+                authMessage.classList.remove('show');
+                return;
+            }
+            authMessage.textContent = message;
+            authMessage.className = `auth-message show ${type}`;
+        }
+
+        function setLoading(button, loading, text = 'Submit') {
+            if (loading) {
+                button.classList.add('loading');
+                button.innerHTML = '<div class="spinner"></div>';
+            } else {
+                button.classList.remove('loading');
+                button.innerHTML = `<span class="btn-text">${text}</span>`;
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId, buttonEl) {
+            const input = document.getElementById(inputId);
+            const icon = buttonEl.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Password strength checker
+        const signupPassword = document.getElementById('signupPassword');
+        const strengthBars = document.querySelectorAll('.strength-bar');
+        const passwordHint = document.getElementById('passwordHint');
+
+        signupPassword.addEventListener('input', () => {
+            const password = signupPassword.value;
+            const strength = checkPasswordStrength(password);
+            updateStrengthUI(strength);
+            checkPasswordMatch();
+        });
+
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            return strength;
+        }
+
+        function updateStrengthUI(strength) {
+            strengthBars.forEach((bar, index) => {
+                bar.className = 'strength-bar';
+                if (index < strength) {
+                    if (strength <= 1) bar.classList.add('weak');
+                    else if (strength <= 2) bar.classList.add('medium');
+                    else bar.classList.add('strong');
+                }
+            });
+
+            const hints = {
+                0: 'Use 8+ characters with a mix of letters and numbers',
+                1: 'Weak - Add uppercase and numbers',
+                2: 'Medium - Add special characters',
+                3: 'Good - Password is reasonably strong',
+                4: 'Strong - Excellent password!'
+            };
+            passwordHint.textContent = hints[strength];
+        }
+
+        // Password match checker
+        const signupPasswordConfirm = document.getElementById('signupPasswordConfirm');
+        const passwordMatchIcon = document.getElementById('passwordMatchIcon');
+        const passwordMatchError = document.getElementById('passwordMatchError');
+
+        signupPasswordConfirm.addEventListener('input', checkPasswordMatch);
+
+        function checkPasswordMatch() {
+            const password = signupPassword.value;
+            const confirm = signupPasswordConfirm.value;
+            
+            if (!confirm) {
+                passwordMatchIcon.style.display = 'none';
+                passwordMatchError.style.display = 'none';
+                signupPasswordConfirm.classList.remove('error', 'success');
+                return;
+            }
+
+            if (password === confirm) {
+                passwordMatchIcon.style.display = 'block';
+                passwordMatchError.style.display = 'none';
+                signupPasswordConfirm.classList.remove('error');
+                signupPasswordConfirm.classList.add('success');
+            } else {
+                passwordMatchIcon.style.display = 'none';
+                passwordMatchError.style.display = 'block';
+                signupPasswordConfirm.classList.remove('success');
+                signupPasswordConfirm.classList.add('error');
+            }
+        }
+
+        // Verification code inputs
+        const codeInputs = document.querySelectorAll('.code-input');
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                if (value && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = paste.replace(/\D/g, '').slice(0, 6);
+                digits.split('').forEach((digit, i) => {
+                    if (codeInputs[i]) codeInputs[i].value = digit;
+                });
+                if (digits.length === 6) {
+                    codeInputs[5].focus();
+                }
+            });
+        });
+
+        function getVerificationCode() {
+            return Array.from(codeInputs).map(i => i.value).join('');
+        }
+
+        // API Helper
+        async function postJson(url, payload) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.detail || 'Request failed');
+            }
+            return data;
+        }
+
+        function saveTokens(tokens) {
+            if (!tokens?.access_token) return;
+            localStorage.setItem('pderax_access_token', tokens.access_token);
+            if (tokens.refresh_token) {
+                localStorage.setItem('pderax_refresh_token', tokens.refresh_token);
+            }
+            if (tokens.user) {
+                localStorage.setItem('pderax_user', JSON.stringify(tokens.user));
+            }
+        }
+
+        // Handle OAuth callback
+        function handleTokenRedirect() {
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+            if (accessToken) {
+                saveTokens({ access_token: accessToken, refresh_token: refreshToken });
+                // Clear URL params
+                window.history.replaceState({}, document.title, window.location.pathname);
+                // Redirect
+                window.location.href = redirectTarget;
+            }
+        }
+
+        // Login form
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            setLoading(btn, true);
+            setMessage('');
+
+            try {
+                const data = await postJson(`${authBase}/login`, { email, password });
+                saveTokens(data);
+                setMessage('Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = redirectTarget;
+                }, 500);
+            } catch (error) {
+                setMessage(error.message, 'error');
+                setLoading(btn, false, 'Sign In');
+            }
+        });
+
+        // Signup form
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('signupBtn');
+            const full_name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const password_confirm = document.getElementById('signupPasswordConfirm').value;
+
+            if (password !== password_confirm) {
+                setMessage('Passwords do not match', 'error');
+                return;
+            }
+
+            setLoading(btn, true);
+            setMessage('');
+
+            try {
+                await postJson(`${authBase}/register`, { email, full_name, password, password_confirm });
+                // Show verify panel
+                document.getElementById('verifyEmail').value = email;
+                document.getElementById('verifyEmailDisplay').textContent = email;
+                showPanel('verify');
+                startResendCooldown(60);
+            } catch (error) {
+                setMessage(error.message, 'error');
+                setLoading(btn, false, 'Create Account');
+            }
+        });
+
+        // Verify form
+        verifyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('verifyBtn');
+            const email = document.getElementById('verifyEmail').value.trim();
+            const code = getVerificationCode();
+
+            if (code.length !== 6) {
+                setMessage('Please enter the 6-digit code', 'error');
+                return;
+            }
+
+            setLoading(btn, true);
+            setMessage('');
+
+            try {
+                await postJson(`${authBase}/verify`, { email, code });
+                showPanel('success');
+            } catch (error) {
+                setMessage(error.message, 'error');
+                setLoading(btn, false, 'Verify Email');
+            }
+        });
+
+        // Resend code
+        resendBtn.addEventListener('click', async () => {
+            if (resendCooldown > 0) return;
+
+            const email = document.getElementById('verifyEmail').value.trim();
+            if (!email) {
+                setMessage('Email is required', 'error');
+                return;
+            }
+
+            resendBtn.disabled = true;
+            setMessage('');
+
+            try {
+                await postJson(`${authBase}/resend-code`, { email });
+                setMessage('Verification code sent!', 'success');
+                startResendCooldown(60);
+            } catch (error) {
+                setMessage(error.message, 'error');
+            } finally {
+                resendBtn.disabled = false;
+            }
+        });
+
+        function startResendCooldown(seconds) {
+            resendCooldown = seconds;
+            resendBtn.style.display = 'none';
+            const timerEl = document.getElementById('resendTimer');
+            timerEl.style.display = 'inline';
+
+            if (resendInterval) clearInterval(resendInterval);
+            
+            resendInterval = setInterval(() => {
+                resendCooldown--;
+                timerEl.textContent = `(${resendCooldown}s)`;
+
+                if (resendCooldown <= 0) {
+                    clearInterval(resendInterval);
+                    resendBtn.style.display = 'inline';
+                    timerEl.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        // Initialize
+        handleTokenRedirect();
+    </script>
+</body>
+
+</html>

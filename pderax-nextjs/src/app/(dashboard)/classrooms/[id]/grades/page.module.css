@@ -1,0 +1,496 @@
+/* Gradebook Page Styles */
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.backLink:hover {
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMessage {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #ef4444;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.controlsLeft {
+  display: flex;
+  gap: 1rem;
+}
+
+.filterSelect {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  background-color: white;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:hover {
+  border-color: var(--primary-color);
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.bulkActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.selectionInfo {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Bulk Edit Panel */
+.bulkEditPanel {
+  background-color: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.bulkEditContent {
+  max-width: 600px;
+}
+
+.bulkEditContent h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0 0 1rem 0;
+}
+
+.bulkForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.formGroup input,
+.formGroup textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text-color);
+}
+
+.formGroup textarea {
+  resize: vertical;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 0.75rem;
+  padding: 3rem 2rem;
+}
+
+.emptyState svg {
+  width: 64px;
+  height: 64px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.emptyState h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.emptyState p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Table Styles */
+.tableWrapper {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.gradebookTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.gradebookTable thead {
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.gradebookTable th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.checkboxColumn {
+  width: 40px;
+  padding: 1rem 0.5rem;
+}
+
+.checkboxColumn input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortableHeader:hover {
+  background-color: rgba(79, 70, 229, 0.05);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sortIcon {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.gradeHeader {
+  text-align: center;
+  min-width: 80px;
+}
+
+.averageHeader {
+  font-weight: 700;
+  background-color: rgba(79, 70, 229, 0.05);
+}
+
+.gradebookTable tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.gradebookTable tbody tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+.gradebookTable tbody tr:last-child {
+  border-bottom: none;
+}
+
+.gradebookTable td {
+  padding: 1rem;
+}
+
+.nameCell {
+  font-weight: 500;
+}
+
+.studentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.studentName {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.studentEmail {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.gradeCell {
+  text-align: center;
+  padding: 1rem 0.5rem;
+}
+
+.averageCell {
+  text-align: center;
+  background-color: rgba(79, 70, 229, 0.05);
+  font-weight: 600;
+  padding: 1rem 0.5rem;
+}
+
+.grade {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.boldGrade {
+  font-size: 1rem;
+}
+
+.gradeEmpty {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.pageInfo {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .gradebookTable {
+    font-size: 0.8125rem;
+  }
+
+  .gradebookTable th,
+  .gradebookTable td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .gradeHeader {
+    min-width: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .controlsLeft {
+    width: 100%;
+  }
+
+  .filterSelect {
+    width: 100%;
+  }
+
+  .bulkActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tableWrapper {
+    margin-bottom: 1rem;
+  }
+
+  .gradebookTable {
+    font-size: 0.75rem;
+  }
+
+  .gradebookTable th,
+  .gradebookTable td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .studentEmail {
+    display: none;
+  }
+
+  .gradeHeader {
+    min-width: 60px;
+    font-size: 0.75rem;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .controls {
+    gap: 0.5rem;
+  }
+
+  .filterSelect {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .bulkActions {
+    gap: 0.5rem;
+  }
+
+  .selectionInfo {
+    display: none;
+  }
+
+  .gradebookTable {
+    font-size: 0.7rem;
+  }
+
+  .gradebookTable th,
+  .gradebookTable td {
+    padding: 0.375rem 0.125rem;
+  }
+
+  .checkboxColumn {
+    width: 32px;
+    padding: 0.375rem 0.25rem;
+  }
+
+  .studentName {
+    font-size: 0.75rem;
+  }
+
+  .gradeHeader {
+    min-width: 50px;
+    font-size: 0.65rem;
+  }
+
+  .grade {
+    font-size: 0.875rem;
+  }
+
+  .bulkEditPanel {
+    padding: 1rem;
+  }
+
+  .bulkEditContent h3 {
+    font-size: 0.875rem;
+  }
+}

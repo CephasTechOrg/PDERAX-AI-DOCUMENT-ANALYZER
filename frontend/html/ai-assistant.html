@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant — PDERAX</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/ai-assistant.css">
+    <!-- KaTeX for math/fraction rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css">
+</head>
+
+<body>
+    <div class="container chat-page">
+        <!-- Animated Background -->
+        <div class="animated-bg">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+
+        <!-- Navigation injected by nav.js -->
+        <div id="nav-root"></div>
+
+        <!-- Main Chat Layout -->
+        <main class="chat-layout">
+
+            <!-- Sidebar -->
+            <aside class="chat-sidebar" id="chatSidebar">
+                <div class="sidebar-header">
+                    <h2><i class="fas fa-comments"></i> Conversations</h2>
+                    <button class="new-chat-btn" id="newChatBtn" title="New conversation">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <div class="sidebar-sessions" id="sessionList">
+                    <div class="sessions-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="mode-legend">
+                        <span class="mode-dot teacher"></span> Teacher Mode
+                        <span class="mode-dot helper"></span> Helper Mode
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <section class="chat-main" id="chatMain">
+
+                <!-- Welcome Screen (shown when no session is active) -->
+                <div class="chat-welcome" id="chatWelcome">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h2>PDERAX AI Assistant</h2>
+                    <p>Your intelligent learning companion. Upload a document, ask questions, and get guided through your studies.</p>
+
+                    <div class="welcome-modes">
+                        <div class="mode-card" onclick="AiAssistant.startSession('teacher')">
+                            <div class="mode-card-icon teacher">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h3>Teacher Mode</h3>
+                            <p>Guided learning through the Socratic method. The AI asks questions and gives hints to help you discover answers yourself.</p>
+                            <span class="mode-badge teacher">Recommended for studying</span>
+                        </div>
+                        <div class="mode-card" onclick="AiAssistant.startSession('helper')">
+                            <div class="mode-card-icon helper">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Helper Mode</h3>
+                            <p>Direct, clear explanations and answers. Perfect when you need quick help understanding a concept.</p>
+                            <span class="mode-badge helper">Quick answers</span>
+                        </div>
+                    </div>
+
+                    <div class="welcome-tips">
+                        <h4><i class="fas fa-info-circle"></i> Tips</h4>
+                        <ul>
+                            <li>Upload a document (PDF, DOCX, TXT) so the AI can reference it in answers</li>
+                            <li>Use Teacher Mode for homework and assignments to deepen understanding</li>
+                            <li>Switch between modes any time during a conversation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Active Chat -->
+                <div class="chat-active" id="chatActive" style="display:none;">
+                    <!-- Chat Header -->
+                    <div class="chat-header">
+                        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="chat-header-info">
+                            <span class="chat-title" id="chatTitle">New Conversation</span>
+                            <span class="chat-doc" id="chatDoc"></span>
+                        </div>
+                        <div class="chat-header-actions">
+                            <!-- Mode Toggle -->
+                            <div class="mode-toggle" id="modeToggle">
+                                <button class="mode-btn active" id="modeTeacherBtn" onclick="AiAssistant.setMode('teacher')">
+                                    <i class="fas fa-chalkboard-teacher"></i> Teacher
+                                </button>
+                                <button class="mode-btn" id="modeHelperBtn" onclick="AiAssistant.setMode('helper')">
+                                    <i class="fas fa-lightbulb"></i> Helper
+                                </button>
+                            </div>
+                            <button class="header-icon-btn" onclick="AiAssistant.triggerDocUpload()" title="Upload document">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <button class="header-icon-btn danger" onclick="AiAssistant.deleteCurrentSession()" title="Delete conversation">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Document Context Banner -->
+                    <div class="doc-banner" id="docBanner" style="display:none;">
+                        <i class="fas fa-file-alt"></i>
+                        <span id="docBannerName">document.pdf</span>
+                        <span class="doc-banner-tag">Context loaded</span>
+                        <button onclick="AiAssistant.triggerDocUpload()" title="Replace document">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Messages -->
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages rendered here -->
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div class="typing-indicator" id="typingIndicator" style="display:none;">
+                        <div class="typing-bubble">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="typing-label">PDERAX is thinking...</span>
+                    </div>
+
+                    <!-- Suggested Questions -->
+                    <div class="suggested-chips" id="suggestedChips">
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Explain this concept</button>
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Give me a hint</button>
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Summarise the document</button>
+                        <button class="chip" onclick="AiAssistant.useChip(this)">Quiz me on this</button>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="chat-input-area">
+                        <input type="file" id="docFileInput"
+                               accept=".pdf,.docx,.doc,.txt,.xlsx,.xls" style="display:none;"
+                               onchange="AiAssistant.handleDocUpload(this)">
+                        <button class="input-attach-btn" onclick="AiAssistant.triggerDocUpload()" title="Attach document">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <div class="input-wrapper">
+                            <textarea
+                                id="messageInput"
+                                placeholder="Ask a question about your document, homework, or any topic..."
+                                rows="1"
+                                onkeydown="AiAssistant.handleKey(event)"
+                                oninput="AiAssistant.autoResize(this)"
+                            ></textarea>
+                        </div>
+                        <button class="input-send-btn" id="sendBtn" onclick="AiAssistant.sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- Toast -->
+        <div class="toast-notification" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
+
+    <!-- marked.js + DOMPurify for safe markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16/dist/contrib/auto-render.min.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!AuthService.requireAuth()) return;
+            AuthService.updateNavForAuthenticatedUser();
+        });
+    </script>
+    <script src="../js/ai-assistant.js"></script>
+</body>
+
+</html>

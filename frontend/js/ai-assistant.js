@@ -374,6 +374,18 @@
                 a.setAttribute('target', '_blank');
                 a.setAttribute('rel', 'noopener noreferrer');
             });
+            // Render math expressions (KaTeX auto-render runs after DOMPurify)
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(bubble, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true  },
+                        { left: '$',  right: '$',  display: false },
+                        { left: '\\(', right: '\\)', display: false },
+                        { left: '\\[', right: '\\]', display: true  },
+                    ],
+                    throwOnError: false,
+                });
+            }
         } else {
             bubble.textContent = content;
         }

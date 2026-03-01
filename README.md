@@ -96,8 +96,60 @@ Key points:
 
 ---
 
+## � Project Phases
+
+| Phase | Focus | Status | Files | Lines |
+|-------|-------|--------|-------|-------|
+| **1** | Infrastructure & Auth | ✅ Complete | 18 | 5,200+ |
+| **2** | Authentication Pages | ✅ Complete | 15 | 2,200+ |
+| **3** | Documents & Flashcards | ✅ Complete | 24 | 3,600+ |
+| **4** | AI Chat & Analytics | ✅ Complete | 19 | 3,800+ |
+| **5** | Classroom Management | ✅ Complete | 11 | 5,850+ |
+
+---
+
+## 🎓 Phase 5: Classroom Management & Learning Analytics
+
+PDERAX now includes comprehensive **classroom management** features for educational institutions:
+
+### 🏫 Core Features
+- **Classroom Management:** Create classes, manage students, configure settings
+- **Assignment System:** Full lifecycle from creation to grading
+- **Gradebook:** Track student grades with automatic calculations
+- **Performance Analytics:** Class and student-level performance insights
+- **Role-Based Access:** Teacher, Student, and Admin roles
+
+### 🔧 Phase 5 Architecture
+- **Services (3):** classroom_service, assignment_service, grade_service
+- **Pages (8):** Classrooms list/detail, Assignments list/detail, Gradebook, Analytics
+- **Styling (6):** Responsive CSS modules with mobile optimization
+
+### 📊 Key Capabilities
+✅ Create and manage multiple classrooms  
+✅ Invite students via code system  
+✅ Create, publish, and grade assignments  
+✅ Track submissions with feedback  
+✅ Generate gradebooks with sorting/filtering  
+✅ Analyze class performance with predictions  
+✅ Export rosters, submissions, and grades  
+
+### 📖 Full Documentation
+See [PHASE_5_COMPLETION_REPORT.md](PHASE_5_COMPLETION_REPORT.md) for complete API docs, service reference, and integration guidelines.
+
+---
+
 ## 🔮 Future Enhancements
 
+### Phase 5 Extensions
+- Video lesson integration
+- Discussion forums & peer interaction
+- Advanced rubric-based grading
+- Email notifications for grades
+- Parent/guardian access portal
+- Attendance tracking
+- Learning objectives mapping
+
+### Additional Enhancements
 - AI-powered **document insight graphs**  
 - Support for additional file types: Excel, CSV, PPT  
 - Advanced summary customization & keyword highlighting  

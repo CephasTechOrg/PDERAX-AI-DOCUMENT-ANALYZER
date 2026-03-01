@@ -31,8 +31,8 @@
 /* Chat layout fills the viewport below the fixed nav */
 .chat-layout {
     display: flex;
-    height: calc(100vh - 72px);
-    margin-top: 72px;
+    height: calc(100vh - 64px);
+    margin-top: 64px;
     overflow: hidden;
     position: relative;
 }
@@ -368,6 +368,10 @@
     border-left: 3px solid rgba(99,102,241,0.45);
     margin: 0.35rem 0; padding-left: 0.7rem; color: var(--text-secondary);
 }
+/* KaTeX math display blocks */
+.message.assistant .message-bubble .katex-display {
+    overflow-x: auto; padding: 0.3rem 0; margin: 0.4rem 0;
+}
 
 .message-time {
     font-size: 0.61rem; color: var(--text-muted);
@@ -501,7 +505,7 @@
         transform: translateX(0);
         box-shadow: 4px 0 32px rgba(0,0,0,0.5);
     }
-    .chat-layout { height: calc(100vh - 66px); margin-top: 66px; }
+    .chat-layout { height: calc(100vh - 60px); margin-top: 60px; }
     .chat-page .header { position: fixed; top: 0; left: 0; right: 0; width: 100%; }
     .welcome-modes { grid-template-columns: 1fr; max-width: 360px; }
     .mode-toggle { display: none; }

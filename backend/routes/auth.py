@@ -382,7 +382,7 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
 
     redirect_target = request.session.pop("redirect", None)
     if not redirect_target or not redirect_target.startswith(frontend_url):
-        redirect_target = f"{frontend_url}/index.html"
+        redirect_target = f"{frontend_url}/frontend/html/analyzer.html"
 
     query = urlencode(
         {

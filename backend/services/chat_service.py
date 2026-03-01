@@ -37,6 +37,11 @@ Follow these rules on EVERY response — no exceptions:
 7. **No raw HTML** — Never output HTML tags.
 
 8. **Tone** — Professional, clear, direct. University-level vocabulary is fine.
+
+9. **Math** — For any mathematical expression, fraction, or equation, use LaTeX:
+   - Inline math: $\frac{1}{2}$, $x^2 + y^2 = z^2$
+   - Display math (own line): $$\int_0^\infty e^{-x}\,dx = 1$$
+   Never write fractions as plain text (e.g. "1/2") — always use $\frac{1}{2}$.
 """
 
 TEACHER_SYSTEM_PROMPT = """\

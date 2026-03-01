@@ -4,799 +4,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDERAX — AI that understands your document</title>
+    <title>PDERAX — AI-Powered Study Platform</title>
+    <meta name="description" content="Transform your documents into flashcards, quizzes, and intelligent summaries. Study smarter with AI.">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="frontend/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/css/style.css">
+    <link rel="stylesheet" href="frontend/css/landing.css">
 </head>
 
 <body>
-    <div class="container">
-        <!-- Enhanced Animated Background -->
-        <div class="animated-bg">
-            <div class="floating-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <div class="shape shape-3"></div>
-                <div class="shape shape-4"></div>
-                <div class="shape shape-5"></div>
-            </div>
-            <div class="particles" id="particles"></div>
+    <!-- Background -->
+    <div class="animated-bg">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
         </div>
-
-        <!-- Navigation injected by nav.js -->
-        <div id="nav-root"></div>
-
-        <!-- Welcome Dashboard (shown for logged-in users) -->
-        <section class="welcome-dashboard" id="welcomeDashboard" style="display: none;">
-            <div class="welcome-content">
-                <div class="welcome-greeting">
-                    <h1>Welcome, <span id="welcomeUserName">User</span></h1>
-                </div>
-            </div>
-        </section>
-
-        <!-- Hero Section (shown for non-logged users / landing page) -->
-        <section class="hero-section" id="heroSection">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-brain"></i>
-                    <span>Advanced AI Analysis</span>
-                </div>
-                <h1 class="hero-title">
-                    <span class="title-gradient">PDERAX</span>
-                    <span class="title-sub">AI that understands your document</span>
-                </h1>
-                <p class="hero-description">
-                    Transform your documents into actionable insights with our advanced AI analysis platform.
-                    Upload PDFs, Word documents, or Excel files and get instant intelligent summaries, key insights,
-                    and interactive Q&A.
-                </p>
-
-                <!-- Stats Bar -->
-                <div class="stats-bar">
-                    <div class="stat">
-                        <div class="stat-number">10K+</div>
-                        <div class="stat-label">Documents Analyzed</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat">
-                        <div class="stat-number">99.8%</div>
-                        <div class="stat-label">Accuracy Rate</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat">
-                        <div class="stat-number">2.3s</div>
-                        <div class="stat-label">Avg. Processing</div>
-                    </div>
-                </div>
-
-                <!-- CTA Button -->
-                <div class="hero-cta">
-                    <button class="cta-btn" onclick="document.getElementById('fileInput').click()">
-                        <span class="btn-text">Start Analyzing</span>
-                        <i class="fas fa-arrow-right btn-icon"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Upload Section -->
-            <section class="upload-section" id="uploadSection">
-                <div class="upload-container">
-                    <div class="upload-card glass-card">
-                        <div class="upload-header">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <h2>Upload Your Document</h2>
-                            <p>Supported formats: PDF, DOCX, XLSX, and more</p>
-                        </div>
-
-                        <div class="upload-area" id="uploadArea">
-                            <div class="upload-area-content">
-                                <div class="upload-graphic">
-                                    <div class="file-icon-wrapper">
-                                        <i class="fas fa-file-alt upload-main-icon"></i>
-                                        <div class="upload-rings">
-                                            <div class="ring ring-1"></div>
-                                            <div class="ring ring-2"></div>
-                                            <div class="ring ring-3"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <h3>Drag & Drop your document</h3>
-                                <p>or click to browse files</p>
-                                <div class="supported-formats">
-                                    <span class="format-badge">
-                                        <i class="fas fa-file-pdf"></i>
-                                        PDF
-                                    </span>
-                                    <span class="format-badge">
-                                        <i class="fas fa-file-word"></i>
-                                        DOCX
-                                    </span>
-                                    <span class="format-badge">
-                                        <i class="fas fa-file-excel"></i>
-                                        XLSX
-                                    </span>
-                                    <span class="format-badge">
-                                        <i class="fas fa-file-alt"></i>
-                                        TXT
-                                    </span>
-                                </div>
-                            </div>
-                            <input type="file" id="fileInput" accept=".pdf,.docx,.doc,.xlsx,.xls,.txt" hidden>
-                        </div>
-
-                        <div class="file-info" id="fileInfo"></div>
-
-                        <div class="features-grid">
-                            <div class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-robot"></i>
-                                    <div class="feature-glow"></div>
-                                </div>
-                                <div class="feature-content">
-                                    <h4>AI-Powered Analysis</h4>
-                                    <p>Advanced neural networks extract deep insights with contextual understanding</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-bolt"></i>
-                                    <div class="feature-glow"></div>
-                                </div>
-                                <div class="feature-content">
-                                    <h4>Lightning Fast</h4>
-                                    <p>Process complex documents in seconds with optimized algorithms</p>
-                                </div>
-                            </div>
-                            <div class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-shield-alt"></i>
-                                    <div class="feature-glow"></div>
-                                </div>
-                                <div class="feature-content">
-                                    <h4>Secure & Private</h4>
-                                    <p>Military-grade encryption ensures your documents remain confidential</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Enhanced Loading Section -->
-            <section class="loading-section" id="loadingSection" style="display: none;">
-                <div class="loading-container">
-                    <div class="loading-card glass-card">
-                        <!-- Advanced AI Brain Animation -->
-                        <div class="ai-brain-animation">
-                            <div class="brain-container">
-                                <div class="brain-lobes">
-                                    <div class="lobe lobe-left"></div>
-                                    <div class="lobe lobe-right"></div>
-                                </div>
-                                <div class="neural-connections">
-                                    <div class="connection connection-1"></div>
-                                    <div class="connection connection-2"></div>
-                                    <div class="connection connection-3"></div>
-                                    <div class="connection connection-4"></div>
-                                    <div class="connection connection-5"></div>
-                                </div>
-                                <div class="processing-dots">
-                                    <div class="dot dot-1"></div>
-                                    <div class="dot dot-2"></div>
-                                    <div class="dot dot-3"></div>
-                                    <div class="dot dot-4"></div>
-                                    <div class="dot dot-5"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="loading-content">
-                            <h3>PDERAX is Analyzing Your Document</h3>
-                            <p>Our advanced AI is processing your content and generating intelligent insights</p>
-
-                            <!-- Enhanced Progress System -->
-                            <div class="progress-system">
-                                <div class="progress-header">
-                                    <span class="progress-title">Processing Stages</span>
-                                    <div class="progress-stats">
-                                        <span class="progress-percent" id="progressPercent">0%</span>
-                                        <span class="progress-time" id="progressTime">Estimated: 15s</span>
-                                    </div>
-                                </div>
-
-                                <div class="progress-visualization">
-                                    <div class="progress-track">
-                                        <div class="progress-fill" id="progressFill">
-                                            <div class="progress-glow"></div>
-                                        </div>
-                                        <div class="progress-milestones">
-                                            <div class="milestone milestone-1 active" data-stage="1">
-                                                <div class="milestone-dot"></div>
-                                                <div class="milestone-pulse"></div>
-                                            </div>
-                                            <div class="milestone milestone-2" data-stage="2">
-                                                <div class="milestone-dot"></div>
-                                                <div class="milestone-pulse"></div>
-                                            </div>
-                                            <div class="milestone milestone-3" data-stage="3">
-                                                <div class="milestone-dot"></div>
-                                                <div class="milestone-pulse"></div>
-                                            </div>
-                                            <div class="milestone milestone-4" data-stage="4">
-                                                <div class="milestone-dot"></div>
-                                                <div class="milestone-pulse"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="stage-details">
-                                    <div class="stage-info active" data-stage="1">
-                                        <div class="stage-icon">
-                                            <i class="fas fa-file-extract"></i>
-                                        </div>
-                                        <div class="stage-content">
-                                            <h4>Text Extraction</h4>
-                                            <p>Extracting and processing document content</p>
-                                        </div>
-                                        <div class="stage-loader">
-                                            <div class="stage-progress"></div>
-                                        </div>
-                                    </div>
-                                    <div class="stage-info" data-stage="2">
-                                        <div class="stage-icon">
-                                            <i class="fas fa-brain"></i>
-                                        </div>
-                                        <div class="stage-content">
-                                            <h4>AI Analysis</h4>
-                                            <p>Neural networks analyzing document structure and meaning</p>
-                                        </div>
-                                        <div class="stage-loader">
-                                            <div class="stage-progress"></div>
-                                        </div>
-                                    </div>
-                                    <div class="stage-info" data-stage="3">
-                                        <div class="stage-icon">
-                                            <i class="fas fa-lightbulb"></i>
-                                        </div>
-                                        <div class="stage-content">
-                                            <h4>Insight Generation</h4>
-                                            <p>Generating key insights and summaries</p>
-                                        </div>
-                                        <div class="stage-loader">
-                                            <div class="stage-progress"></div>
-                                        </div>
-                                    </div>
-                                    <div class="stage-info" data-stage="4">
-                                        <div class="stage-icon">
-                                            <i class="fas fa-chart-bar"></i>
-                                        </div>
-                                        <div class="stage-content">
-                                            <h4>Report Compilation</h4>
-                                            <p>Compiling comprehensive analysis report</p>
-                                        </div>
-                                        <div class="stage-loader">
-                                            <div class="stage-progress"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="loading-tips">
-                                <div class="tip-slider">
-                                    <div class="tip active">
-                                        <i class="fas fa-info-circle"></i>
-                                        <span>Pro Tip: Larger documents may take additional processing time</span>
-                                    </div>
-                                    <div class="tip">
-                                        <i class="fas fa-rocket"></i>
-                                        <span>Our AI processes documents 5x faster than traditional methods</span>
-                                    </div>
-                                    <div class="tip">
-                                        <i class="fas fa-shield-alt"></i>
-                                        <span>Your document is processed securely and never stored</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Enhanced Results Section -->
-            <section class="results-section" id="resultsSection" style="display: none;">
-                <div class="results-container">
-                    <!-- Enhanced Results Header -->
-                    <div class="results-header glass-card">
-                    <div class="results-title">
-                        <div class="success-animation">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="title-content">
-                            <h2>Analysis Complete</h2>
-                            <p>Your document has been processed by PDERAX AI</p>
-                        </div>
-                    </div>
-                    <div class="results-actions">
-                        <button class="action-btn secondary back-btn" onclick="app.goBackToUpload()">
-                            <i class="fas fa-arrow-left"></i>
-                            <span class="btn-text-mobile">Back</span>
-                            <span class="btn-text-desktop">Back to Upload</span>
-                        </button>
-                        <div class="download-buttons" id="downloadButtons"></div>
-                        <button class="action-btn primary" onclick="resetApp()">
-                            <i class="fas fa-plus"></i>
-                            <span class="btn-text-mobile">New</span>
-                            <span class="btn-text-desktop">New Analysis</span>
-                        </button>
-                        </div>
-                    </div>
-
-                    <!-- Enhanced Analysis Overview -->
-                    <div class="analysis-overview">
-                        <div class="overview-card glass-card">
-                            <div class="overview-header">
-                                <h3>Analysis Overview</h3>
-                                <div class="overview-actions">
-                                    <button class="overview-btn" id="exportOverview">
-                                        <i class="fas fa-download"></i>
-                                        Export
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="overview-stats" id="overviewStats">
-                                <!-- Will be populated by JavaScript -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Enhanced Results Grid -->
-                    <div class="results-grid">
-                        <!-- Summary Card -->
-                        <div class="result-card glass-card summary-card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="card-icon">
-                                        <i class="fas fa-file-alt"></i>
-                                        <div class="icon-glow"></div>
-                                    </div>
-                                    <div class="title-content">
-                                        <h3>Executive Summary</h3>
-                                        <p>Comprehensive document overview</p>
-                                    </div>
-                                </div>
-                                <div class="card-actions">
-                                    <button class="card-action" onclick="app.copyToClipboard('summary')">
-                                        <i class="fas fa-copy"></i>
-                                        Copy
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="result-content" id="summaryContent"></div>
-                            </div>
-                        </div>
-
-                        <!-- Insights Card -->
-                        <div class="result-card glass-card insights-card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="card-icon">
-                                        <i class="fas fa-lightbulb"></i>
-                                        <div class="icon-glow"></div>
-                                    </div>
-                                    <div class="title-content">
-                                        <h3>Key Insights</h3>
-                                        <p>Critical findings and observations</p>
-                                    </div>
-                                </div>
-                                <div class="card-badge">
-                                    <span class="insights-count" id="insightsCount">0</span>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="result-content" id="insightsContent"></div>
-                            </div>
-                        </div>
-
-                        <!-- Q&A Card -->
-                        <div class="result-card glass-card qa-card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="card-icon">
-                                        <i class="fas fa-question-circle"></i>
-                                        <div class="icon-glow"></div>
-                                    </div>
-                                    <div class="title-content">
-                                        <h3>Questions & Answers</h3>
-                                        <p>Interactive knowledge assessment</p>
-                                    </div>
-                                </div>
-                                <div class="card-badge">
-                                    <span class="qa-count" id="qaCount">0</span>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="result-content" id="qaContent"></div>
-                            </div>
-                        </div>
-
-                        <!-- Flashcards Card -->
-                        <div class="result-card glass-card flashcards-card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="card-icon">
-                                        <i class="fas fa-layer-group"></i>
-                                        <div class="icon-glow"></div>
-                                    </div>
-                                    <div class="title-content">
-                                        <h3>Study Flashcards</h3>
-                                        <p>AI-generated study cards</p>
-                                    </div>
-                                </div>
-                                <div class="card-badge">
-                                    <span class="flashcard-count" id="flashcardCountBadge">0</span>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="flashcard-controls" id="flashcardControls" style="display: none;">
-                                    <div class="flashcard-settings">
-                                        <select id="flashcardDifficulty" class="flashcard-select">
-                                            <option value="easy">Easy</option>
-                                            <option value="medium" selected>Medium</option>
-                                            <option value="hard">Hard</option>
-                                        </select>
-                                        <select id="flashcardCountSelect" class="flashcard-select">
-                                            <option value="5">5 cards</option>
-                                            <option value="10" selected>10 cards</option>
-                                            <option value="15">15 cards</option>
-                                            <option value="20">20 cards</option>
-                                        </select>
-                                    </div>
-                                    <button class="action-btn primary" onclick="app.generateFlashcards()">
-                                        <i class="fas fa-magic"></i>
-                                        Generate Flashcards
-                                    </button>
-                                </div>
-                                <div class="flashcard-container" id="flashcardContainer">
-                                    <div class="flashcard-deck" id="flashcardDeck">
-                                        <!-- Flashcards will be inserted here -->
-                                    </div>
-                                    <div class="flashcard-navigation" id="flashcardNavigation" style="display: none;">
-                                        <button class="nav-btn" onclick="app.prevFlashcard()">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </button>
-                                        <span class="flashcard-progress">
-                                            <span id="currentCardIndex">1</span> / <span id="totalCards">0</span>
-                                        </span>
-                                        <button class="nav-btn" onclick="app.nextFlashcard()">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="flashcard-placeholder" id="flashcardPlaceholder">
-                                    <i class="fas fa-layer-group"></i>
-                                    <p>Click "Generate Flashcards" to create study cards from your document</p>
-                                    <button class="action-btn primary" onclick="app.showFlashcardControls()">
-                                        <i class="fas fa-magic"></i>
-                                        Generate Flashcards
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Enhanced Visualization Card -->
-                        <div class="result-card glass-card visualization-card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="card-icon">
-                                        <i class="fas fa-chart-network"></i>
-                                        <div class="icon-glow"></div>
-                                    </div>
-                                    <div class="title-content">
-                                        <h3>Content Analysis</h3>
-                                        <p>Visual document insights</p>
-                                    </div>
-                                </div>
-                                <div class="chart-controls">
-                                    <button class="chart-btn active" data-chart="radar">Radar</button>
-                                    <button class="chart-btn" data-chart="bar">Bar</button>
-                                    <button class="chart-btn" data-chart="pie">Pie</button>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="visualization-content" id="visualizationContent">
-                                    <div class="chart-container">
-                                        <canvas id="analysisChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sentiment Analysis Card -->
-                        <div class="result-card glass-card sentiment-card">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <div class="card-icon">
-                                        <i class="fas fa-smile"></i>
-                                        <div class="icon-glow"></div>
-                                    </div>
-                                    <div class="title-content">
-                                        <h3>Sentiment Analysis</h3>
-                                        <p>Document tone and emotion</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-content">
-                                <div class="sentiment-content" id="sentimentContent">
-                                    <div class="sentiment-meter">
-                                        <div class="sentiment-scale">
-                                            <span class="sentiment-label negative">Negative</span>
-                                            <span class="sentiment-label neutral">Neutral</span>
-                                            <span class="sentiment-label positive">Positive</span>
-                                        </div>
-                                        <div class="sentiment-indicator">
-                                            <div class="sentiment-needle"></div>
-                                        </div>
-                                    </div>
-                                    <div class="sentiment-stats">
-                                        <div class="sentiment-stat">
-                                            <span class="stat-value" id="sentimentScore">75%</span>
-                                            <span class="stat-label">Positive</span>
-                                        </div>
-                                        <div class="sentiment-stat">
-                                            <span class="stat-value" id="confidenceScore">92%</span>
-                                            <span class="stat-label">Confidence</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Enhanced Action Buttons -->
-                    <div class="enhanced-actions">
-                        <div class="action-group">
-                            <button class="action-btn primary large" onclick="app.downloadFile('pdf')">
-                                <i class="fas fa-file-pdf"></i>
-                                Download Report
-                            </button>
-                            <button class="action-btn secondary large" onclick="goToFlashcardsWithContext()">
-                                <i class="fas fa-layer-group"></i>
-                                Generate Flashcards
-                            </button>
-                        </div>
-                        <div class="action-group">
-                            <button class="action-btn outline" onclick="resetApp()">
-                                <i class="fas fa-redo"></i>
-                                Analyze Another
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Enhanced Error Section -->
-            <section class="error-section" id="errorSection" style="display: none;">
-                <div class="error-container">
-                    <div class="error-card glass-card">
-                        <div class="error-animation">
-                            <div class="error-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <div class="error-pulse"></div>
-                            </div>
-                        </div>
-                        <div class="error-content">
-                            <h3>Analysis Failed</h3>
-                            <p id="errorMessage"></p>
-                            <div class="error-suggestions">
-                                <div class="suggestion">
-                                    <i class="fas fa-sync-alt"></i>
-                                    <span>Try uploading the document again</span>
-                                </div>
-                                <div class="suggestion">
-                                    <i class="fas fa-file-check"></i>
-                                    <span>Ensure the file format is supported</span>
-                                </div>
-                                <div class="suggestion">
-                                    <i class="fas fa-network-wired"></i>
-                                    <span>Check your internet connection</span>
-                                </div>
-                            </div>
-                            <div class="error-actions">
-                                <button class="action-btn primary" onclick="resetApp()">
-                                    <i class="fas fa-redo"></i>
-                                    Try Again
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Enhanced Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-main">
-                    <div class="footer-brand">
-                        <div class="logo">
-                            <div class="logo-icon small">
-                                <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="url(#logo-gradient-footer)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
-                            </div>
-                            <span class="logo-primary">PDERAX</span>
-                        </div>
-                        <p class="footer-tagline">AI that understands your document</p>
-                        <div class="footer-social">
-                            <a href="#" class="social-link">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="social-link">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="#" class="social-link">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="footer-links">
-                        <div class="footer-column">
-                            <h4>Product</h4>
-                            <a href="#">Features</a>
-                            <a href="#">Pricing</a>
-                            <a href="#">API</a>
-                            <a href="#">Integrations</a>
-                        </div>
-                        <div class="footer-column">
-                            <h4>Company</h4>
-                            <a href="#">About</a>
-                            <a href="#">Blog</a>
-                            <a href="#">Careers</a>
-                            <a href="#">Press</a>
-                        </div>
-                        <div class="footer-column">
-                            <h4>Support</h4>
-                            <a href="#">Help Center</a>
-                            <a href="#">Contact</a>
-                            <a href="#">Status</a>
-                            <a href="#">FAQ</a>
-                        </div>
-                        <div class="footer-column">
-                            <h4>Legal</h4>
-                            <a href="#">Privacy</a>
-                            <a href="#">Terms</a>
-                            <a href="#">Security</a>
-                            <a href="#">Compliance</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="footer-copyright">
-                        <p>&copy; <span id="footer-year"></span> PDERAX. All rights reserved.</p>
-                    </div>
-                    <div class="footer-credits">
-                        <p>
-                            Made with <i class="fas fa-heart" style="color: #ef4444;"></i> by
-                            <a href="https://cephastech.org" target="_blank" class="credit-link">
-                                @CephasTechOrg
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
 
-    <!-- Enhanced Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="frontend/nav.js"></script>
-    <script src="frontend/api.js"></script>
-    <script src="frontend/auth.js"></script>
-    <script>
-        // Route protection - check auth after app.js loads
-        // Auth check is handled by app.js checkAuthentication()
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // Only run these if auth.js AuthService exists
-            if (typeof AuthService === 'undefined') {
-                console.error('[Auth] AuthService not loaded');
-                return;
-            }
+    <!-- Navigation -->
+    <header class="landing-nav">
+        <div class="landing-nav-content">
+            <a href="index.html" class="landing-brand">
+                <i class="fas fa-brain"></i>
+                <span>PDERAX</span>
+            </a>
             
-            // Check if localStorage is available
-            try {
-                localStorage.getItem('test');
-            } catch (e) {
-                console.error('[Auth] localStorage not available:', e);
-                document.body.innerHTML = '<div style="padding: 40px; text-align: center;"><h2>Storage Access Required</h2><p>Please enable cookies/storage or open this page via a web server (not file://).</p></div>';
-                return;
-            }
+            <nav class="landing-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+            </nav>
+            
+            <div class="landing-actions">
+                <a href="frontend/html/login.html" class="btn-login">Sign In</a>
+                <a href="frontend/html/login.html" class="btn-signup">Get Started</a>
+            </div>
+            
+            <button class="mobile-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#features" onclick="toggleMobileMenu()">Features</a>
+            <a href="#how-it-works" onclick="toggleMobileMenu()">How It Works</a>
+            <hr>
+            <a href="frontend/html/login.html">Sign In</a>
+            <a href="frontend/html/login.html" class="btn-signup-mobile">Get Started Free</a>
+        </div>
+    </header>
 
-            // If already authenticated, update UI
-            if (AuthService.isAuthenticated()) {
-                updateNavForAuthenticatedUser();
-                showWelcomeDashboard();
+    <main>
+        <!-- Hero Section with Diagonal Split -->
+        <section class="hero">
+            <!-- Left Content Section -->
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-sparkles"></i>
+                    <span>AI-Powered Learning</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    Study Smarter,<br>
+                    <span class="gradient-text">Not Harder</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Upload your notes, PDFs, or documents. Get AI-generated flashcards, 
+                    quizzes, and summaries in seconds. Your personal study assistant.
+                </p>
+                
+                <div class="hero-buttons">
+                    <a href="frontend/html/login.html" class="btn-primary">
+                        <span>Start Free</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="frontend/html/analyzer.html" class="btn-secondary">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Try Analyzer</span>
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">10K+</span>
+                        <span class="stat-label">Documents</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value">50K+</span>
+                        <span class="stat-label">Flashcards</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value">99%</span>
+                        <span class="stat-label">Accuracy</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Image Section with Diagonal Cut -->
+            <div class="hero-visual">
+                <img src="frontend/assets/images/student.png" alt="Student studying with PDERAX" class="hero-image">
+                <div class="hero-image-glow"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="section-header">
+                <span class="section-tag">Features</span>
+                <h2 class="section-title">Everything You Need to Excel</h2>
+                <p class="section-subtitle">Powerful AI tools designed for modern students</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Document Analysis</h3>
+                    <p>Upload PDFs, Word docs, or notes. AI extracts key concepts, generates summaries, and identifies important topics.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> PDF, DOCX, TXT support</li>
+                        <li><i class="fas fa-check"></i> Auto summaries</li>
+                        <li><i class="fas fa-check"></i> Key insights extraction</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3>AI Flashcards</h3>
+                    <p>Generate study flashcards instantly from your documents. Choose difficulty and customize your learning experience.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Auto-generated cards</li>
+                        <li><i class="fas fa-check"></i> Flip to reveal</li>
+                        <li><i class="fas fa-check"></i> Easy/Medium/Hard</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3>Quiz Generator</h3>
+                    <p>Test your knowledge with AI-generated quizzes. Get instant feedback with detailed explanations for every answer.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Multiple choice</li>
+                        <li><i class="fas fa-check"></i> Instant results</li>
+                        <li><i class="fas fa-check"></i> Answer explanations</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon orange">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>AI Tutor</h3>
+                    <p>Chat with an AI that understands your documents. Ask questions, get explanations, and learn through conversation.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Teacher mode</li>
+                        <li><i class="fas fa-check"></i> Helper mode</li>
+                        <li><i class="fas fa-check"></i> Context-aware</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="section-header">
+                <span class="section-tag">How It Works</span>
+                <h2 class="section-title">Three Simple Steps</h2>
+                <p class="section-subtitle">From document to study material in seconds</p>
+            </div>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Document</h3>
+                    <p>Drag and drop your PDF, Word doc, or notes. We support most common file formats.</p>
+                </div>
+                
+                <div class="step-connector">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI Processes</h3>
+                    <p>Our AI reads, understands, and extracts key information from your content.</p>
+                </div>
+                
+                <div class="step-connector">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Start Studying</h3>
+                    <p>Use flashcards, take quizzes, chat with AI, and master your material.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2 class="section-title">Loved by Students</h2>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"PDERAX saved me hours of study time. The AI flashcards are spot-on and the quizzes helped me identify my weak areas."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SK</div>
+                        <div class="author-info">
+                            <strong>Sarah K.</strong>
+                            <span>Medical Student</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"The AI tutor is like having a personal study buddy 24/7. It explains complex legal concepts in ways I actually understand."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JM</div>
+                        <div class="author-info">
+                            <strong>James M.</strong>
+                            <span>Law Student</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"I used to spend hours making flashcards. Now I upload my notes and PDERAX does it in seconds. Absolute game changer!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AL</div>
+                        <div class="author-info">
+                            <strong>Aisha L.</strong>
+                            <span>Engineering Student</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Study Smarter?</h2>
+                <p>Join thousands of students using AI to ace their exams. Start free today.</p>
+                <div class="cta-buttons">
+                    <a href="frontend/html/login.html" class="btn-primary large">
+                        <span>Get Started Free</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <span class="cta-note">No credit card required • Free forever plan available</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <div class="logo-icon small">
+                            <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="url(#logo-gradient-footer)"/><path d="M12 10h10c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-10v-6z" fill="white" opacity="0.9"/><path d="M12 18h8c1.1 0 2 .9 2 2s-.9 2-2 2h-8v-4z" fill="white" opacity="0.7"/><path d="M12 24h6v6h-6z" fill="white" opacity="0.5"/><circle cx="28" cy="26" r="6" stroke="white" stroke-width="2" fill="none"/><path d="M32 30l4 4" stroke="white" stroke-width="2" stroke-linecap="round"/><defs><linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
+                        </div>
+                        <span class="logo-primary">PDERAX</span>
+                    </div>
+                    <p class="footer-tagline">AI that understands your document</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#how-it-works">How It Works</a>
+                        <a href="frontend/html/analyzer.html">Analyzer</a>
+                        <a href="frontend/html/ai-assistant.html">AI Assistant</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Blog</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Press</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <a href="#">Help Center</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Status</a>
+                        <a href="#">FAQ</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                        <a href="#">Security</a>
+                        <a href="#">Compliance</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; <span id="footer-year"></span> PDERAX. All rights reserved.</p>
+                </div>
+                <div class="footer-credits">
+                    <p>
+                        Made with <i class="fas fa-heart" style="color: #ef4444;"></i> by
+                        <a href="https://cephastech.org" target="_blank" class="credit-link">
+                            @CephasTechOrg
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+        
+        // Close mobile menu on scroll
+        window.addEventListener('scroll', () => {
+            const menu = document.getElementById('mobileMenu');
+            if (menu.classList.contains('active')) {
+                menu.classList.remove('active');
             }
         });
-
-        function showWelcomeDashboard() {
-            const user = AuthService.getUser();
-            const welcomeDashboard = document.getElementById('welcomeDashboard');
-            const heroSection = document.getElementById('heroSection');
-            
-            if (welcomeDashboard && user) {
-                // Update welcome message
-                const welcomeUserName = document.getElementById('welcomeUserName');
-                if (welcomeUserName) {
-                    welcomeUserName.textContent = user.full_name || user.email.split('@')[0];
-                }
-                
-                // Update last active time
-                const lastActiveTime = document.getElementById('lastActiveTime');
-                if (lastActiveTime && user.last_login_at) {
-                    lastActiveTime.textContent = formatRelativeTime(user.last_login_at);
-                }
-                
-                // Show dashboard, hide hero
-                welcomeDashboard.style.display = 'block';
-                if (heroSection) {
-                    heroSection.style.display = 'none';
-                }
-            }
-        }
-        
-        function formatRelativeTime(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMins / 60);
-            const diffDays = Math.floor(diffHours / 24);
-            
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24) return `${diffHours}h ago`;
-            if (diffDays < 7) return `${diffDays}d ago`;
-            return date.toLocaleDateString();
-        }
-        
-        function showRecentDocuments() {
-            // TODO: Implement recent documents modal/view
-            alert('Recent documents feature coming soon!');
-        }
-
-        function updateNavForAuthenticatedUser() {
-            AuthService.updateNavForAuthenticatedUser();
-        }
-
-        function toggleUserMenu() {
-            AuthService.toggleUserMenu();
-        }
-
-        function handleLogout() {
-            AuthService.handleLogout();
-        }
-
-        function showProfile() {
-            AuthService.showProfile();
-        }
-
-        function showSettings() {
-            AuthService.showSettings();
-        }
     </script>
-    <script src="frontend/app.js"></script>
 </body>
 
 </html>
