@@ -56,9 +56,9 @@ export const FlashcardList: React.FC<FlashcardListProps> = ({
     );
   }
 
-  const easyCount = flashcards.filter((c) => c.difficulty === 'easy').length;
-  const mediumCount = flashcards.filter((c) => c.difficulty === 'medium').length;
-  const hardCount = flashcards.filter((c) => c.difficulty === 'hard').length;
+  const easyCount = 0;
+  const mediumCount = 0;
+  const hardCount = 0;
 
   return (
     <div className={styles.container}>

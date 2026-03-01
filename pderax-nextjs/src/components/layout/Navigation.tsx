@@ -23,9 +23,9 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 const AUTH_NAV_LINKS: NavLink[] = [
-  { label: 'Dashboard', href: '/dashboard/analyzer' },
-  { label: 'Study Tools', href: '/dashboard/study-tools' },
-  { label: 'History', href: '/dashboard/history' },
+  { label: 'Analyzer', href: '/analyzer' },
+  { label: 'AI Assistant', href: '/ai-assistant' },
+  { label: 'History', href: '/history' },
 ];
 
 export function Navigation() {

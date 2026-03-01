@@ -51,6 +51,7 @@ export interface Document {
 export type CardDifficulty = 'easy' | 'medium' | 'hard';
 
 export interface Flashcard {
+  id: string;
   front: string;
   back: string;
   category?: string;

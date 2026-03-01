@@ -22,7 +22,7 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/dashboard/analyzer');
+      router.push('/analyzer');
     }
   }, [isAuthenticated, isLoading, router]);
 

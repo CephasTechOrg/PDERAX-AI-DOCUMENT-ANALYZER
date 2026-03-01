@@ -137,7 +137,7 @@ class AIAssistantService {
     question: string
   ): Promise<{ answer: string }> {
     const response = await apiClient.post<{ answer: string }>(
-      `/api/v1/chat/sessions/${sessionId}/message`,
+      `/api/v1/documents/${documentId}/ask`,
       { question }
     );
     return response.data ?? { answer: '' };
@@ -148,7 +148,7 @@ class AIAssistantService {
    */
   async generateSummary(documentId: string): Promise<{ summary: string }> {
     const response = await apiClient.post<{ summary: string }>(
-      `/api/v1/chat/sessions/${sessionId}/message`,
+      `/api/v1/documents/${documentId}/summary`,
       {}
     );
     return response.data ?? { summary: '' };

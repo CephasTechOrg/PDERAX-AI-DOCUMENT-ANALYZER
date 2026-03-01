@@ -41,7 +41,7 @@ function OAuthCallbackHandler() {
           user,
         };
         localStorage.setItem('auth_session', JSON.stringify(session));
-        router.replace('/dashboard/analyzer');
+        router.replace('/analyzer');
       })
       .catch(() => {
         setError('Could not fetch your profile. Please log in manually.');

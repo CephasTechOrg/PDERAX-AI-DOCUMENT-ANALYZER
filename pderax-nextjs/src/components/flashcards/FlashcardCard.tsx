@@ -45,7 +45,7 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
           <div className={styles.cardFront}>
             <div className={styles.cardLabel}>Question</div>
             <div className={styles.cardContent}>
-              <p>{card.question}</p>
+              <p>{card.front}</p>
             </div>
             <div className={styles.cardHint}>Click to reveal answer</div>
           </div>
@@ -54,7 +54,7 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
           <div className={styles.cardBack}>
             <div className={styles.cardLabel}>Answer</div>
             <div className={styles.cardContent}>
-              <p>{card.answer}</p>
+              <p>{card.back}</p>
             </div>
             <div className={styles.cardHint}>Click to see question</div>
           </div>
@@ -109,9 +109,9 @@ export const FlashcardCard: React.FC<FlashcardCardProps> = ({
 
       <div className={styles.difficulty}>
         <span
-          className={`${styles.badge} ${styles[card.difficulty]}`}
+          className={`${styles.badge}`}
         >
-          {card.difficulty.charAt(0).toUpperCase() + card.difficulty.slice(1)}
+          Basic
         </span>
       </div>
     </div>
