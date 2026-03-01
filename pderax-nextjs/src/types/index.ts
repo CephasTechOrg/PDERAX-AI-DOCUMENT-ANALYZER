@@ -9,18 +9,25 @@ export type UserRole = 'student' | 'teacher' | 'admin';
 export interface User {
   id: string;
   email: string;
-  name: string;
-  avatar_url?: string;
+  full_name: string | null;
+  avatar_url?: string | null;
   role: UserRole;
-  created_at: string;
-  updated_at: string;
+  is_verified: boolean;
+  is_active: boolean;
+  created_via: string;
+  university?: string | null;
+  field_of_study?: string | null;
+  academic_level?: string | null;
 }
 
 export interface AuthSession {
   user: User;
   access_token: string;
   refresh_token: string;
-  expires_at: number;
+  /** Seconds until expiry (as returned by backend TokenResponse) */
+  expires_in: number;
+  /** Optional: computed absolute expiry timestamp (ms) stored locally */
+  expires_at?: number;
 }
 
 // Documents
@@ -44,13 +51,20 @@ export interface Document {
 export type CardDifficulty = 'easy' | 'medium' | 'hard';
 
 export interface Flashcard {
+  front: string;
+  back: string;
+  category?: string;
+}
+
+export interface FlashcardSet {
   id: string;
-  document_id: string;
-  question: string;
-  answer: string;
+  user_id: string;
+  analysis_id?: string | null;
+  title?: string | null;
   difficulty: CardDifficulty;
+  cards: Flashcard[];
+  card_count: number;
   created_at: string;
-  updated_at: string;
 }
 
 export interface StudyProgress {
@@ -91,9 +105,10 @@ export interface LoginRequest {
 
 export interface SignupRequest {
   email: string;
-  name: string;
+  full_name: string;
   password: string;
   password_confirm: string;
+  user_type?: 'student' | 'teacher';
 }
 
 export interface UploadDocumentRequest {
@@ -101,24 +116,32 @@ export interface UploadDocumentRequest {
   document_type?: string;
 }
 
-// Classroom (Future)
-export type ClassroomRole = 'instructor' | 'student' | 'teaching_assistant';
+// Classroom
+export type ClassroomRole = 'teacher' | 'student' | 'assistant';
+export type AssignmentStatus = 'draft' | 'published' | 'closed' | 'archived';
+export type SubmissionStatus = 'not_submitted' | 'submitted' | 'graded' | 'returned';
 
 export interface Classroom {
   id: string;
+  teacher_id: string;
   name: string;
-  description?: string;
-  code: string;
-  instructor_id: string;
+  description?: string | null;
+  subject: string;
+  grade_level: string;
+  invite_code: string;
+  is_archived: boolean;
+  settings: Record<string, unknown>;
   created_at: string;
-  member_count: number;
+  updated_at: string;
+  student_count?: number;
 }
 
-export interface ClassMember {
+export interface ClassroomEnrollment {
   id: string;
   classroom_id: string;
-  user_id: string;
-  role: ClassroomRole;
+  student_id: string;
+  role: string;
+  status: string;
   joined_at: string;
 }
 
@@ -126,8 +149,39 @@ export interface Assignment {
   id: string;
   classroom_id: string;
   title: string;
-  description: string;
-  document_id?: string;
-  due_date: string;
+  description?: string | null;
+  points_possible: number;
+  due_date?: string | null;
+  status: AssignmentStatus;
+  settings: Record<string, unknown>;
+  rubric?: Record<string, unknown> | null;
   created_at: string;
+  updated_at: string;
+}
+
+export interface Submission {
+  id: string;
+  assignment_id: string;
+  student_id: string;
+  content?: string | null;
+  attachments: string[];
+  submitted_at: string;
+  status: SubmissionStatus;
+  revision_count: number;
+}
+
+export interface Grade {
+  id: string;
+  submission_id: string;
+  assignment_id: string;
+  student_id: string;
+  classroom_id: string;
+  points_earned: number;
+  points_possible: number;
+  percentage?: number | null;
+  letter_grade?: string | null;
+  feedback?: string | null;
+  rubric_scores?: Record<string, unknown> | null;
+  graded_by?: string | null;
+  graded_at: string;
 }

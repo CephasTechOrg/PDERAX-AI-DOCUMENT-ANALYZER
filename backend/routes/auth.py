@@ -80,6 +80,7 @@ def _user_out(user: User) -> UserOut:
         is_verified=user.is_verified,
         is_active=user.is_active,
         created_via=user.created_via or "email",
+        role=getattr(user, "role", "student") or "student",
         university=prefs.get("university"),
         field_of_study=prefs.get("field_of_study"),
         academic_level=prefs.get("academic_level"),
@@ -148,6 +149,7 @@ async def register(payload: RegisterRequest, db: Session = Depends(get_db)):
         created_via="email",
         is_verified=False,
         is_active=True,
+        role=payload.user_type,
     )
     db.add(user)
     db.commit()
@@ -352,7 +354,10 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
         if not user:
             user = User(
                 email=email,
+                full_name=userinfo.get("name"),
+                avatar_url=userinfo.get("picture"),
                 password_hash=None,
+                created_via="google",
                 is_verified=bool(email_verified),
                 is_active=True,
             )
@@ -377,19 +382,16 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
 
     tokens = _issue_tokens(user)
 
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5500").rstrip("/")
-    login_url = f"{frontend_url}/login.html"
-
-    redirect_target = request.session.pop("redirect", None)
-    if not redirect_target or not redirect_target.startswith(frontend_url):
-        redirect_target = f"{frontend_url}/frontend/html/analyzer.html"
+    # Redirect to the Next.js OAuth callback page with tokens as query params
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
+    callback_url = f"{frontend_url}/auth/callback"
 
     query = urlencode(
         {
             "access_token": tokens.access_token,
             "refresh_token": tokens.refresh_token,
-            "redirect": redirect_target,
+            "expires_in": tokens.expires_in,
         }
     )
-    redirect_url = f"{login_url}?{query}"
+    redirect_url = f"{callback_url}?{query}"
     return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)

@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import styles from './Navigation.module.css';
 
@@ -47,6 +48,13 @@ export function Navigation() {
       <div className={styles.navContainer}>
         {/* Logo */}
         <Link href="/" className={styles.logo}>
+          <Image 
+            src="/assets/logo.png" 
+            alt="PDERAX Logo"
+            width={32}
+            height={32}
+            className={styles.logoImage}
+          />
           <span className={styles.logoText}>PDERAX</span>
         </Link>
 
@@ -68,7 +76,7 @@ export function Navigation() {
           {isAuthenticated ? (
             <>
               <div className={styles.userInfo}>
-                <span className={styles.userName}>{user?.name || 'User'}</span>
+                <span className={styles.userName}>{user?.full_name || user?.email.split('@')[0] || 'User'}</span>
               </div>
               <button
                 onClick={handleLogout}
@@ -117,7 +125,7 @@ export function Navigation() {
           {isAuthenticated ? (
             <>
               <div className={styles.mobileMenuUser}>
-                <span>{user?.name || 'User'}</span>
+                <span>{user?.full_name || user?.email.split('@')[0] || 'User'}</span>
               </div>
               <button
                 onClick={handleLogout}

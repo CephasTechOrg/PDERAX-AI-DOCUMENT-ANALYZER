@@ -41,7 +41,7 @@ class UserProfileService {
    * Get current user's full profile
    */
   async getProfile(): Promise<UserProfile> {
-    const response = await apiClient.get<UserProfile>('/user/profile');
+    const response = await apiClient.get<UserProfile>('/api/v1/auth/me');
     return response;
   }
 
@@ -49,7 +49,7 @@ class UserProfileService {
    * Update user profile information
    */
   async updateProfile(data: UpdateProfileRequest): Promise<UserProfile> {
-    const response = await apiClient.put<UserProfile>('/user/profile', data);
+    const response = await apiClient.put<UserProfile>('/api/v1/auth/profile', data);
     return response;
   }
 
@@ -57,7 +57,7 @@ class UserProfileService {
    * Update user settings
    */
   async updateSettings(data: UpdateSettingsRequest): Promise<UserProfile> {
-    const response = await apiClient.put<UserProfile>('/user/settings', data);
+    const response = await apiClient.put<UserProfile>('/api/v1/auth/profile', data);
     return response;
   }
 
@@ -66,7 +66,7 @@ class UserProfileService {
    */
   async uploadAvatar(file: File): Promise<{ avatar_url: string }> {
     const response = await apiClient.upload<{ avatar_url: string }>(
-      '/user/avatar',
+      '/api/v1/user/avatar',
       file,
       { avatar: file.name }
     );
@@ -78,7 +78,7 @@ class UserProfileService {
    */
   async changePassword(data: PasswordChangeRequest): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      '/user/change-password',
+      '/api/v1/user/change-password',
       data
     );
     return response;
@@ -89,7 +89,7 @@ class UserProfileService {
    */
   async enableTwoFactor(): Promise<{ qr_code: string; secret: string }> {
     const response = await apiClient.post<{ qr_code: string; secret: string }>(
-      '/user/two-factor/enable',
+      '/api/v1/user/two-factor/enable',
       {}
     );
     return response;
@@ -100,7 +100,7 @@ class UserProfileService {
    */
   async verifyTwoFactor(code: string): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      '/user/two-factor/verify',
+      '/api/v1/user/two-factor/verify',
       { code }
     );
     return response;
@@ -111,7 +111,7 @@ class UserProfileService {
    */
   async disableTwoFactor(password: string): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      '/user/two-factor/disable',
+      '/api/v1/user/two-factor/disable',
       { password }
     );
     return response;
@@ -122,7 +122,7 @@ class UserProfileService {
    */
   async getPreferences(): Promise<UpdateSettingsRequest> {
     const response = await apiClient.get<UpdateSettingsRequest>(
-      '/user/preferences'
+      '/api/v1/user/preferences'
     );
     return response;
   }
@@ -132,7 +132,7 @@ class UserProfileService {
    */
   async deleteAccount(password: string): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      '/user/delete-account',
+      '/api/v1/user/delete-account',
       { password }
     );
     return response;
@@ -148,7 +148,7 @@ class UserProfileService {
     const response = await apiClient.get<{
       current_session: { device: string; last_active: string };
       other_sessions: Array<{ id: string; device: string; last_active: string }>;
-    }>('/user/sessions');
+    }>('/api/v1/user/sessions');
     return response;
   }
 
@@ -157,7 +157,7 @@ class UserProfileService {
    */
   async logoutOtherSessions(): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      '/user/logout-other-sessions',
+      '/api/v1/user/logout-other-sessions',
       {}
     );
     return response;

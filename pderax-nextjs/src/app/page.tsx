@@ -5,6 +5,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -13,26 +14,56 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <div className={styles.badge}>✨ AI-Powered Document Analysis</div>
+          <div className={styles.badge}>
+            <span className={styles.badgeIcon}>✨</span>
+            AI-Powered Learning
+          </div>
           <h1 className={styles.title}>
-            Transform Your Documents into Learning Tools
+            Study Smarter,<br />
+            <span className={styles.gradientText}>Not Harder</span>
           </h1>
           <p className={styles.subtitle}>
-            Automatically generate flashcards, summaries, and study guides from any document
-            using advanced AI. Save hours on content creation and focus on what matters most.
+            Upload your notes, PDFs, or documents. Get AI-generated flashcards, 
+            quizzes, and summaries in seconds. Your personal study assistant.
           </p>
           <div className={styles.heroButtons}>
             <Link href="/signup" className={`${styles.button} ${styles.primaryButton}`}>
-              Get Started Free
+              <span>Start Free</span>
+              <span className={styles.buttonArrow}>→</span>
             </Link>
-            <a href="#features" className={`${styles.button} ${styles.secondaryButton}`}>
-              Learn More →
-            </a>
+            <Link href="/login" className={`${styles.button} ${styles.secondaryButton}`}>
+              <span className={styles.playIcon}>▶</span>
+              <span>Try Now</span>
+            </Link>
+          </div>
+          <div className={styles.heroStats}>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>10K+</span>
+              <span className={styles.statLabel}>Documents</span>
+            </div>
+            <div className={styles.statDivider}></div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>50K+</span>
+              <span className={styles.statLabel}>Flashcards</span>
+            </div>
+            <div className={styles.statDivider}></div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>99%</span>
+              <span className={styles.statLabel}>Accuracy</span>
+            </div>
           </div>
         </div>
         <div className={styles.heroVisual}>
-          <div className={styles.placeholderImage}>
-            <div className={styles.imagePlaceholder}>Document Preview</div>
+          <div className={styles.heroImageContainer}>
+            <Image 
+              src="/assets/student.png" 
+              alt="Student studying with PDERAX" 
+              className={styles.heroImage}
+              width={500}
+              height={500}
+              priority
+            />
+            <div className={styles.heroImageGlow}></div>
           </div>
         </div>
       </section>
@@ -40,48 +71,53 @@ export default function Home() {
       {/* Features Section */}
       <section id="features" className={styles.features}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Powerful Features</h2>
-          <p className={styles.sectionSubtitle}>
-            Everything you need to analyze documents and create study materials
-          </p>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionTag}>Features</span>
+            <h2 className={styles.sectionTitle}>Everything You Need to Excel</h2>
+            <p className={styles.sectionSubtitle}>
+              Powerful AI tools designed for modern students
+            </p>
+          </div>
 
           <div className={styles.featureGrid}>
             {[
               {
                 icon: '📄',
-                title: 'Smart Document Analysis',
-                description: 'Upload any document and get instant AI-powered analysis and summaries',
+                title: 'Document Analysis',
+                description: 'Upload PDFs, Word docs, or notes. AI extracts key concepts, generates summaries, and identifies important topics.',
+                items: ['PDF, DOCX, TXT support', 'Auto summaries', 'Key insights extraction']
               },
               {
-                icon: '🎓',
-                title: 'Auto-Generated Flashcards',
-                description: 'Create comprehensive flashcard decks automatically in seconds',
+                icon: '📚',
+                title: 'AI Flashcards',
+                description: 'Generate study flashcards instantly from your documents. Choose difficulty and customize your learning experience.',
+                items: ['Auto-generated cards', 'Flip to reveal', 'Easy/Medium/Hard levels']
               },
               {
-                icon: '📊',
-                title: 'Study Progress Tracking',
-                description: 'Monitor your learning progress with detailed analytics',
+                icon: '❓',
+                title: 'Quiz Generator',
+                description: 'Test your knowledge with AI-generated quizzes. Get instant feedback with detailed explanations for every answer.',
+                items: ['Multiple choice', 'Instant results', 'Answer explanations']
               },
               {
                 icon: '🤖',
-                title: 'AI Chat Assistant',
-                description: 'Ask questions about your documents and get instant answers',
-              },
-              {
-                icon: '📱',
-                title: 'Multi-Format Support',
-                description: 'Works with PDF, Word documents, and text files',
-              },
-              {
-                icon: '☁️',
-                title: 'Cloud Storage',
-                description: 'Access your documents anytime, anywhere, on any device',
+                title: 'AI Tutor',
+                description: 'Chat with an AI that understands your documents. Ask questions, get explanations, and learn through conversation.',
+                items: ['Teacher mode', 'Helper mode', 'Context-aware']
               },
             ].map((feature, idx) => (
               <div key={idx} className={styles.featureCard}>
                 <div className={styles.featureIcon}>{feature.icon}</div>
                 <h3 className={styles.featureTitle}>{feature.title}</h3>
                 <p className={styles.featureDescription}>{feature.description}</p>
+                <ul className={styles.featureList}>
+                  {feature.items.map((item, itemIdx) => (
+                    <li key={itemIdx}>
+                      <span className={styles.checkIcon}>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>

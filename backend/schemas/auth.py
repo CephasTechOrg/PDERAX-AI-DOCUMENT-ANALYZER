@@ -7,6 +7,7 @@ class RegisterRequest(BaseModel):
     full_name: str = Field(min_length=2, max_length=100)
     password: str = Field(min_length=8, max_length=72)
     password_confirm: str = Field(min_length=8, max_length=72)
+    user_type: str = Field(default="student", pattern="^(student|teacher)$")
 
     @field_validator('password_confirm')
     @classmethod
@@ -49,6 +50,7 @@ class UserOut(BaseModel):
     is_verified: bool
     is_active: bool
     created_via: str = "email"
+    role: str = "student"
     university: Optional[str] = None
     field_of_study: Optional[str] = None
     academic_level: Optional[str] = None

@@ -43,7 +43,7 @@ class AnalyticsService {
    * Get overall study statistics
    */
   async getStudyStats(): Promise<StudyStats> {
-    const response = await apiClient.get<StudyStats>('/user/stats');
+    const response = await apiClient.get<StudyStats>('/api/analytics/overview');
     if (!response.data) {
       throw new Error(response.error?.message || 'Failed to load study stats');
     }
@@ -55,7 +55,7 @@ class AnalyticsService {
    */
   async getDocumentStats(documentId: string): Promise<DocumentStats> {
     const response = await apiClient.get<DocumentStats>(
-      `/documents/${documentId}/stats`
+      `/api/analytics/overview`
     );
     if (!response.data) {
       throw new Error(response.error?.message || 'Failed to load document stats');
@@ -76,7 +76,7 @@ class AnalyticsService {
     });
 
     const response = await apiClient.get<DailyProgress[]>(
-      `/user/progress/daily?${params.toString()}`
+      `/api/analytics/study-time?${params.toString()}`
     );
     return response.data ?? [];
   }
@@ -90,7 +90,7 @@ class AnalyticsService {
     });
 
     const response = await apiClient.get<LearningTrend[]>(
-      `/user/progress/trends?${params.toString()}`
+      `/api/analytics/study-time?${params.toString()}`
     );
     return response.data ?? [];
   }
@@ -103,7 +103,7 @@ class AnalyticsService {
       current: number;
       best: number;
       last_study: string;
-    }>('/user/streak');
+    }>('/api/analytics/overview');
     return response.data ?? { current: 0, best: 0, last_study: '' };
   }
 
@@ -116,7 +116,7 @@ class AnalyticsService {
     });
 
     const response = await apiClient.get<DocumentStats[]>(
-      `/user/documents/most-studied?${params.toString()}`
+      '/api/analytics/subjects'
     );
     return response.data ?? [];
   }
@@ -139,7 +139,7 @@ class AnalyticsService {
       weekly_progress: number;
       monthly_goal: number;
       monthly_progress: number;
-    }>('/user/goals');
+    }>('/api/analytics/dashboard');
     return response.data ?? {
       daily_goal: 0,
       daily_progress: 0,
@@ -162,7 +162,7 @@ class AnalyticsService {
       easy: number;
       medium: number;
       hard: number;
-    }>('/user/difficulty-distribution');
+    }>('/api/analytics/subjects');
     return response.data ?? { easy: 0, medium: 0, hard: 0 };
   }
 }

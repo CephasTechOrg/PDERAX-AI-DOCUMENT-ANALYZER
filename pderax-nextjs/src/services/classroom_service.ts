@@ -82,7 +82,7 @@ class ClassroomService {
    * Create a new classroom
    */
   async createClassroom(data: CreateClassroomRequest): Promise<Classroom> {
-    const response = await apiClient.post<Classroom>('/api/classrooms', data);
+    const response = await apiClient.post<Classroom>('/api/v1/classrooms', data);
     return response.data;
   }
 
@@ -94,7 +94,7 @@ class ClassroomService {
     limit: number = 10
   ): Promise<PaginatedClassrooms> {
     const response = await apiClient.get<PaginatedClassrooms>(
-      '/api/classrooms',
+      '/api/v1/classrooms',
       {
         params: { page, limit },
       }
@@ -107,7 +107,7 @@ class ClassroomService {
    */
   async getClassroom(classroomId: string): Promise<Classroom> {
     const response = await apiClient.get<Classroom>(
-      `/api/classrooms/${classroomId}`
+      `/api/v1/classrooms/${classroomId}`
     );
     return response.data;
   }
@@ -120,7 +120,7 @@ class ClassroomService {
     data: UpdateClassroomRequest
   ): Promise<Classroom> {
     const response = await apiClient.put<Classroom>(
-      `/api/classrooms/${classroomId}`,
+      `/api/v1/classrooms/${classroomId}`,
       data
     );
     return response.data;
@@ -130,7 +130,7 @@ class ClassroomService {
    * Delete a classroom
    */
   async deleteClassroom(classroomId: string): Promise<void> {
-    await apiClient.delete(`/api/classrooms/${classroomId}`);
+    await apiClient.delete(`/api/v1/classrooms/${classroomId}`);
   }
 
   /**
@@ -145,7 +145,7 @@ class ClassroomService {
     active_assignments: number;
   }> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/stats`
+      `/api/v1/classrooms/${classroomId}/stats`
     );
     return response.data;
   }
@@ -159,7 +159,7 @@ class ClassroomService {
     limit: number = 50
   ): Promise<PaginatedStudents> {
     const response = await apiClient.get<PaginatedStudents>(
-      `/api/classrooms/${classroomId}/students`,
+      `/api/v1/classrooms/${classroomId}/students`,
       {
         params: { page, limit },
       }
@@ -175,7 +175,7 @@ class ClassroomService {
     email: string
   ): Promise<{ success: boolean; message: string }> {
     const response = await apiClient.post(
-      `/api/classrooms/${classroomId}/invite`,
+      `/api/v1/classrooms/${classroomId}/invite`,
       { email }
     );
     return response.data;
@@ -186,7 +186,7 @@ class ClassroomService {
    */
   async generateInviteCode(classroomId: string): Promise<ClassroomInvite> {
     const response = await apiClient.post<ClassroomInvite>(
-      `/api/classrooms/${classroomId}/invite-code`,
+      `/api/v1/classrooms/${classroomId}/invite-code`,
       {}
     );
     return response.data;
@@ -197,7 +197,7 @@ class ClassroomService {
    */
   async getInviteCodes(classroomId: string): Promise<ClassroomInvite[]> {
     const response = await apiClient.get<ClassroomInvite[]>(
-      `/api/classrooms/${classroomId}/invite-codes`
+      `/api/v1/classrooms/${classroomId}/invite-codes`
     );
     return response.data;
   }
@@ -210,7 +210,7 @@ class ClassroomService {
     studentId: string
   ): Promise<void> {
     await apiClient.delete(
-      `/api/classrooms/${classroomId}/students/${studentId}`
+      `/api/v1/classrooms/${classroomId}/students/${studentId}`
     );
   }
 
@@ -223,7 +223,7 @@ class ClassroomService {
     role: 'student' | 'assistant'
   ): Promise<StudentInClassroom> {
     const response = await apiClient.put<StudentInClassroom>(
-      `/api/classrooms/${classroomId}/students/${studentId}`,
+      `/api/v1/classrooms/${classroomId}/students/${studentId}`,
       { role }
     );
     return response.data;
@@ -237,7 +237,7 @@ class ClassroomService {
     settings: Partial<ClassroomSettings>
   ): Promise<Classroom> {
     const response = await apiClient.put<Classroom>(
-      `/api/classrooms/${classroomId}/settings`,
+      `/api/v1/classrooms/${classroomId}/settings`,
       settings
     );
     return response.data;
@@ -248,7 +248,7 @@ class ClassroomService {
    */
   async archiveClassroom(classroomId: string): Promise<Classroom> {
     const response = await apiClient.post<Classroom>(
-      `/api/classrooms/${classroomId}/archive`,
+      `/api/v1/classrooms/${classroomId}/archive`,
       {}
     );
     return response.data;
@@ -259,7 +259,7 @@ class ClassroomService {
    */
   async joinClassroomWithCode(inviteCode: string): Promise<Classroom> {
     const response = await apiClient.post<Classroom>(
-      '/api/classrooms/join',
+      '/api/v1/classrooms/join',
       { invite_code: inviteCode }
     );
     return response.data;
@@ -273,7 +273,7 @@ class ClassroomService {
     limit: number = 10
   ): Promise<PaginatedClassrooms> {
     const response = await apiClient.get<PaginatedClassrooms>(
-      '/api/classrooms/student/enrolled',
+      '/api/v1/classrooms/student/enrolled',
       {
         params: { page, limit },
       }
@@ -286,7 +286,7 @@ class ClassroomService {
    */
   async exportClassroomRoster(classroomId: string): Promise<Blob> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/roster/export`,
+      `/api/v1/classrooms/${classroomId}/roster/export`,
       {
         responseType: 'blob',
       }

@@ -19,6 +19,7 @@ class User(Base):
     is_verified = Column(Boolean, default=False, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
+    role = Column(String(20), default="student", server_default="student", nullable=False)  # student | teacher | admin
     last_login_at = Column(DateTime(timezone=True), nullable=True)
     preferences = Column(JSONB, default=dict, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

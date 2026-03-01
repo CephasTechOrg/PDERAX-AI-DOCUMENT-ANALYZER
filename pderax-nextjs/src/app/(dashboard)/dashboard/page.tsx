@@ -67,7 +67,7 @@ export default function DashboardPage() {
       <section className={styles.welcomeSection}>
         <div className={styles.welcomeContent}>
           <h1 className={styles.title}>
-            Welcome back, <span className={styles.highlight}>{user?.name}</span>
+            Welcome back, <span className={styles.highlight}>{user?.full_name || user?.email.split('@')[0]}</span>
           </h1>
           <p className={styles.subtitle}>
             Here's what you've been working on

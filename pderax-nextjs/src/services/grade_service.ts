@@ -123,7 +123,7 @@ class GradeService {
     class_average: number;
   }> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/gradebook`,
+      `/api/v1/classrooms/${classroomId}/gradebook`,
       {
         params: { page, limit },
       }
@@ -139,7 +139,7 @@ class GradeService {
     studentId: string
   ): Promise<StudentGrades> {
     const response = await apiClient.get<StudentGrades>(
-      `/api/classrooms/${classroomId}/students/${studentId}/grades`
+      `/api/v1/classrooms/${classroomId}/students/${studentId}/grades`
     );
     return response.data;
   }
@@ -149,7 +149,7 @@ class GradeService {
    */
   async getMyGrades(classroomId: string): Promise<StudentGrades> {
     const response = await apiClient.get<StudentGrades>(
-      `/api/classrooms/${classroomId}/my-grades`
+      `/api/v1/classrooms/${classroomId}/my-grades`
     );
     return response.data;
   }
@@ -162,7 +162,7 @@ class GradeService {
     studentId: string
   ): Promise<PerformanceAnalytics> {
     const response = await apiClient.get<PerformanceAnalytics>(
-      `/api/classrooms/${classroomId}/students/${studentId}/performance`
+      `/api/v1/classrooms/${classroomId}/students/${studentId}/performance`
     );
     return response.data;
   }
@@ -172,7 +172,7 @@ class GradeService {
    */
   async getMyPerformance(classroomId: string): Promise<PerformanceAnalytics> {
     const response = await apiClient.get<PerformanceAnalytics>(
-      `/api/classrooms/${classroomId}/my-performance`
+      `/api/v1/classrooms/${classroomId}/my-performance`
     );
     return response.data;
   }
@@ -182,7 +182,7 @@ class GradeService {
    */
   async getClassPerformance(classroomId: string): Promise<ClassPerformance> {
     const response = await apiClient.get<ClassPerformance>(
-      `/api/classrooms/${classroomId}/performance`
+      `/api/v1/classrooms/${classroomId}/performance`
     );
     return response.data;
   }
@@ -196,7 +196,7 @@ class GradeService {
     period?: string
   ): Promise<ReportCard> {
     const response = await apiClient.get<ReportCard>(
-      `/api/classrooms/${classroomId}/students/${studentId}/report-card`,
+      `/api/v1/classrooms/${classroomId}/students/${studentId}/report-card`,
       {
         params: { period },
       }
@@ -212,7 +212,7 @@ class GradeService {
     period?: string
   ): Promise<ReportCard> {
     const response = await apiClient.get<ReportCard>(
-      `/api/classrooms/${classroomId}/my-report-card`,
+      `/api/v1/classrooms/${classroomId}/my-report-card`,
       {
         params: { period },
       }
@@ -227,7 +227,7 @@ class GradeService {
     classroomId: string,
     weightings: GradeWeighting[]
   ): Promise<void> {
-    await apiClient.post(`/api/classrooms/${classroomId}/grade-weightings`, {
+    await apiClient.post(`/api/v1/classrooms/${classroomId}/grade-weightings`, {
       weightings,
     });
   }
@@ -237,7 +237,7 @@ class GradeService {
    */
   async getGradeWeightings(classroomId: string): Promise<GradeWeighting[]> {
     const response = await apiClient.get<GradeWeighting[]>(
-      `/api/classrooms/${classroomId}/grade-weightings`
+      `/api/v1/classrooms/${classroomId}/grade-weightings`
     );
     return response.data;
   }
@@ -252,7 +252,7 @@ class GradeService {
     limit: number = 50
   ): Promise<PaginatedGrades> {
     const response = await apiClient.get<PaginatedGrades>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/grades`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/grades`,
       {
         params: { page, limit },
       }
@@ -269,7 +269,7 @@ class GradeService {
     grades: Array<{ student_id: string; grade: number; feedback?: string }>
   ): Promise<void> {
     await apiClient.post(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/bulk-grade`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/bulk-grade`,
       { grades }
     );
   }
@@ -279,7 +279,7 @@ class GradeService {
    */
   async exportGradebook(classroomId: string): Promise<Blob> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/gradebook/export`,
+      `/api/v1/classrooms/${classroomId}/gradebook/export`,
       {
         responseType: 'blob',
       }
@@ -295,7 +295,7 @@ class GradeService {
     studentId: string
   ): Promise<Blob> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/students/${studentId}/report-card/export`,
+      `/api/v1/classrooms/${classroomId}/students/${studentId}/report-card/export`,
       {
         responseType: 'blob',
       }
@@ -312,7 +312,7 @@ class GradeService {
     limit: number = 10
   ): Promise<StudentGrades[]> {
     const response = await apiClient.get<StudentGrades[]>(
-      `/api/classrooms/${classroomId}/students/by-performance`,
+      `/api/v1/classrooms/${classroomId}/students/by-performance`,
       {
         params: { level, limit },
       }
@@ -332,7 +332,7 @@ class GradeService {
     max: number;
   }> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/grade-statistics`
+      `/api/v1/classrooms/${classroomId}/grade-statistics`
     );
     return response.data;
   }
@@ -342,7 +342,7 @@ class GradeService {
    */
   async generateProgressReports(classroomId: string): Promise<ReportCard[]> {
     const response = await apiClient.get<ReportCard[]>(
-      `/api/classrooms/${classroomId}/progress-reports`
+      `/api/v1/classrooms/${classroomId}/progress-reports`
     );
     return response.data;
   }
@@ -357,7 +357,7 @@ class GradeService {
     student_grades: number[];
   }> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/grade-trends`,
+      `/api/v1/classrooms/${classroomId}/grade-trends`,
       {
         params: { days },
       }

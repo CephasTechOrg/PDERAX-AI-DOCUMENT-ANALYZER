@@ -29,7 +29,7 @@ class ExportService {
     request: ExportRequest
   ): Promise<ExportResponse> {
     const response = await apiClient.post<ExportResponse>(
-      `/documents/${documentId}/flashcards/export`,
+      `/api/v1/flashcards/export?analysis_id=${documentId}`,
       request
     );
     return response;
@@ -43,7 +43,7 @@ class ExportService {
     format: ExportFormat
   ): Promise<ExportResponse> {
     const response = await apiClient.post<ExportResponse>(
-      `/documents/${documentId}/export`,
+      `/api/v1/history/analyses/${documentId}/export`,
       { format }
     );
     return response;
@@ -56,7 +56,7 @@ class ExportService {
     format: ExportFormat = 'pdf'
   ): Promise<ExportResponse> {
     const response = await apiClient.post<ExportResponse>(
-      '/user/progress/export',
+      '/api/analytics/activity',
       { format }
     );
     return response;
@@ -79,7 +79,7 @@ class ExportService {
     }
 
     const response = await apiClient.post<ExportResponse>(
-      `/documents/${documentId}/flashcards/export`,
+      `/api/v1/flashcards/export?analysis_id=${documentId}`,
       payload
     );
     return response;
@@ -93,7 +93,7 @@ class ExportService {
     includeProgress: boolean = false
   ): Promise<ExportResponse> {
     const response = await apiClient.post<ExportResponse>(
-      `/documents/${documentId}/flashcards/export`,
+      `/api/v1/flashcards/export?analysis_id=${documentId}`,
       {
         format: 'csv',
         includeProgress,

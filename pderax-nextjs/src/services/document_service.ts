@@ -13,7 +13,7 @@ class DocumentService {
    */
   async uploadDocument(request: UploadDocumentRequest): Promise<Document> {
     const response = await apiClient.upload<Document>(
-      '/documents/upload',
+      '/api/v1/upload',
       request.file,
       request.document_type ? { document_type: request.document_type } : undefined
     );
@@ -39,7 +39,7 @@ class DocumentService {
     }
 
     const response = await apiClient.get<PaginatedResponse<Document>>(
-      `/documents?${params.toString()}`
+      `/api/v1/history/analyses?${params.toString()}`
     );
     return response;
   }
@@ -48,7 +48,7 @@ class DocumentService {
    * Get single document details
    */
   async getDocument(documentId: string): Promise<Document> {
-    const response = await apiClient.get<Document>(`/documents/${documentId}`);
+    const response = await apiClient.get<Document>(`/api/v1/history/analyses/${documentId}`);
     return response;
   }
 
@@ -57,7 +57,7 @@ class DocumentService {
    */
   async deleteDocument(documentId: string): Promise<{ success: boolean }> {
     const response = await apiClient.delete<{ success: boolean }>(
-      `/documents/${documentId}`
+      `/api/v1/history/analyses/${documentId}`
     );
     return response;
   }
@@ -67,7 +67,7 @@ class DocumentService {
    */
   async getDocumentStatus(documentId: string): Promise<Document> {
     const response = await apiClient.get<Document>(
-      `/documents/${documentId}/status`
+      `/api/v1/history/analyses/${documentId}`
     );
     return response;
   }
@@ -80,7 +80,7 @@ class DocumentService {
     email: string
   ): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      `/documents/${documentId}/share`,
+      `/api/v1/history/analyses/${documentId}/share`,
       { email }
     );
     return response;

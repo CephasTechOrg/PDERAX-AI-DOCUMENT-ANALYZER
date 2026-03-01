@@ -21,7 +21,7 @@ class FlashcardService {
     }
 
     const response = await apiClient.post<Flashcard[]>(
-      `/documents/${documentId}/flashcards/generate`,
+      `/api/v1/flashcards/generate`,
       payload
     );
     return response;
@@ -51,7 +51,7 @@ class FlashcardService {
    */
   async getFlashcard(flashcardId: string): Promise<Flashcard> {
     const response = await apiClient.get<Flashcard>(
-      `/flashcards/${flashcardId}`
+      `/api/v1/flashcards/${flashcardId}`
     );
     return response;
   }
@@ -61,7 +61,7 @@ class FlashcardService {
    */
   async deleteFlashcard(flashcardId: string): Promise<{ success: boolean }> {
     const response = await apiClient.delete<{ success: boolean }>(
-      `/flashcards/${flashcardId}`
+      `/api/v1/flashcards/${flashcardId}`
     );
     return response;
   }
@@ -74,7 +74,7 @@ class FlashcardService {
     data: Partial<Flashcard>
   ): Promise<Flashcard> {
     const response = await apiClient.put<Flashcard>(
-      `/flashcards/${flashcardId}`,
+      `/api/v1/flashcards/${flashcardId}`,
       data
     );
     return response;
@@ -89,7 +89,7 @@ class FlashcardService {
     correct: boolean
   ): Promise<StudyProgress> {
     const response = await apiClient.post<StudyProgress>(
-      `/flashcards/${flashcardId}/progress`,
+      `/api/v1/flashcards/${flashcardId}/progress`,
       { correct }
     );
     return response;
@@ -100,7 +100,7 @@ class FlashcardService {
    */
   async getProgress(flashcardId: string): Promise<StudyProgress> {
     const response = await apiClient.get<StudyProgress>(
-      `/flashcards/${flashcardId}/progress`
+      `/api/v1/flashcards/${flashcardId}/progress`
     );
     return response;
   }
@@ -110,7 +110,7 @@ class FlashcardService {
    */
   async getDocumentProgress(documentId: string): Promise<StudyProgress[]> {
     const response = await apiClient.get<StudyProgress[]>(
-      `/documents/${documentId}/progress`
+      `/api/v1/flashcards/progress/${documentId}`
     );
     return response;
   }
@@ -120,7 +120,7 @@ class FlashcardService {
    */
   async resetProgress(flashcardId: string): Promise<{ success: boolean }> {
     const response = await apiClient.post<{ success: boolean }>(
-      `/flashcards/${flashcardId}/progress/reset`,
+      `/api/v1/flashcards/${flashcardId}/progress/reset`,
       {}
     );
     return response;

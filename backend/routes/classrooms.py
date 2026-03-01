@@ -70,7 +70,7 @@ async def create_classroom(
 ):
     """Create a new classroom"""
     # Only teachers and admins can create classrooms
-    if not (current_user.is_admin or getattr(current_user, 'role', 'student') == 'teacher'):
+    if not (current_user.is_admin or current_user.role == 'teacher'):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only teachers and admins can create classrooms"

@@ -115,6 +115,31 @@ if FRONTEND_DIR.exists():
     app.mount("/frontend", StaticFiles(directory=str(FRONTEND_DIR)), name="frontend")
     print(f"✅ Frontend directory mounted: {FRONTEND_DIR}")
 
+def _run_column_migrations():
+    """Add any new columns to existing tables that create_all() would miss."""
+    migrations = [
+        # Add role column to users table (Phase 7)
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = 'users' AND column_name = 'role'
+            ) THEN
+                ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'student';
+            END IF;
+        END $$;
+        """,
+    ]
+    with engine.connect() as conn:
+        for sql in migrations:
+            try:
+                conn.execute(__import__('sqlalchemy').text(sql))
+                conn.commit()
+            except Exception as exc:
+                print(f"⚠️  Migration warning: {exc}")
+
+
 @app.on_event("startup")
 async def startup_event():
     """Validate environment and setup on startup"""
@@ -123,6 +148,12 @@ async def startup_event():
         print("✅ Database tables ensured")
     except Exception as exc:
         print(f"❌ Database setup failed: {exc}")
+
+    try:
+        _run_column_migrations()
+        print("✅ Column migrations applied")
+    except Exception as exc:
+        print(f"⚠️  Column migrations warning: {exc}")
 
     api_key = os.getenv("DEEPSEEK_API_KEY")
     if not api_key:

@@ -25,7 +25,7 @@ export default function AnalyzerPage() {
       {/* Welcome Message */}
       <div className={styles.welcomeCard}>
         <div className={styles.welcomeContent}>
-          <h2>Welcome, {user?.name}!</h2>
+          <h2>Welcome, {user?.full_name || user?.email.split('@')[0]}!</h2>
           <p>
             You've successfully logged in. This is a protected page that only
             authenticated users can access.

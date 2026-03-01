@@ -47,7 +47,7 @@ export default function ProfilePage() {
       const data = await userService.getProfile();
       setProfile(data);
       setFormData({
-        name: data.name || '',
+        name: data.full_name || '',
         bio: data.bio || '',
         timezone: data.timezone || 'UTC',
         language: data.language || 'en',
@@ -142,10 +142,10 @@ export default function ProfilePage() {
           <div className={styles.avatarSection}>
             <div className={styles.avatar}>
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.name} />
+                <img src={profile.avatar_url} alt={profile.full_name || 'User'} />
               ) : (
                 <div className={styles.avatarPlaceholder}>
-                  {profile.name.charAt(0).toUpperCase()}
+                  {(profile.full_name || 'U').charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
@@ -228,7 +228,7 @@ export default function ProfilePage() {
             <div className={styles.infoGrid}>
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Name</span>
-                <span className={styles.infoValue}>{profile.name}</span>
+                <span className={styles.infoValue}>{profile.full_name}</span>
               </div>
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Email</span>

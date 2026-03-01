@@ -41,7 +41,7 @@ class AIAssistantService {
     }
 
     const response = await apiClient.post<ChatMessage>(
-      `/ai/sessions/${sessionId}/messages`,
+      `/api/v1/chat/sessions/${sessionId}/message`,
       payload
     );
     if (!response.data) {
@@ -64,7 +64,7 @@ class AIAssistantService {
     });
 
     const response = await apiClient.get<{ items: ChatMessage[]; total: number }>(
-      `/ai/sessions/${sessionId}/messages?${params.toString()}`
+      `/api/v1/chat/sessions/${sessionId}/messages?${params.toString()}`
     );
     return response.data ?? { items: [], total: 0 };
   }
@@ -79,7 +79,7 @@ class AIAssistantService {
     }
 
     const response = await apiClient.post<ChatSession>(
-      '/ai/sessions',
+      '/api/v1/chat/sessions',
       payload
     );
     if (!response.data) {
@@ -101,7 +101,7 @@ class AIAssistantService {
     });
 
     const response = await apiClient.get<{ items: ChatSession[]; total: number }>(
-      `/ai/sessions?${params.toString()}`
+      `/api/v1/chat/sessions?${params.toString()}`
     );
     return response.data ?? { items: [], total: 0 };
   }
@@ -111,7 +111,7 @@ class AIAssistantService {
    */
   async deleteSession(sessionId: string): Promise<{ success: boolean }> {
     const response = await apiClient.delete<{ success: boolean }>(
-      `/ai/sessions/${sessionId}`
+      `/api/v1/chat/sessions/${sessionId}`
     );
     return response.data ?? { success: true };
   }
@@ -121,7 +121,7 @@ class AIAssistantService {
    */
   async getSession(sessionId: string): Promise<ChatSession> {
     const response = await apiClient.get<ChatSession>(
-      `/ai/sessions/${sessionId}`
+      `/api/v1/chat/sessions/${sessionId}`
     );
     if (!response.data) {
       throw new Error(response.error?.message || 'Failed to fetch session');
@@ -137,7 +137,7 @@ class AIAssistantService {
     question: string
   ): Promise<{ answer: string }> {
     const response = await apiClient.post<{ answer: string }>(
-      `/documents/${documentId}/ask`,
+      `/api/v1/chat/sessions/${sessionId}/message`,
       { question }
     );
     return response.data ?? { answer: '' };
@@ -148,7 +148,7 @@ class AIAssistantService {
    */
   async generateSummary(documentId: string): Promise<{ summary: string }> {
     const response = await apiClient.post<{ summary: string }>(
-      `/documents/${documentId}/summarize`,
+      `/api/v1/chat/sessions/${sessionId}/message`,
       {}
     );
     return response.data ?? { summary: '' };

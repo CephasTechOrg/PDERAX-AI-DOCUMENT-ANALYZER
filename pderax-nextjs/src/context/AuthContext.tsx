@@ -15,7 +15,7 @@ interface AuthContextType {
   isLoading: boolean;
   session: AuthSession | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, name: string, password: string, password_confirm: string) => Promise<void>;
+  signup: (email: string, full_name: string, password: string, password_confirm: string) => Promise<{ message: string }>;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
   error: string | null;
@@ -69,21 +69,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = useCallback(
     async (
       email: string,
-      name: string,
+      full_name: string,
       password: string,
       password_confirm: string
-    ) => {
+    ): Promise<{ message: string }> => {
       setIsLoading(true);
       setError(null);
       try {
-        const authSession = await authService.signup({
+        // Backend returns { message } — user must verify email before logging in
+        const result = await authService.signup({
           email,
-          name,
+          full_name,
           password,
           password_confirm,
         });
-        setSession(authSession);
-        setUser(authSession.user);
+        return result;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Signup failed';
         setError(errorMessage);

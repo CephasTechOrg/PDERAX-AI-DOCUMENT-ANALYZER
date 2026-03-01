@@ -124,7 +124,7 @@ class AssignmentService {
     data: CreateAssignmentRequest
   ): Promise<Assignment> {
     const response = await apiClient.post<Assignment>(
-      `/api/classrooms/${classroomId}/assignments`,
+      `/api/v1/classrooms/${classroomId}/assignments`,
       data
     );
     return response.data;
@@ -139,7 +139,7 @@ class AssignmentService {
     limit: number = 20
   ): Promise<PaginatedAssignments> {
     const response = await apiClient.get<PaginatedAssignments>(
-      `/api/classrooms/${classroomId}/assignments`,
+      `/api/v1/classrooms/${classroomId}/assignments`,
       {
         params: { page, limit },
       }
@@ -155,7 +155,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<Assignment> {
     const response = await apiClient.get<Assignment>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}`
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}`
     );
     return response.data;
   }
@@ -169,7 +169,7 @@ class AssignmentService {
     data: UpdateAssignmentRequest
   ): Promise<Assignment> {
     const response = await apiClient.put<Assignment>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}`,
       data
     );
     return response.data;
@@ -183,7 +183,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<void> {
     await apiClient.delete(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}`
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}`
     );
   }
 
@@ -195,7 +195,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<Assignment> {
     const response = await apiClient.post<Assignment>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/publish`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/publish`,
       {}
     );
     return response.data;
@@ -209,7 +209,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<Assignment> {
     const response = await apiClient.post<Assignment>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/close`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/close`,
       {}
     );
     return response.data;
@@ -225,7 +225,7 @@ class AssignmentService {
     limit: number = 50
   ): Promise<PaginatedSubmissions> {
     const response = await apiClient.get<PaginatedSubmissions>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submissions`,
       {
         params: { page, limit },
       }
@@ -242,7 +242,7 @@ class AssignmentService {
     submissionId: string
   ): Promise<Submission> {
     const response = await apiClient.get<Submission>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions/${submissionId}`
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submissions/${submissionId}`
     );
     return response.data;
   }
@@ -266,7 +266,7 @@ class AssignmentService {
     }
 
     const response = await apiClient.post<Submission>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/submit`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submit`,
       formData,
       {
         headers: {
@@ -287,7 +287,7 @@ class AssignmentService {
     gradeData: GradeRequest
   ): Promise<Submission> {
     const response = await apiClient.put<Submission>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions/${submissionId}/grade`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submissions/${submissionId}/grade`,
       gradeData
     );
     return response.data;
@@ -301,7 +301,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<AssignmentStats> {
     const response = await apiClient.get<AssignmentStats>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/stats`
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/stats`
     );
     return response.data;
   }
@@ -315,7 +315,7 @@ class AssignmentService {
     rubricItems: RubricItem[]
   ): Promise<AssignmentRubric> {
     const response = await apiClient.post<AssignmentRubric>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/rubric`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/rubric`,
       { items: rubricItems }
     );
     return response.data;
@@ -329,7 +329,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<AssignmentRubric | null> {
     const response = await apiClient.get<AssignmentRubric>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/rubric`
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/rubric`
     );
     return response.data;
   }
@@ -343,7 +343,7 @@ class AssignmentService {
     format: 'csv' | 'zip' = 'zip'
   ): Promise<Blob> {
     const response = await apiClient.get(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions/export`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submissions/export`,
       {
         params: { format },
         responseType: 'blob',
@@ -360,7 +360,7 @@ class AssignmentService {
     assignmentId: string
   ): Promise<Submission> {
     const response = await apiClient.get<Submission>(
-      `/api/classrooms/${classroomId}/assignments/${assignmentId}/my-submission`
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/my-submission`
     );
     return response.data;
   }
@@ -374,7 +374,7 @@ class AssignmentService {
     limit: number = 20
   ): Promise<PaginatedAssignments> {
     const response = await apiClient.get<PaginatedAssignments>(
-      `/api/classrooms/${classroomId}/my-assignments`,
+      `/api/v1/classrooms/${classroomId}/my-assignments`,
       {
         params: { page, limit },
       }
