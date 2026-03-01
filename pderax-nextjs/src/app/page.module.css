@@ -65,7 +65,7 @@
   }
 
   @media (max-width: 640px) {
-    :global(a, button) {
+    .button {
       width: 100%;
     }
   }

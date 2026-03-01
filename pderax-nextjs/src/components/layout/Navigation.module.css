@@ -151,6 +151,7 @@
 
 .mobileMenuButton.active .mobileMenuButtonBar:nth-child(3) {
   transform: rotate(-45deg) translateY(-0.625rem);
+}
 
 .mobileMenu {
   display: flex;
