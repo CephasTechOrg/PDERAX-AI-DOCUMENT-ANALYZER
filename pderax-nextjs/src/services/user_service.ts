@@ -65,12 +65,10 @@ class UserProfileService {
    * Upload user avatar
    */
   async uploadAvatar(file: File): Promise<{ avatar_url: string }> {
-    const formData = new FormData();
-    formData.append('avatar', file);
-
     const response = await apiClient.upload<{ avatar_url: string }>(
       '/user/avatar',
-      formData
+      file,
+      { avatar: file.name }
     );
     return response;
   }

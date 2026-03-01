@@ -12,15 +12,10 @@ class DocumentService {
    * Sends multipart/form-data request with file
    */
   async uploadDocument(request: UploadDocumentRequest): Promise<Document> {
-    const formData = new FormData();
-    formData.append('file', request.file);
-    if (request.document_type) {
-      formData.append('document_type', request.document_type);
-    }
-
     const response = await apiClient.upload<Document>(
       '/documents/upload',
-      formData
+      request.file,
+      request.document_type ? { document_type: request.document_type } : undefined
     );
     return response;
   }

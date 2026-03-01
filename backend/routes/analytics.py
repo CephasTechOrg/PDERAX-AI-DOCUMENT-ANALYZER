@@ -5,10 +5,9 @@ Endpoints for user analytics and statistics
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from uuid import UUID
 
 from auth_dependencies import get_current_user
-from database import get_db
+from dependencies import get_db
 from models.db_models import User
 from services.analytics_service import AnalyticsService
 from schemas.analytics import (
