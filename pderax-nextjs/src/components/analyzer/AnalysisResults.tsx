@@ -46,7 +46,7 @@ export function AnalysisResults({
 
       {/* Stats row */}
       <div className={styles.stats}>
-        <StatCard icon={FileText} label="Document" value={filename.split('.').pop()?.toUpperCase() || 'FILE'} color="#6366f1" />
+        <StatCard icon={FileText} label="Document" value={filename.split('.').pop()?.toUpperCase() || 'FILE'} color="#0084E8" />
         <StatCard icon={Hash} label="Words" value={wordCount.toLocaleString()} color="#0ea5e9" />
         <StatCard icon={Lightbulb} label="Insights" value={analysis.insights?.length || 0} color="#f59e0b" />
         <StatCard icon={HelpCircle} label="Q&A Pairs" value={analysis.questions_answers?.length || 0} color="#10b981" />

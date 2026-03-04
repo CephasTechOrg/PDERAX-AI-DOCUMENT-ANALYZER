@@ -139,8 +139,8 @@ export default function HistoryPage() {
               )}
               {filterAnalyses.map((a) => (
                 <div key={a.id} className={styles.card}>
-                  <div className={styles.cardIconWrap} style={{ background: '#eef2ff' }}>
-                    <FileText size={20} color="#4f46e5" />
+                  <div className={styles.cardIconWrap} style={{ background: '#E6F0FA' }}>
+                    <FileText size={20} color="#0066B4" />
                   </div>
                   <div className={styles.cardBody}>
                     <span className={styles.cardTitle}>{a.filename}</span>
@@ -184,8 +184,8 @@ export default function HistoryPage() {
               )}
               {filterFlashcards.map((f) => (
                 <div key={f.id} className={styles.card}>
-                  <div className={styles.cardIconWrap} style={{ background: '#eef2ff' }}>
-                    <ClipboardList size={20} color="#4f46e5" />
+                  <div className={styles.cardIconWrap} style={{ background: '#E6F0FA' }}>
+                    <ClipboardList size={20} color="#0066B4" />
                   </div>
                   <div className={styles.cardBody}>
                     <span className={styles.cardTitle}>{f.title || 'Flashcard Set'}</span>

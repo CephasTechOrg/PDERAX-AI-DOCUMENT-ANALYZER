@@ -11,7 +11,7 @@ interface StatCardProps {
   color?: string;
 }
 
-export function StatCard({ icon: Icon, label, value, color = '#6366f1' }: StatCardProps) {
+export function StatCard({ icon: Icon, label, value, color = '#0084E8' }: StatCardProps) {
   return (
     <div className={styles.card}>
       <div className={styles.iconWrap} style={{ backgroundColor: `${color}14`, color }}>

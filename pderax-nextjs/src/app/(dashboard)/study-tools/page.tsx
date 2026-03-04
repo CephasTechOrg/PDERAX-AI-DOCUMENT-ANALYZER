@@ -11,8 +11,8 @@ const TOOLS = [
     description: 'AI generates a flip-card deck from your notes or documents. Perfect for spaced repetition and memorisation.',
     icon: ClipboardList,
     href: '/study-tools/flashcards',
-    color: '#4f46e5',
-    bg: '#eef2ff',
+    color: '#0066B4',
+    bg: '#E6F0FA',
     badge: 'Most popular',
   },
   {
