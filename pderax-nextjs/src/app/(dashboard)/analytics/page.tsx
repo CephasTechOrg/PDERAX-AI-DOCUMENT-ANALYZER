@@ -404,9 +404,10 @@ export default function AnalyticsPage() {
                 <Activity size={18} className={styles.cardTitleIcon} />
                 Recent Activity
               </h2>
+              <span className={styles.cardSub}>Last 4</span>
             </div>
             <div className={styles.activityTimeline}>
-              {activity_feed.items.slice(0, 8).map((item, i) => {
+              {activity_feed.items.slice(0, 4).map((item, i) => {
                 const meta = ACTIVITY_META[item.type] ?? {
                   icon: <Activity size={14} />, bg: '#F0F3F7', color: '#6b7280', label: 'Activity',
                 };

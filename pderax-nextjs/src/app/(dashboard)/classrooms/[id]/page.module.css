@@ -91,7 +91,7 @@
 .tabs {
   display: flex;
   gap: 0.25rem;
-  background: #f3f4f6;
+  background: linear-gradient(135deg, #f3f4f6, #f9fafb);
   border-radius: 0.625rem;
   padding: 0.25rem;
   margin-bottom: 2rem;
@@ -107,18 +107,20 @@
   color: #6b7280;
   cursor: pointer;
   border-radius: 0.375rem;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .tab:hover {
   color: #374151;
-  background: rgba(255,255,255,0.6);
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
 }
 
 .tab.active {
-  background: white;
+  background: linear-gradient(135deg, #FFFFFF, #F8FBFE);
   color: #0066B4;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 102, 180, 0.15);
   font-weight: 600;
 }
 
@@ -138,35 +140,41 @@
 /* Cards and Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
 }
 
 .card {
-  background: white;
-  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #FFFFFF, #F8FBFE);
+  border-radius: 1rem;
   padding: 2rem;
-  border: 1.5px solid #f0f0f0;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border: 1.5px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0066B4, #2A9D8F);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.card:hover::before {
+  transform: scaleX(1);
 }
 
 .card:hover {
   border-color: #B3D4ED;
-  box-shadow: 0 4px 16px rgba(0, 102, 180, 0.08);
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.cardTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0;
+  box-shadow: 0 12px 32px -8px rgba(0, 102, 180, 0.12);
+  transform: translateY(-4px);
 }
 
 /* Info Grid */
@@ -176,24 +184,23 @@
   gap: 1.5rem;
 }
 
-.infoItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.label {
-  font-size: 0.85rem;
-  color: #6b7280;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.value {
-  font-size: 1rem;
-  color: #1f2937;
-  font-weight: 500;
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
 }
 
 /* Invite Code */

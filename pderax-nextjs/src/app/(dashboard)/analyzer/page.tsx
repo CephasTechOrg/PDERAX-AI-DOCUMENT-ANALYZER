@@ -246,7 +246,7 @@ export default function AnalyzerPage() {
         onDrop={handleDrop}
       >
         <div className={styles.uploadIcon}>
-          <CloudUpload size={48} />
+          <CloudUpload size={36} />
         </div>
         <h2 className={styles.uploadTitle}>
           {isDragging ? 'Drop your files here' : 'Drag and drop your files here'}
@@ -312,7 +312,7 @@ export default function AnalyzerPage() {
       <div className={styles.featuresGrid}>
         <div className={styles.featureCard}>
           <div className={styles.featureIcon}>
-            <Brain size={32} />
+            <Brain size={26} />
           </div>
           <h3>AI-Powered Analysis</h3>
           <p>
@@ -323,7 +323,7 @@ export default function AnalyzerPage() {
         </div>
         <div className={styles.featureCard}>
           <div className={styles.featureIcon}>
-            <Layers size={32} />
+            <Layers size={26} />
           </div>
           <h3>Study Material Generation</h3>
           <p>
@@ -333,7 +333,7 @@ export default function AnalyzerPage() {
         </div>
         <div className={styles.featureCard}>
           <div className={styles.featureIcon}>
-            <FileText size={32} />
+            <FileText size={26} />
           </div>
           <h3>Multiple Formats</h3>
           <p>
