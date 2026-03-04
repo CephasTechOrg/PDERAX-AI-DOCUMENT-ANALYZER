@@ -1,157 +1,87 @@
 /**
  * AI Assistant Service
- * Handles chat interactions and AI-powered features
+ * Matches backend: POST/GET /api/v1/chat/sessions, POST /sessions/{id}/message, etc.
  */
 
 import apiClient from './api';
 
 export interface ChatMessage {
   id: string;
-  user_id: string;
   role: 'user' | 'assistant';
   content: string;
   created_at: string;
-  document_id?: string;
 }
 
 export interface ChatSession {
   id: string;
-  user_id: string;
-  document_id?: string;
-  title: string;
+  title: string | null;
+  mode: string;
+  document_filename: string | null;
+  message_count: number;
   created_at: string;
   updated_at: string;
-  message_count: number;
+}
+
+export interface ChatSessionDetail extends ChatSession {
+  messages: ChatMessage[];
 }
 
 class AIAssistantService {
+  /** Create a new chat session */
+  async createSession(
+    mode: 'teacher' | 'helper' = 'teacher',
+    title?: string
+  ): Promise<ChatSession> {
+    const payload: Record<string, unknown> = { mode };
+    if (title) payload.title = title;
+    return apiClient.post<ChatSession>('/api/v1/chat/sessions', payload);
+  }
+
+  /** List all sessions (newest first) — backend returns flat array */
+  async getSessions(): Promise<ChatSession[]> {
+    const data = await apiClient.get<ChatSession[]>('/api/v1/chat/sessions');
+    return Array.isArray(data) ? data : [];
+  }
+
+  /** Get a session with full message history */
+  async getSession(sessionId: string): Promise<ChatSessionDetail> {
+    return apiClient.get<ChatSessionDetail>(`/api/v1/chat/sessions/${sessionId}`);
+  }
+
+  /** Delete a session */
+  async deleteSession(sessionId: string): Promise<void> {
+    await apiClient.delete(`/api/v1/chat/sessions/${sessionId}`);
+  }
+
+  /** Update session title or mode */
+  async updateSession(
+    sessionId: string,
+    updates: { title?: string; mode?: string }
+  ): Promise<ChatSession> {
+    return apiClient.put<ChatSession>(`/api/v1/chat/sessions/${sessionId}`, updates);
+  }
+
   /**
-   * Send a message to the AI assistant
+   * Send a message and get the AI reply.
+   * Backend returns { message: ChatMessage, session_id: string }
    */
   async sendMessage(
     sessionId: string,
-    content: string,
-    documentId?: string
+    content: string
   ): Promise<ChatMessage> {
-    const payload: Record<string, unknown> = {
-      content,
-    };
-    if (documentId) {
-      payload.document_id = documentId;
-    }
-
-    const response = await apiClient.post<ChatMessage>(
+    const response = await apiClient.post<{ message: ChatMessage; session_id: string }>(
       `/api/v1/chat/sessions/${sessionId}/message`,
-      payload
+      { content }
     );
-    if (!response.data) {
-      throw new Error(response.error?.message || 'Failed to send message');
-    }
-    return response.data;
+    return response.message;
   }
 
-  /**
-   * Get chat history for a session
-   */
-  async getChatHistory(
+  /** Upload a document into a session for context */
+  async uploadDocument(
     sessionId: string,
-    page: number = 1,
-    page_size: number = 50
-  ): Promise<{ items: ChatMessage[]; total: number }> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      page_size: page_size.toString(),
-    });
-
-    const response = await apiClient.get<{ items: ChatMessage[]; total: number }>(
-      `/api/v1/chat/sessions/${sessionId}/messages?${params.toString()}`
-    );
-    return response.data ?? { items: [], total: 0 };
-  }
-
-  /**
-   * Create a new chat session
-   */
-  async createSession(title: string, documentId?: string): Promise<ChatSession> {
-    const payload: Record<string, unknown> = { title };
-    if (documentId) {
-      payload.document_id = documentId;
-    }
-
-    const response = await apiClient.post<ChatSession>(
-      '/api/v1/chat/sessions',
-      payload
-    );
-    if (!response.data) {
-      throw new Error(response.error?.message || 'Failed to create chat session');
-    }
-    return response.data;
-  }
-
-  /**
-   * Get all chat sessions for current user
-   */
-  async getSessions(
-    page: number = 1,
-    page_size: number = 20
-  ): Promise<{ items: ChatSession[]; total: number }> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      page_size: page_size.toString(),
-    });
-
-    const response = await apiClient.get<{ items: ChatSession[]; total: number }>(
-      `/api/v1/chat/sessions?${params.toString()}`
-    );
-    return response.data ?? { items: [], total: 0 };
-  }
-
-  /**
-   * Delete a chat session
-   */
-  async deleteSession(sessionId: string): Promise<{ success: boolean }> {
-    const response = await apiClient.delete<{ success: boolean }>(
-      `/api/v1/chat/sessions/${sessionId}`
-    );
-    return response.data ?? { success: true };
-  }
-
-  /**
-   * Get session details
-   */
-  async getSession(sessionId: string): Promise<ChatSession> {
-    const response = await apiClient.get<ChatSession>(
-      `/api/v1/chat/sessions/${sessionId}`
-    );
-    if (!response.data) {
-      throw new Error(response.error?.message || 'Failed to fetch session');
-    }
-    return response.data;
-  }
-
-  /**
-   * Ask a question about a specific document
-   */
-  async askAboutDocument(
-    documentId: string,
-    question: string
-  ): Promise<{ answer: string }> {
-    const response = await apiClient.post<{ answer: string }>(
-      `/api/v1/documents/${documentId}/ask`,
-      { question }
-    );
-    return response.data ?? { answer: '' };
-  }
-
-  /**
-   * Generate summary for a document
-   */
-  async generateSummary(documentId: string): Promise<{ summary: string }> {
-    const response = await apiClient.post<{ summary: string }>(
-      `/api/v1/documents/${documentId}/summary`,
-      {}
-    );
-    return response.data ?? { summary: '' };
+    file: File
+  ): Promise<{ success: boolean; filename: string; context_length: number }> {
+    return apiClient.upload(`/api/v1/chat/sessions/${sessionId}/upload`, file);
   }
 }
 

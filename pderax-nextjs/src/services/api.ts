@@ -35,10 +35,48 @@ class ApiClient {
       (error) => Promise.reject(error)
     );
 
-    // Add response interceptor for error handling
+    // Add response interceptor — auto-refresh on 401
     this.instance.interceptors.response.use(
       (response) => response,
-      (error) => this.handleError(error)
+      async (error) => {
+        const originalRequest = error.config;
+        // Attempt token refresh on 401, but not for auth endpoints or retries
+        if (
+          error.response?.status === 401 &&
+          !originalRequest._retry &&
+          !originalRequest.url?.includes('/auth/login') &&
+          !originalRequest.url?.includes('/auth/refresh')
+        ) {
+          originalRequest._retry = true;
+          try {
+            if (typeof window !== 'undefined') {
+              const sessionStr = localStorage.getItem('auth_session');
+              const session = sessionStr ? JSON.parse(sessionStr) : null;
+              if (session?.refresh_token) {
+                const refreshResp = await this.instance.post('/api/v1/auth/refresh', {
+                  refresh_token: session.refresh_token,
+                });
+                const { access_token, refresh_token, expires_in } = refreshResp.data;
+                const newSession = {
+                  ...session,
+                  access_token,
+                  refresh_token,
+                  expires_in,
+                  expires_at: Date.now() + expires_in * 1000,
+                };
+                localStorage.setItem('auth_session', JSON.stringify(newSession));
+                this.token = access_token;
+                originalRequest.headers.Authorization = `Bearer ${access_token}`;
+                return this.instance(originalRequest);
+              }
+            }
+          } catch {
+            // Refresh failed — clear session so user is redirected to login
+            this.clearToken();
+          }
+        }
+        return this.handleError(error);
+      }
     );
 
     // Load token from storage if available
@@ -130,10 +168,12 @@ class ApiClient {
     };
 
     if (error.response?.data) {
-      const data = error.response.data;
-      apiError.code = data.code || `HTTP_${error.response.status}`;
-      apiError.message = data.message || error.message;
-      apiError.details = data.details;
+      const raw = error.response.data as unknown as Record<string, unknown>;
+      apiError.code = (raw.code as string) || `HTTP_${error.response.status}`;
+      // FastAPI returns errors as { detail: "..." }, not { message: "..." }
+      const detail = typeof raw.detail === 'string' ? raw.detail : null;
+      apiError.message = (raw.message as string) || detail || error.message;
+      apiError.details = raw.details as Record<string, unknown> | undefined;
     } else if (error.request) {
       apiError.code = 'NETWORK_ERROR';
       apiError.message = 'Network request failed. Please check your connection.';

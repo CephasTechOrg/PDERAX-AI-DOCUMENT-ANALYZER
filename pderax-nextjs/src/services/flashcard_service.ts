@@ -1,129 +1,73 @@
 /**
- * Flashcard Management Service
- * Handles flashcard generation, retrieval, and study progress
+ * Flashcard Service
+ * Handles flashcard generation and history retrieval
  */
 
 import apiClient from './api';
-import { Flashcard, PaginatedResponse, StudyProgress } from '@/types';
+import { FlashcardSet, FlashcardGenerateResponse, CardDifficulty } from '@/types';
 
 class FlashcardService {
   /**
-   * Generate flashcards from a document
-   * This triggers AI processing on the backend
+   * Generate flashcards from text.
+   * Backend: POST /api/v1/flashcards/generate
    */
-  async generateFlashcards(
-    documentId: string,
-    count?: number
-  ): Promise<Flashcard[]> {
-    const payload: Record<string, unknown> = {};
-    if (count) {
-      payload.count = count;
-    }
+  async generate(
+    text: string,
+    count: number = 10,
+    difficulty: CardDifficulty = 'medium',
+    focusTopics?: string[],
+    analysisId?: string,
+  ): Promise<FlashcardGenerateResponse> {
+    const payload: Record<string, unknown> = { text, count, difficulty };
+    if (focusTopics?.length) payload.focus_topics = focusTopics;
+    if (analysisId) payload.analysis_id = analysisId;
 
-    const response = await apiClient.post<Flashcard[]>(
-      `/api/v1/flashcards/generate`,
-      payload
+    return apiClient.post<FlashcardGenerateResponse>(
+      '/api/v1/flashcards/generate',
+      payload,
     );
-    return response;
   }
 
   /**
-   * Get all flashcards for a document
+   * Quick generate flashcards.
+   * Backend: POST /api/v1/flashcards/generate-quick
    */
-  async getFlashcards(
-    documentId: string,
-    page: number = 1,
-    page_size: number = 20
-  ): Promise<PaginatedResponse<Flashcard>> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      page_size: page_size.toString(),
-    });
+  async generateQuick(
+    text: string,
+    count: number = 10,
+    difficulty: CardDifficulty = 'medium',
+    analysisId?: string,
+  ): Promise<FlashcardGenerateResponse> {
+    const payload: Record<string, unknown> = { text, count, difficulty };
+    if (analysisId) payload.analysis_id = analysisId;
 
-    const response = await apiClient.get<PaginatedResponse<Flashcard>>(
-      `/documents/${documentId}/flashcards?${params.toString()}`
+    return apiClient.post<FlashcardGenerateResponse>(
+      '/api/v1/flashcards/generate-quick',
+      payload,
     );
-    return response;
   }
 
   /**
-   * Get single flashcard
+   * List all flashcard sets for the current user.
+   * Backend returns a flat array.
    */
-  async getFlashcard(flashcardId: string): Promise<Flashcard> {
-    const response = await apiClient.get<Flashcard>(
-      `/api/v1/flashcards/${flashcardId}`
-    );
-    return response;
+  async getSets(): Promise<FlashcardSet[]> {
+    const response = await apiClient.get<FlashcardSet[]>('/api/v1/history/flashcard-sets');
+    return Array.isArray(response) ? response : [];
   }
 
   /**
-   * Delete a flashcard
+   * Get a single flashcard set by ID.
    */
-  async deleteFlashcard(flashcardId: string): Promise<{ success: boolean }> {
-    const response = await apiClient.delete<{ success: boolean }>(
-      `/api/v1/flashcards/${flashcardId}`
-    );
-    return response;
+  async getSet(id: string): Promise<FlashcardSet> {
+    return apiClient.get<FlashcardSet>(`/api/v1/history/flashcard-sets/${id}`);
   }
 
   /**
-   * Update flashcard (edit question/answer)
+   * Delete a flashcard set.
    */
-  async updateFlashcard(
-    flashcardId: string,
-    data: Partial<Flashcard>
-  ): Promise<Flashcard> {
-    const response = await apiClient.put<Flashcard>(
-      `/api/v1/flashcards/${flashcardId}`,
-      data
-    );
-    return response;
-  }
-
-  /**
-   * Record study progress for a flashcard
-   * Called after user studies/reviews the card
-   */
-  async recordProgress(
-    flashcardId: string,
-    correct: boolean
-  ): Promise<StudyProgress> {
-    const response = await apiClient.post<StudyProgress>(
-      `/api/v1/flashcards/${flashcardId}/progress`,
-      { correct }
-    );
-    return response;
-  }
-
-  /**
-   * Get study progress for a flashcard
-   */
-  async getProgress(flashcardId: string): Promise<StudyProgress> {
-    const response = await apiClient.get<StudyProgress>(
-      `/api/v1/flashcards/${flashcardId}/progress`
-    );
-    return response;
-  }
-
-  /**
-   * Get all study progress for a document
-   */
-  async getDocumentProgress(documentId: string): Promise<StudyProgress[]> {
-    const response = await apiClient.get<StudyProgress[]>(
-      `/api/v1/flashcards/progress/${documentId}`
-    );
-    return response;
-  }
-
-  /**
-   * Reset progress for flashcard (start over)
-   */
-  async resetProgress(flashcardId: string): Promise<{ success: boolean }> {
-    const response = await apiClient.post<{ success: boolean }>(
-      `/api/v1/flashcards/${flashcardId}/progress/reset`,
-      {}
-    );
-    return response;
+  async deleteSet(id: string): Promise<void> {
+    await apiClient.delete(`/api/v1/history/flashcard-sets/${id}`);
   }
 }
 

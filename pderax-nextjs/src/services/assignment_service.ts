@@ -72,7 +72,7 @@ export interface Submission {
 }
 
 export interface GradeRequest {
-  grade: number;
+  points_earned: number;
   feedback: string;
   rubric_scores?: Record<string, number>;
   return_for_revision: boolean;
@@ -127,7 +127,7 @@ class AssignmentService {
       `/api/v1/classrooms/${classroomId}/assignments`,
       data
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -144,7 +144,7 @@ class AssignmentService {
         params: { page, limit },
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -157,7 +157,7 @@ class AssignmentService {
     const response = await apiClient.get<Assignment>(
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -172,7 +172,7 @@ class AssignmentService {
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}`,
       data
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -198,7 +198,7 @@ class AssignmentService {
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/publish`,
       {}
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -212,7 +212,7 @@ class AssignmentService {
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/close`,
       {}
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -230,7 +230,7 @@ class AssignmentService {
         params: { page, limit },
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -244,7 +244,7 @@ class AssignmentService {
     const response = await apiClient.get<Submission>(
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submissions/${submissionId}`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -261,7 +261,7 @@ class AssignmentService {
 
     if (attachments) {
       attachments.forEach((file) => {
-        formData.append('attachments', file);
+        formData.append('files', file);
       });
     }
 
@@ -274,7 +274,7 @@ class AssignmentService {
         },
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -290,7 +290,7 @@ class AssignmentService {
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/submissions/${submissionId}/grade`,
       gradeData
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -303,7 +303,7 @@ class AssignmentService {
     const response = await apiClient.get<AssignmentStats>(
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/stats`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -316,9 +316,9 @@ class AssignmentService {
   ): Promise<AssignmentRubric> {
     const response = await apiClient.post<AssignmentRubric>(
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/rubric`,
-      { items: rubricItems }
+      { rubric_items: rubricItems }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -331,7 +331,7 @@ class AssignmentService {
     const response = await apiClient.get<AssignmentRubric>(
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/rubric`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -349,7 +349,7 @@ class AssignmentService {
         responseType: 'blob',
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -362,7 +362,7 @@ class AssignmentService {
     const response = await apiClient.get<Submission>(
       `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/my-submission`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -374,12 +374,12 @@ class AssignmentService {
     limit: number = 20
   ): Promise<PaginatedAssignments> {
     const response = await apiClient.get<PaginatedAssignments>(
-      `/api/v1/classrooms/${classroomId}/my-assignments`,
+      `/api/v1/classrooms/${classroomId}/assignments/student`,
       {
         params: { page, limit },
       }
     );
-    return response.data;
+    return response;
   }
 }
 

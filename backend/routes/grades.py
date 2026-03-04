@@ -410,12 +410,13 @@ async def get_student_performance(
     grades = db.query(Grade).filter(
         Grade.student_id == student_id,
         Grade.classroom_id == classroom_id
-    ).all()
+    ).order_by(Grade.graded_at).all()
     
     overall_average = 0.0
     if grades:
-        total_percentage = sum(g.percentage for g in grades if g.percentage)
-        overall_average = total_percentage / len(grades)
+        valid_pcts = [g.percentage for g in grades if g.percentage is not None]
+        if valid_pcts:
+            overall_average = sum(valid_pcts) / len(valid_pcts)
     
     # Identify strengths and improvements (based on letter grades)
     strengths = []
@@ -433,12 +434,13 @@ async def get_student_performance(
     if completion_rate < 100:
         improvements.append(f"Complete remaining {total_assignments - completed_assignments} assignment(s)")
     
-    # Simple trend prediction
+    # Simple trend prediction (grades already sorted by graded_at)
     trend = "stable"
-    if len(grades) >= 3:
-        recent = grades[-3:]
+    valid_grades = [g for g in grades if g.percentage is not None]
+    if len(valid_grades) >= 3:
+        recent = valid_grades[-3:]
         recent_avg = sum(g.percentage for g in recent) / len(recent)
-        overall_avg = sum(g.percentage for g in grades) / len(grades)
+        overall_avg = sum(g.percentage for g in valid_grades) / len(valid_grades)
         if recent_avg > overall_avg + 5:
             trend = "improving"
         elif recent_avg < overall_avg - 5:
@@ -498,16 +500,17 @@ async def get_my_performance(
     if total_assignments > 0:
         completion_rate = (completed_assignments / total_assignments) * 100
     
-    # Get grades
+    # Get grades — ordered by graded_at for accurate trend
     grades = db.query(Grade).filter(
         Grade.student_id == current_user.id,
         Grade.classroom_id == classroom_id
-    ).all()
+    ).order_by(Grade.graded_at).all()
     
     overall_average = 0.0
     if grades:
-        total_percentage = sum(g.percentage for g in grades if g.percentage)
-        overall_average = total_percentage / len(grades)
+        valid_pcts = [g.percentage for g in grades if g.percentage is not None]
+        if valid_pcts:
+            overall_average = sum(valid_pcts) / len(valid_pcts)
     
     strengths = []
     improvements = []
@@ -522,10 +525,11 @@ async def get_my_performance(
         improvements.append(f"Complete remaining {total_assignments - completed_assignments} assignment(s)")
     
     trend = "stable"
-    if len(grades) >= 3:
-        recent = grades[-3:]
+    valid_grades = [g for g in grades if g.percentage is not None]
+    if len(valid_grades) >= 3:
+        recent = valid_grades[-3:]
         recent_avg = sum(g.percentage for g in recent) / len(recent)
-        overall_avg = sum(g.percentage for g in grades) / len(grades)
+        overall_avg = sum(g.percentage for g in valid_grades) / len(valid_grades)
         if recent_avg > overall_avg + 5:
             trend = "improving"
         elif recent_avg < overall_avg - 5:
@@ -581,7 +585,13 @@ async def get_class_performance(
     percentages.sort()
     
     mean = sum(percentages) / len(percentages) if percentages else 0.0
-    median = percentages[len(percentages)//2] if percentages else 0.0
+    n = len(percentages)
+    if n == 0:
+        median = 0.0
+    elif n % 2 == 1:
+        median = percentages[n // 2]
+    else:
+        median = (percentages[n // 2 - 1] + percentages[n // 2]) / 2
     
     # Calculate standard deviation
     if len(percentages) > 1:
@@ -719,7 +729,11 @@ async def get_grade_statistics(
     percentages.sort()
     
     mean = sum(percentages) / len(percentages)
-    median = percentages[len(percentages)//2]
+    n = len(percentages)
+    if n % 2 == 1:
+        median = percentages[n // 2]
+    else:
+        median = (percentages[n // 2 - 1] + percentages[n // 2]) / 2
     
     # Mode
     from collections import Counter
@@ -1046,11 +1060,14 @@ async def export_gradebook(
         
         csv_content = output.getvalue()
         
+        import re as _re
+        safe_name = _re.sub(r'[^\w\s-]', '', classroom.name).strip().replace(' ', '_')[:50]
+        
         return Response(
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=gradebook_{classroom.name}.csv"
+                "Content-Disposition": f'attachment; filename="gradebook_{safe_name}.csv"'
             }
         )
     
@@ -1077,10 +1094,13 @@ async def export_gradebook(
         
         json_content = json.dumps(data, indent=2)
         
+        import re as _re
+        safe_name = _re.sub(r'[^\w\s-]', '', classroom.name).strip().replace(' ', '_')[:50]
+        
         return Response(
             content=json_content,
             media_type="application/json",
             headers={
-                "Content-Disposition": f"attachment; filename=gradebook_{classroom.name}.json"
+                "Content-Disposition": f'attachment; filename="gradebook_{safe_name}.json"'
             }
         )

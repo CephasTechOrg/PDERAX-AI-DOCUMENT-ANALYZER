@@ -1,352 +1,512 @@
 /**
- * Analytics Page
- * Study progress and learning analytics
+ * Analytics Page — Pinnacle Design System
+ * Study progress and learning analytics — uses /api/analytics/dashboard
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/forms/Button';
-import analyticsService, {
-  StudyStats,
-  DocumentStats,
-} from '@/services/analytics_service';
-import exportService from '@/services/export_service';
+import analyticsService, { AnalyticsDashboard } from '@/services/analytics_service';
+import {
+  FileText, BookOpen, ClipboardCheck, Flame, Clock,
+  TrendingUp, BarChart3, Loader2, Activity, MessageSquare,
+  Upload, Zap, Calendar,
+} from 'lucide-react';
 import styles from './page.module.css';
+
+/* ═══════════════════════════════════════════════════════════ */
+/* Helpers                                                    */
+/* ═══════════════════════════════════════════════════════════ */
+
+function getGradeLetter(score: number) {
+  if (score >= 90) return { letter: 'A', color: '#10b981', bg: '#ecfdf5' };
+  if (score >= 80) return { letter: 'B', color: '#3b82f6', bg: '#eff6ff' };
+  if (score >= 70) return { letter: 'C', color: '#f59e0b', bg: '#fffbeb' };
+  if (score >= 60) return { letter: 'D', color: '#ef4444', bg: '#fef2f2' };
+  return { letter: 'F', color: '#6b7280', bg: '#f9fafb' };
+}
+
+function getScoreColor(score: number) {
+  if (score >= 90) return '#10b981';
+  if (score >= 80) return '#3b82f6';
+  if (score >= 70) return '#f59e0b';
+  if (score >= 60) return '#ef4444';
+  return '#9ca3af';
+}
+
+function formatTimeAgo(timestamp: string): string {
+  const diff = Date.now() - new Date(timestamp).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(timestamp).toLocaleDateString('en', { month: 'short', day: 'numeric' });
+}
+
+const SUBJECT_COLORS = ['#0066B4', '#2A9D8F', '#E88C30', '#7C5CFC', '#E05C78', '#3B9CE8'];
+const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const ACTIVITY_META: Record<string, { icon: React.ReactNode; bg: string; color: string; label: string }> = {
+  document:  { icon: <Upload size={14} />,         bg: '#E6F0FA', color: '#0066B4', label: 'Upload' },
+  flashcard: { icon: <BookOpen size={14} />,       bg: '#E6F5F0', color: '#2A9D8F', label: 'Flashcards' },
+  quiz:      { icon: <ClipboardCheck size={14} />, bg: '#FFF5E6', color: '#E88C30', label: 'Quiz' },
+  chat:      { icon: <MessageSquare size={14} />,  bg: '#E6F0FA', color: '#3B9CE8', label: 'Chat' },
+};
+
+/* ═══════════════════════════════════════════════════════════ */
+/* Score Ring Component                                       */
+/* ═══════════════════════════════════════════════════════════ */
+
+function ScoreRing({ score }: { score: number }) {
+  const r = 44;
+  const circ = 2 * Math.PI * r;
+  const filled = Math.max(0, Math.min(score, 100));
+  const dashOffset = circ - (filled / 100) * circ;
+  const grade = getGradeLetter(score);
+  const color = getScoreColor(score);
+
+  return (
+    <div className={styles.ringWrap}>
+      <svg viewBox="0 0 100 100" className={styles.ringSvg}>
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={color} />
+            <stop offset="100%" stopColor={color} stopOpacity="0.6" />
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r={r} fill="none" stroke="#F0F3F7" strokeWidth="8" />
+        <circle
+          cx="50" cy="50" r={r} fill="none"
+          stroke="url(#ringGrad)" strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray={circ}
+          strokeDashoffset={dashOffset}
+          transform="rotate(-90 50 50)"
+          style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.16,1,0.3,1)' }}
+        />
+      </svg>
+      <div className={styles.ringCenter}>
+        <span className={styles.ringScore}>{Math.round(score)}%</span>
+        <span className={styles.ringGrade} style={{ color: grade.color, background: grade.bg }}>
+          {grade.letter}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* Weekly Heatmap Dot Color                                   */
+/* ═══════════════════════════════════════════════════════════ */
+
+function getHeatColor(minutes: number): { bg: string; text: string } {
+  if (minutes === 0) return { bg: '#F4F9FD', text: '#B0C4D4' };
+  if (minutes < 15)  return { bg: '#D4E8F7', text: '#0066B4' };
+  if (minutes < 45)  return { bg: '#A3D1F0', text: '#004D8A' };
+  if (minutes < 90)  return { bg: '#0066B4', text: '#FFFFFF' };
+  return { bg: '#004D8A', text: '#FFFFFF' };
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* Main Page                                                  */
+/* ═══════════════════════════════════════════════════════════ */
 
 export default function AnalyticsPage() {
   const { isLoading: authLoading } = useAuth();
-  const [stats, setStats] = useState<StudyStats | null>(null);
-  const [documents, setDocuments] = useState<DocumentStats[]>([]);
+  const [data, setData] = useState<AnalyticsDashboard | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
-    if (!authLoading) {
-      loadAnalytics();
-    }
+    if (!authLoading) loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
-  const loadAnalytics = async () => {
+  const loadData = async () => {
     try {
       setIsLoading(true);
-      const [statsData, docsData] = await Promise.all([
-        analyticsService.getStudyStats(),
-        analyticsService.getMostStudied(10),
-      ]);
-
-      setStats(statsData);
-      setDocuments(docsData);
+      const dashboard = await analyticsService.getDashboard();
+      setData(dashboard);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load analytics';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to load analytics');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleExportReport = async () => {
-    try {
-      setIsExporting(true);
-      const response = await exportService.exportProgressReport('pdf');
-      exportService.downloadFile(response.download_url, response.filename);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Export failed';
-      setError(errorMessage);
-    } finally {
-      setIsExporting(false);
-    }
-  };
+  /* ── Weekly heatmap (hook must run before early returns) ── */
+  const studyItems = data?.study_time?.items ?? [];
+  const weeklyData = useMemo(() => {
+    const today = new Date();
+    const dayOfWeek = (today.getDay() + 6) % 7; // Mon=0
+    const result: { label: string; minutes: number; date: string }[] = [];
 
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - dayOfWeek + i);
+      const dateStr = d.toISOString().split('T')[0];
+      const match = studyItems.find((s) => s.date === dateStr);
+      result.push({
+        label: DAY_LABELS[i],
+        minutes: match ? match.minutes : 0,
+        date: dateStr,
+      });
+    }
+    return result;
+  }, [studyItems]);
+
+  /* ── Loading ──────────────────────────────────────── */
   if (authLoading || isLoading) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Loading analytics...</p>
+          <Loader2 size={36} className={styles.spinner} />
+          <p>Loading analytics…</p>
         </div>
       </div>
     );
   }
 
-  if (!stats) {
+  /* ── Error ────────────────────────────────────────── */
+  if (error || !data) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>Failed to load analytics</div>
+        <div className={styles.error}>{error || 'Failed to load analytics'}</div>
       </div>
     );
   }
 
-  const accuracyPercentage = Math.round(stats.average_accuracy * 100);
+  const { stats, activity_feed, quiz_performance, study_time, subject_breakdown } = data;
+  const avgScore = Math.round(stats.average_quiz_score ?? 0);
+  const totalMinutes = stats.total_study_time ?? 0;
+  const hours = Math.floor(totalMinutes / 60);
+  const mins  = totalMinutes % 60;
+
+  const maxSubjectCount = Math.max(...subject_breakdown.items.map((s) => s.count), 1);
+  const quizItems = quiz_performance.items.slice(0, 10);
+  const avgQuizOfShown = quizItems.length > 0
+    ? Math.round(quizItems.reduce((a, b) => a + b.score, 0) / quizItems.length)
+    : 0;
+
+  const hasContent =
+    stats.total_documents > 0 ||
+    stats.total_flashcard_sets > 0 ||
+    stats.total_quizzes > 0;
+
+  const streakMsg = stats.current_streak >= 7
+    ? '🔥 Unstoppable!'
+    : stats.current_streak >= 3
+      ? '💪 Keep it up!'
+      : stats.current_streak >= 1
+        ? '✨ Good start!'
+        : '🚀 Start today!';
+
+  /* ═════════════════════════════════════════════════════ */
+  /* Render                                               */
+  /* ═════════════════════════════════════════════════════ */
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Learning Analytics</h1>
-          <p className={styles.subtitle}>Track your study progress and achievements</p>
+
+      {/* ── Page Header ──────────────────────────────── */}
+      <header className={styles.pageHeader}>
+        <div className={styles.headerIcon}>
+          <BarChart3 size={32} />
         </div>
-        <Button
-          variant="primary"
-          onClick={handleExportReport}
-          isLoading={isExporting}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-            />
-          </svg>
-          Export Report
-        </Button>
+        <div className={styles.headerTextBlock}>
+          <h1>Learning Analytics</h1>
+          <p>Track your study progress and performance</p>
+        </div>
       </header>
 
-      {error && <div className={styles.errorMessage}>{error}</div>}
+      {/* ── KPI Pill Badges ──────────────────────────── */}
+      <div className={styles.kpiGrid}>
+        {[
+          { icon: <FileText size={18} />, value: stats.total_documents, label: 'Documents', bg: '#E6F0FA', color: '#0066B4' },
+          { icon: <BookOpen size={18} />,  value: stats.total_flashcard_sets, label: 'Flashcard Sets', bg: '#E6F5F0', color: '#2A9D8F' },
+          { icon: <ClipboardCheck size={18} />, value: stats.total_quizzes, label: 'Quizzes Taken', bg: '#FFF5E6', color: '#E88C30' },
+          { icon: <Flame size={18} />,     value: stats.current_streak, label: 'Day Streak', bg: '#FFEDE6', color: '#E05C78' },
+        ].map((kpi, i) => (
+          <div key={i} className={styles.kpi}>
+            <div className={styles.kpiIcon} style={{ background: kpi.bg, color: kpi.color }}>
+              {kpi.icon}
+            </div>
+            <div className={styles.kpiInfo}>
+              <span className={styles.kpiValue}>{kpi.value}</span>
+              <span className={styles.kpiLabel}>{kpi.label}</span>
+            </div>
+          </div>
+        ))}
+      </div>
 
-      {/* Key Metrics */}
-      <section className={styles.metricsSection}>
-        <div className={styles.metric}>
-          <div className={styles.metricIcon} style={{ background: '#e0e7ff' }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          </div>
-          <div className={styles.metricInfo}>
-            <p className={styles.metricLabel}>Study Sessions</p>
-            <p className={styles.metricValue}>{stats.total_sessions}</p>
-          </div>
-        </div>
+      {/* ── Overview Row ─────────────────────────────── */}
+      <div className={styles.overviewRow}>
 
-        <div className={styles.metric}>
-          <div className={styles.metricIcon} style={{ background: '#dcfce7' }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+        {/* Score Ring Card */}
+        <div className={styles.scoreCard}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>
+              <TrendingUp size={18} className={styles.cardTitleIcon} />
+              Average Quiz Score
+            </h2>
           </div>
-          <div className={styles.metricInfo}>
-            <p className={styles.metricLabel}>Cards Studied</p>
-            <p className={styles.metricValue}>{stats.total_cards_studied}</p>
-          </div>
-        </div>
-
-        <div className={styles.metric}>
-          <div className={styles.metricIcon} style={{ background: '#fef3c7' }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-          </div>
-          <div className={styles.metricInfo}>
-            <p className={styles.metricLabel}>Accuracy</p>
-            <p className={styles.metricValue}>{accuracyPercentage}%</p>
-          </div>
-        </div>
-
-        <div className={styles.metric}>
-          <div className={styles.metricIcon} style={{ background: '#e0e7ff' }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10h.01M13 6h.01M3 13h2v8H3zm12-8v8m5 0h2V9h-2m0 0V7a2 2 0 10-4 0v2m0 0h-2.586a1 1 0 00-.707.293l-.913.914M6.657 17.085a2 2 0 10 2.828 2.828m-6.364-6.364a9 9 0 1012.728 0M9.305 7.295a3 3 0 104.243 4.243"
-              />
-            </svg>
-          </div>
-          <div className={styles.metricInfo}>
-            <p className={styles.metricLabel}>Current Streak</p>
-            <p className={styles.metricValue}>{stats.current_streak} days</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Study Time */}
-      <section className={styles.section}>
-        <div className={styles.studyTimeCard}>
-          <h3 className={styles.sectionTitle}>Total Study Time</h3>
-          <p className={styles.largeValue}>{stats.total_study_time_minutes} minutes</p>
-          <p className={styles.description}>
-            That's {Math.round(stats.total_study_time_minutes / 60)} hours of learning
+          <ScoreRing score={avgScore} />
+          <p className={styles.ringSubtext}>
+            Based on {stats.total_quizzes} quiz{stats.total_quizzes !== 1 ? 'zes' : ''}
           </p>
-        </div>
-      </section>
-
-      {/* Most Studied Documents */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Most Studied Documents</h2>
-        
-        {documents.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p>No study data yet. Start studying to see your progress!</p>
-          </div>
-        ) : (
-          <div className={styles.documentsList}>
-            {documents.map((doc, index) => (
-              <div key={doc.document_id} className={styles.documentItem}>
-                <div className={styles.documentRank}>#{index + 1}</div>
-                <div className={styles.documentDetails}>
-                  <p className={styles.documentTitle}>{doc.filename}</p>
-                  <div className={styles.documentStats}>
-                    <span>{doc.cards_studied} of {doc.total_cards} cards studied</span>
-                    <span>•</span>
-                    <span>{doc.study_sessions} sessions</span>
-                  </div>
-                </div>
-                <div className={styles.accuracyBadge}>
-                  <span className={styles.accuracyValue}>
-                    {Math.round(doc.average_accuracy * 100)}%
-                  </span>
-                </div>
+          <div className={styles.gradeScale}>
+            {[
+              { letter: 'A', range: '90-100', color: '#10b981', bg: '#ecfdf5' },
+              { letter: 'B', range: '80-89',  color: '#3b82f6', bg: '#eff6ff' },
+              { letter: 'C', range: '70-79',  color: '#f59e0b', bg: '#fffbeb' },
+              { letter: 'D', range: '60-69',  color: '#ef4444', bg: '#fef2f2' },
+              { letter: 'F', range: '0-59',   color: '#6b7280', bg: '#f9fafb' },
+            ].map((g) => (
+              <div key={g.letter} className={styles.gradePill} style={{ background: g.bg }}>
+                <span className={styles.gradePillLetter} style={{ color: g.color }}>{g.letter}</span>
+                <span className={styles.gradePillRange} style={{ color: g.color }}>{g.range}</span>
               </div>
             ))}
           </div>
-        )}
-      </section>
+        </div>
 
-      {/* Progress Visualization */}
-      <section className={styles.section}>
-        <div className={styles.progressCard}>
-          <h3 className={styles.sectionTitle}>Study Progress Distribution</h3>
-          
-          <div className={styles.progressBars}>
-            <div className={styles.progressItem}>
-              <div className={styles.progressLabel}>
-                <span>Study Sessions</span>
-                <span className={styles.progressValue}>{stats.total_sessions}</span>
-              </div>
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{
-                    width: `${Math.min(100, (stats.total_sessions / 50) * 100)}%`,
-                    background: 'linear-gradient(90deg, #4f46e5, #7c3aed)',
-                  }}
-                ></div>
-              </div>
+        {/* Study Time Hero Card */}
+        <div className={styles.studyHero}>
+          <div className={styles.studyHeroTop}>
+            <Clock size={18} />
+            Total Study Time
+          </div>
+          <p className={styles.studyHeroValue}>
+            {hours > 0 ? `${hours}h ` : ''}{mins}m
+          </p>
+          <p className={styles.studyHeroSub}>
+            {hours > 0 ? `${hours} hour${hours !== 1 ? 's' : ''} and ` : ''}{mins} minute{mins !== 1 ? 's' : ''} of focused learning
+          </p>
+          <div className={styles.studyHeroStats}>
+            <div className={styles.studyHeroStat}>
+              <span className={styles.studyHeroStatValue}>{stats.documents_this_week}</span>
+              <span className={styles.studyHeroStatLabel}>Docs this week</span>
             </div>
+            <div className={styles.studyHeroStat}>
+              <span className={styles.studyHeroStatValue}>{stats.quiz_attempts_this_week}</span>
+              <span className={styles.studyHeroStatLabel}>Quizzes this week</span>
+            </div>
+            <div className={styles.studyHeroStat}>
+              <span className={styles.studyHeroStatValue}>
+                {study_time.items.length > 0
+                  ? Math.round(study_time.items.reduce((a, b) => a + b.minutes, 0) / study_time.items.length)
+                  : 0}m
+              </span>
+              <span className={styles.studyHeroStatLabel}>Avg / day</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <div className={styles.progressItem}>
-              <div className={styles.progressLabel}>
-                <span>Cards Mastered</span>
-                <span className={styles.progressValue}>
-                  {Math.round((stats.average_accuracy * stats.total_cards_studied) / 100)}
-                </span>
+      {/* ── Quiz Performance Chart (full width) ──────── */}
+      {quizItems.length > 0 && (
+        <div className={`${styles.card} ${styles.fullRow}`}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>
+              <BarChart3 size={18} className={styles.cardTitleIcon} />
+              Quiz Performance
+            </h2>
+            <span className={styles.cardSub}>Last {quizItems.length} quizzes</span>
+          </div>
+          <div className={styles.quizChartWrap}>
+            <div className={styles.chartArea}>
+              {/* Y-axis */}
+              <div className={styles.chartYAxis}>
+                {[100, 75, 50, 25, 0].map((v) => (
+                  <span key={v} className={styles.chartYLabel}>{v}</span>
+                ))}
               </div>
-              <div className={styles.progressBar}>
+
+              {/* Bars */}
+              <div className={styles.chartBars}>
+                {/* Grid lines */}
+                <div className={styles.chartGridLines}>
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div key={i} className={styles.chartGridLine} />
+                  ))}
+                </div>
+
+                {/* Average line */}
                 <div
-                  className={styles.progressFill}
-                  style={{
-                    width: `${stats.average_accuracy * 100}%`,
-                    background: 'linear-gradient(90deg, #10b981, #059669)',
-                  }}
-                ></div>
+                  className={styles.chartAvgLine}
+                  style={{ bottom: `calc(${avgQuizOfShown}% + 1.75rem)` }}
+                >
+                  <span className={styles.chartAvgLabel}>Avg {avgQuizOfShown}%</span>
+                </div>
+
+                {/* Bar columns */}
+                {quizItems.map((p, i) => {
+                  const grade = getGradeLetter(p.score);
+                  const pct = Math.max(p.score, 3);
+                  return (
+                    <div key={i} className={styles.chartCol}>
+                      <div className={styles.chartColInner}>
+                        <span className={styles.chartColScore}>{Math.round(p.score)}%</span>
+                        <div className={styles.chartColTrack}>
+                          <div
+                            className={styles.chartColFill}
+                            style={{
+                              height: `${pct}%`,
+                              background: `linear-gradient(180deg, ${grade.color}, ${grade.color}dd)`,
+                            }}
+                          />
+                        </div>
+                        <span className={styles.chartColGrade} style={{ color: grade.color, background: grade.bg }}>
+                          {grade.letter}
+                        </span>
+                      </div>
+                      <span className={styles.chartColDate}>
+                        {p.date
+                          ? new Date(p.date).toLocaleDateString('en', { month: 'short', day: 'numeric' })
+                          : `#${i + 1}`}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
-      </section>
+      )}
 
-      {/* Quick Actions */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Quick Actions</h2>
-        <div className={styles.actionsGrid}>
-          <button className={styles.actionCard}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-            <span>View Detailed Stats</span>
-          </button>
+      {/* ── Bottom Row: Subjects + Activity ──────────── */}
+      <div className={styles.bottomRow}>
 
-          <button className={styles.actionCard}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 12a3 3 0 110-6 3 3 0 010 6zM7 12a3 3 0 110 6 3 3 0 010-6zM17 12a3 3 0 110-6 3 3 0 010 6zM17 12a3 3 0 110 6 3 3 0 010-6z"
-              />
-            </svg>
-            <span>Set Study Goals</span>
-          </button>
+        {/* Subjects */}
+        {subject_breakdown.items.length > 0 && (
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>
+                <BookOpen size={18} className={styles.cardTitleIcon} />
+                Subjects
+              </h2>
+              <span className={styles.cardSub}>{subject_breakdown.items.length} topics</span>
+            </div>
+            <div className={styles.subjectList}>
+              {subject_breakdown.items.map((item, i) => {
+                const pct = Math.round((item.count / maxSubjectCount) * 100);
+                const color = SUBJECT_COLORS[i % SUBJECT_COLORS.length];
+                return (
+                  <div key={i} className={styles.subjectItem}>
+                    <div className={styles.subjectHeader}>
+                      <span className={styles.subjectName}>{item.subject}</span>
+                      <span className={styles.subjectCount}>
+                        {item.count} doc{item.count !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                    <div className={styles.subjectBarTrack}>
+                      <div
+                        className={styles.subjectBarFill}
+                        style={{ width: `${pct}%`, background: color }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
-          <button className={styles.actionCard}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            <span>View Achievements</span>
-          </button>
+        {/* Recent Activity */}
+        {activity_feed.items.length > 0 && (
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2 className={styles.cardTitle}>
+                <Activity size={18} className={styles.cardTitleIcon} />
+                Recent Activity
+              </h2>
+            </div>
+            <div className={styles.activityTimeline}>
+              {activity_feed.items.slice(0, 8).map((item, i) => {
+                const meta = ACTIVITY_META[item.type] ?? {
+                  icon: <Activity size={14} />, bg: '#F0F3F7', color: '#6b7280', label: 'Activity',
+                };
+                return (
+                  <div key={i} className={styles.activityItem}>
+                    <div className={styles.activityIcon} style={{ background: meta.bg, color: meta.color }}>
+                      {meta.icon}
+                    </div>
+                    <div className={styles.activityContent}>
+                      <p className={styles.activityDesc}>{item.description}</p>
+                      <div className={styles.activityMeta}>
+                        <span className={styles.activityTime}>{formatTimeAgo(item.timestamp)}</span>
+                        <span
+                          className={styles.activityBadge}
+                          style={{ background: meta.bg, color: meta.color }}
+                        >
+                          {meta.label}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Weekly Activity Heatmap ──────────────────── */}
+      <div className={`${styles.card} ${styles.fullRow}`}>
+        <div className={styles.cardHeader}>
+          <h2 className={styles.cardTitle}>
+            <Calendar size={18} className={styles.cardTitleIcon} />
+            Weekly Study Activity
+          </h2>
+          <span className={styles.cardSub}>This week</span>
         </div>
-      </section>
+        <div className={styles.weekGrid}>
+          {weeklyData.map((day, i) => {
+            const heat = getHeatColor(day.minutes);
+            return (
+              <div key={i} className={styles.weekDay}>
+                <span className={styles.weekDayLabel}>{day.label}</span>
+                <div
+                  className={styles.weekDayDot}
+                  style={{ background: heat.bg, color: heat.text }}
+                  title={`${day.label}: ${day.minutes}m`}
+                >
+                  {day.minutes > 0 ? `${day.minutes}m` : '–'}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Streak Card ─────────────────────────────── */}
+      <div className={styles.streakCard}>
+        <div className={styles.streakIcon} style={{ background: '#FFEDE6' }}>
+          🔥
+        </div>
+        <div className={styles.streakInfo}>
+          <span className={styles.streakValue}>{stats.current_streak} day{stats.current_streak !== 1 ? 's' : ''}</span>
+          <span className={styles.streakLabel}>Current study streak</span>
+        </div>
+        <span className={styles.streakMotivation} style={{ background: '#F4F9FD', color: '#0066B4' }}>
+          {streakMsg}
+        </span>
+      </div>
+
+      {/* ── Empty State ─────────────────────────────── */}
+      {!hasContent && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>
+            <BarChart3 size={36} />
+          </div>
+          <h3>No data yet</h3>
+          <p>Upload a document and start studying to see your analytics here.</p>
+        </div>
+      )}
     </div>
   );
 }

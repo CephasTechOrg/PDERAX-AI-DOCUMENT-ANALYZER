@@ -1,0 +1,482 @@
+Here is the refined, perfectly balanced analyzer page—static, elegantly scaled, and visually stunning without any floating or oversized elements.
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Analyzer · refined static</title>
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 Free (all styles) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F0F5FA;  /* solid, soft background */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            color: #1E2F3D;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .analyzer {
+            max-width: 1400px;
+            width: 100%;
+            background: #FFFFFF;
+            border-radius: 48px;
+            box-shadow: 0 30px 50px -25px rgba(0, 40, 70, 0.25);
+            padding: 2.5rem 3rem;  /* slightly reduced padding */
+            border: 1px solid #EAF0F6;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #0A2A3A;
+        }
+
+        /* header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .header-icon {
+            background: #0066B4;
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            box-shadow: 0 12px 20px -12px #0066B4;
+        }
+        .header-text h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #0A2A3A;
+            margin-bottom: 0.2rem;
+        }
+        .header-text p {
+            font-size: 1rem;
+            color: #3F657B;
+        }
+
+        /* stats row (compact) */
+        .stats-row {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .stat-badge {
+            background: #F4F9FD;
+            border-radius: 60px;
+            padding: 0.6rem 1.5rem 0.6rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border: 1px solid #D9E9F5;
+        }
+        .stat-badge i {
+            font-size: 1.2rem;
+            color: #0066B4;
+            background: white;
+            padding: 6px;
+            border-radius: 50%;
+        }
+        .stat-badge span {
+            font-weight: 500;
+            color: #0A2A3A;
+            font-size: 0.95rem;
+        }
+        .stat-badge small {
+            color: #4F758E;
+            font-size: 0.8rem;
+            margin-left: 4px;
+        }
+
+        /* upload zone – perfectly sized, static */
+        .upload-zone {
+            background: #F5FAFE;
+            border-radius: 48px;
+            padding: 2.5rem 2rem;  /* reduced from previous */
+            border: 2px dashed #B6D6F2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #0066B4;
+            background: white;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 10px 20px -12px #0066B4;
+            border: 1px solid #E6F0FA;
+        }
+
+        .upload-zone h2 {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #0A2A3A;
+            margin-bottom: 0.3rem;
+        }
+
+        .or-text {
+            font-size: 0.95rem;
+            color: #4F758E;
+            margin: 0.5rem 0;
+        }
+
+        .file-btn {
+            background: #0066B4;
+            color: white;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.8rem 2.2rem;
+            border-radius: 60px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 18px -12px #0066B4;
+        }
+
+        .file-types {
+            background: #FFFFFF;
+            border-radius: 60px;
+            padding: 0.6rem 1.6rem;
+            font-size: 0.9rem;
+            color: #1D577B;
+            border: 1px solid #C9DEF0;
+            margin-top: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .max-size {
+            font-size: 0.9rem;
+            color: #59839E;
+            margin-top: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #F0F7FD;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+        }
+
+        /* how it works */
+        .how-it-works {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 2rem 0 1.5rem;
+        }
+        .how-it-works h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0A2A3A;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .steps {
+            display: flex;
+            gap: 1rem;
+        }
+        .step {
+            background: #F0F7FD;
+            padding: 0.4rem 1rem 0.4rem 0.8rem;
+            border-radius: 60px;
+            border: 1px solid #D2E5F5;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #1D577B;
+            font-size: 0.9rem;
+        }
+        .step i {
+            color: #0066B4;
+        }
+
+        /* feature cards – compact, no animations */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-card {
+            background: #F8FCFE;
+            border-radius: 36px;
+            padding: 1.8rem 1.5rem 1.8rem 1.8rem;
+            border: 1px solid #E4EEF7;
+            box-shadow: 0 8px 18px -12px rgba(0, 50, 80, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.4rem;
+            color: #0066B4;
+            background: #E6F0FA;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            margin-bottom: 1.2rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0F3D5E;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: #4F758E;
+            line-height: 1.5;
+        }
+
+        /* recent analyses */
+        .recent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 1.8rem 0 1.2rem;
+        }
+        .recent-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0A2A3A;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .view-all {
+            color: #0066B4;
+            font-weight: 500;
+            font-size: 0.9rem;
+            background: #F0F7FD;
+            padding: 0.4rem 1.4rem;
+            border-radius: 60px;
+            border: 1px solid #CEE3F5;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .recent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+        }
+
+        .recent-item {
+            background: #FFFFFF;
+            border-radius: 28px;
+            padding: 1.2rem;
+            border: 1px solid #E6F0F8;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .recent-icon {
+            background: #E6F0FA;
+            color: #0066B4;
+            width: 50px;
+            height: 50px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+        .recent-info .filename {
+            font-weight: 600;
+            color: #0F374F;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+        .recent-info .meta {
+            font-size: 0.75rem;
+            color: #6C93AD;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-note {
+            margin-top: 3rem;
+            text-align: right;
+            font-size: 0.7rem;
+            color: #A5C4DE;
+            border-top: 1px solid #E3EEF8;
+            padding-top: 1.2rem;
+        }
+
+        /* no animations, no scaling, no hover transforms */
+        .file-btn, .stat-badge, .feature-card, .recent-item, .upload-zone, .step {
+            transition: none;
+        }
+
+        @media (max-width: 1000px) {
+            .features-grid, .recent-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 700px) {
+            .features-grid, .recent-grid {
+                grid-template-columns: 1fr;
+            }
+            .how-it-works { flex-direction: column; align-items: start; gap: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="analyzer">
+        <!-- header -->
+        <div class="page-header">
+            <div class="header-icon">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <div class="header-text">
+                <h1>Document Analyzer</h1>
+                <p>Upload a document and let AI extract insights, summaries, and study materials.</p>
+            </div>
+        </div>
+
+        <!-- stats row (compact) -->
+        <div class="stats-row">
+            <div class="stat-badge">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>245 documents analyzed</span><small>this month</small>
+            </div>
+            <div class="stat-badge">
+                <i class="fa-regular fa-clock"></i>
+                <span>avg. processing 12s</span>
+            </div>
+            <div class="stat-badge">
+                <i class="fa-solid fa-check-circle"></i>
+                <span>98% satisfaction</span>
+            </div>
+        </div>
+
+        <!-- upload zone – perfect size, static -->
+        <div class="upload-zone">
+            <div class="upload-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h2>Drag and drop your files here</h2>
+            <div class="or-text">or</div>
+            <button class="file-btn" onclick="alert('File selection would open here.')">
+                <i class="fa-regular fa-folder-open"></i> click to select files
+            </button>
+            <div class="file-types">
+                <i class="fa-regular fa-file"></i> Supported formats: .pdf, .doc, .docx, .xls, .xlsx, .txt
+            </div>
+            <div class="max-size">
+                <i class="fa-solid fa-circle-check" style="color: #2a9d8f;"></i> Max file size: 50MB
+            </div>
+        </div>
+
+        <!-- how it works -->
+        <div class="how-it-works">
+            <h2><i class="fa-solid fa-magic"></i> How it works</h2>
+            <div class="steps">
+                <div class="step"><i class="fa-solid fa-upload"></i> 1. Upload</div>
+                <div class="step"><i class="fa-solid fa-brain"></i> 2. AI analysis</div>
+                <div class="step"><i class="fa-solid fa-layer-group"></i> 3. Get materials</div>
+            </div>
+        </div>
+
+        <!-- feature cards -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-brain"></i></div>
+                <h3>AI-Powered Analysis</h3>
+                <p>Get comprehensive summaries, key insights, and Q&A pairs from any document. Our AI understands context and extracts the most valuable information.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h3>Study Material Generation</h3>
+                <p>Generate flashcards and quizzes directly from your analysis results. Turn any document into an interactive study session in seconds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-regular fa-file-lines"></i></div>
+                <h3>Multiple Formats</h3>
+                <p>Supports PDF, DOCX, XLS, XLSX, and TXT files up to 50MB. Seamless extraction from spreadsheets, text, and rich documents.</p>
+            </div>
+        </div>
+
+        <!-- recent analyses -->
+        <div class="recent-header">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent analyses</h3>
+            <a href="#" class="view-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="recent-grid">
+            <div class="recent-item">
+                <div class="recent-icon"><i class="fa-regular fa-file-pdf"></i></div>
+                <div class="recent-info">
+                    <div class="filename">2025_Annual_Report.pdf</div>
+                    <div class="meta"><i class="fa-solid fa-clock"></i> 2 hours ago · 24 pages</div>
+                </div>
+            </div>
+            <div class="recent-item">
+                <div class="recent-icon"><i class="fa-regular fa-file-lines"></i></div>
+                <div class="recent-info">
+                    <div class="filename">Lecture_notes_week12.docx</div>
+                    <div class="meta"><i class="fa-solid fa-clock"></i> yesterday · 8 pages</div>
+                </div>
+            </div>
+            <div class="recent-item">
+                <div class="recent-icon"><i class="fa-solid fa-file-spreadsheet"></i></div>
+                <div class="recent-info">
+                    <div class="filename">budget_2026.xlsx</div>
+                    <div class="meta"><i class="fa-solid fa-clock"></i> 3 days ago · 6 sheets</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- footer -->
+        <div class="footer-note">
+            <i class="fa-solid fa-grip"></i> analyzer · perfectly balanced
+        </div>
+    </div>
+</body>
+</html>
+```

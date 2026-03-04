@@ -38,7 +38,7 @@
 .logoText {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: #0066B4;
   letter-spacing: -0.02em;
 }
 
@@ -60,7 +60,7 @@
   transition: color 0.2s;
 
   &:hover {
-    color: #4f46e5;
+    color: #0066B4;
   }
 }
 
@@ -103,21 +103,21 @@
 }
 
 .primaryButton {
-  background-color: #4f46e5;
+  background-color: #0066B4;
   color: #ffffff;
 
   &:hover {
-    background-color: #4338ca;
+    background-color: #004D8A;
   }
 }
 
 .outlineButton {
-  border: 1px solid #4f46e5;
-  color: #4f46e5;
+  border: 1px solid #0066B4;
+  color: #0066B4;
   background-color: transparent;
 
   &:hover {
-    background-color: #f0f4ff;
+    background-color: #E6F0FA;
   }
 }
 

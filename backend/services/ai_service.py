@@ -106,7 +106,7 @@ class AIService:
             ),
             "qa": (
                 "Generate 3-5 important questions and their answers based on this document. "
-                "Focus on understanding key concepts and main ideas:\n\n{text}"
+                f"Focus on understanding key concepts and main ideas:\n\n{text}"
             ),
             "full": (
                 "Analyze this document and provide:\n\n"
@@ -395,49 +395,54 @@ Generate {count} flashcards as a JSON array:"""
         """Parse AI response into flashcard list."""
         import json
         import re
-        
-        # Clean up the response - remove markdown code blocks if present
+
         response = response.strip()
-        response = re.sub(r'^```json\s*', '', response)
-        response = re.sub(r'^```\s*', '', response)
-        response = re.sub(r'\s*```$', '', response)
-        
+
+        def _extract_valid_cards(data) -> list:
+            if not isinstance(data, list):
+                return []
+            valid_cards = []
+            for card in data:
+                if isinstance(card, dict) and "front" in card and "back" in card:
+                    valid_cards.append({
+                        "front": str(card.get("front", "")).strip(),
+                        "back": str(card.get("back", "")).strip(),
+                        "category": str(card.get("category", "General")).strip(),
+                    })
+            return valid_cards
+
+        # 1. Try direct parse
         try:
-            flashcards = json.loads(response)
-            if isinstance(flashcards, list):
-                # Validate and clean each flashcard
-                valid_cards = []
-                for card in flashcards:
-                    if isinstance(card, dict) and "front" in card and "back" in card:
-                        valid_cards.append({
-                            "front": str(card.get("front", "")).strip(),
-                            "back": str(card.get("back", "")).strip(),
-                            "category": str(card.get("category", "General")).strip()
-                        })
-                return valid_cards
-        except json.JSONDecodeError:
+            data = json.loads(response)
+            result = _extract_valid_cards(data)
+            if result:
+                return result
+        except (json.JSONDecodeError, ValueError):
             pass
-        
-        # Fallback: try to extract flashcards from text format
-        flashcards = []
-        lines = response.split('\n')
-        current_card = {}
-        
-        for line in lines:
-            line = line.strip()
-            if line.lower().startswith(('front:', 'q:', 'question:')):
-                if current_card.get('front') and current_card.get('back'):
-                    flashcards.append(current_card)
-                current_card = {'front': line.split(':', 1)[1].strip() if ':' in line else '', 'category': 'General'}
-            elif line.lower().startswith(('back:', 'a:', 'answer:')):
-                current_card['back'] = line.split(':', 1)[1].strip() if ':' in line else ''
-            elif line.lower().startswith(('category:', 'topic:')):
-                current_card['category'] = line.split(':', 1)[1].strip() if ':' in line else 'General'
-        
-        if current_card.get('front') and current_card.get('back'):
-            flashcards.append(current_card)
-        
-        return flashcards
+
+        # 2. Strip markdown code fences and retry
+        cleaned = re.sub(r'```(?:json)?\s*', '', response).strip()
+        try:
+            data = json.loads(cleaned)
+            result = _extract_valid_cards(data)
+            if result:
+                return result
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+        # 3. Extract the first JSON array from anywhere in the text
+        start = response.find('[')
+        end = response.rfind(']')
+        if start != -1 and end != -1 and end > start:
+            try:
+                data = json.loads(response[start:end + 1])
+                result = _extract_valid_cards(data)
+                if result:
+                    return result
+            except (json.JSONDecodeError, ValueError):
+                pass
+
+        return []
     
     def _build_fallback_flashcards(self, text: str, reason: str = "") -> dict:
         """Generate basic flashcards without AI when service is unavailable."""
@@ -596,39 +601,69 @@ Generate {count} quiz questions as a JSON array:"""
         """Parse AI response into quiz question list."""
         import json
         import re
-        
+
         response = response.strip()
-        response = re.sub(r'^```json\s*', '', response)
-        response = re.sub(r'^```\s*', '', response)
-        response = re.sub(r'\s*```$', '', response)
-        
+
+        def _extract_valid_questions(data) -> list:
+            if not isinstance(data, list):
+                return []
+            valid_questions = []
+            for q in data:
+                if not (isinstance(q, dict) and "question" in q and "options" in q and "correct_answer" in q):
+                    continue
+                options = []
+                for opt in q.get("options", []):
+                    if isinstance(opt, dict) and "label" in opt and "text" in opt:
+                        options.append({
+                            "label": str(opt["label"]).strip().upper(),
+                            "text": str(opt["text"]).strip(),
+                        })
+                if len(options) >= 2:
+                    correct = str(q.get("correct_answer", "A")).strip().upper()
+                    option_labels = {o["label"] for o in options}
+                    # If the claimed correct answer doesn't match any option, default to first
+                    if correct not in option_labels:
+                        correct = options[0]["label"]
+                    valid_questions.append({
+                        "question": str(q.get("question", "")).strip(),
+                        "options": options,
+                        "correct_answer": correct,
+                        "explanation": str(q.get("explanation", "")).strip(),
+                        "category": str(q.get("category", "General")).strip(),
+                    })
+            return valid_questions
+
+        # 1. Try direct parse
         try:
-            questions = json.loads(response)
-            if isinstance(questions, list):
-                valid_questions = []
-                for q in questions:
-                    if isinstance(q, dict) and "question" in q and "options" in q and "correct_answer" in q:
-                        # Ensure options are properly formatted
-                        options = []
-                        for opt in q.get("options", []):
-                            if isinstance(opt, dict) and "label" in opt and "text" in opt:
-                                options.append({
-                                    "label": str(opt["label"]).strip().upper(),
-                                    "text": str(opt["text"]).strip()
-                                })
-                        
-                        if len(options) >= 2:  # Need at least 2 options
-                            valid_questions.append({
-                                "question": str(q.get("question", "")).strip(),
-                                "options": options,
-                                "correct_answer": str(q.get("correct_answer", "A")).strip().upper(),
-                                "explanation": str(q.get("explanation", "")).strip(),
-                                "category": str(q.get("category", "General")).strip()
-                            })
-                return valid_questions
-        except json.JSONDecodeError:
+            data = json.loads(response)
+            result = _extract_valid_questions(data)
+            if result:
+                return result
+        except (json.JSONDecodeError, ValueError):
             pass
-        
+
+        # 2. Strip markdown code fences and retry
+        cleaned = re.sub(r'```(?:json)?\s*', '', response).strip()
+        try:
+            data = json.loads(cleaned)
+            result = _extract_valid_questions(data)
+            if result:
+                return result
+        except (json.JSONDecodeError, ValueError):
+            pass
+
+        # 3. Extract the first JSON array from anywhere in the text
+        start = response.find('[')
+        end = response.rfind(']')
+        if start != -1 and end != -1 and end > start:
+            try:
+                data = json.loads(response[start:end + 1])
+                result = _extract_valid_questions(data)
+                if result:
+                    return result
+            except (json.JSONDecodeError, ValueError):
+                pass
+
         return []
 
     def _build_fallback_quiz(self, text: str, reason: str = "") -> dict:

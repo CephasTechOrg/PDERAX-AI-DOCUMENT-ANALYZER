@@ -23,7 +23,7 @@ export interface StudentGrades {
   student_id: string;
   student_name: string;
   student_email: string;
-  classroom_id: string;
+  classroom_id?: string;
   grades: GradeEntry[];
   class_average: number;
   letter_grade: string;
@@ -43,13 +43,13 @@ export interface GradebookEntry {
 export interface PerformanceAnalytics {
   student_id: string;
   overall_average: number;
-  highest_score: number;
-  lowest_score: number;
-  score_distribution: Record<number, number>; // range -> count
-  trend_data: TrendData[];
+  highest_score?: number;
+  lowest_score?: number;
+  score_distribution?: Record<number, number>; // range -> count
+  trend_data?: TrendData[];
   strengths: string[];
   areas_for_improvement: string[];
-  predicted_final_grade: string;
+  predicted_final_grade: string | number | null;
 }
 
 export interface TrendData {
@@ -122,13 +122,43 @@ class GradeService {
     students: StudentGrades[];
     class_average: number;
   }> {
-    const response = await apiClient.get(
+    const response = await apiClient.get<any>(
       `/api/v1/classrooms/${classroomId}/gradebook`,
       {
         params: { page, limit },
       }
     );
-    return response.data;
+
+    const assignments = Array.isArray(response.assignments)
+      ? response.assignments.map((a: any) => ({
+        assignment_id: a.assignment_id ?? a.id,
+        assignment_title: a.assignment_title ?? a.title,
+        due_date: a.due_date,
+        points_possible: a.points_possible,
+        student_grades: new Map(),
+        class_average: a.class_average ?? a.average_score ?? 0,
+        graded_count: a.graded_count ?? 0,
+      }))
+      : [];
+
+    const students = Array.isArray(response.students)
+      ? response.students.map((s: any) => ({
+        student_id: s.student_id,
+        student_name: s.student_name,
+        student_email: s.student_email,
+        classroom_id: classroomId,
+        grades: Array.isArray(s.grades) ? s.grades : [],
+        class_average: s.class_average ?? s.overall_average ?? 0,
+        letter_grade: s.letter_grade ?? s.overall_letter_grade ?? 'N/A',
+        trend: s.trend ?? 0,
+      }))
+      : [];
+
+    return {
+      assignments,
+      students,
+      class_average: response.class_average ?? 0,
+    };
   }
 
   /**
@@ -138,20 +168,38 @@ class GradeService {
     classroomId: string,
     studentId: string
   ): Promise<StudentGrades> {
-    const response = await apiClient.get<StudentGrades>(
+    const response = await apiClient.get<any>(
       `/api/v1/classrooms/${classroomId}/students/${studentId}/grades`
     );
-    return response.data;
+    return {
+      student_id: response.student_id,
+      student_name: response.student_name,
+      student_email: response.student_email,
+      classroom_id: classroomId,
+      grades: Array.isArray(response.grades) ? response.grades : [],
+      class_average: response.class_average ?? response.overall_average ?? 0,
+      letter_grade: response.letter_grade ?? response.overall_letter_grade ?? 'N/A',
+      trend: response.trend ?? 0,
+    };
   }
 
   /**
    * Get all grades for current student
    */
   async getMyGrades(classroomId: string): Promise<StudentGrades> {
-    const response = await apiClient.get<StudentGrades>(
-      `/api/v1/classrooms/${classroomId}/my-grades`
+    const response = await apiClient.get<any>(
+      `/api/v1/classrooms/${classroomId}/grades/my`
     );
-    return response.data;
+    return {
+      student_id: response.student_id,
+      student_name: response.student_name,
+      student_email: response.student_email,
+      classroom_id: classroomId,
+      grades: Array.isArray(response.grades) ? response.grades : [],
+      class_average: response.class_average ?? response.overall_average ?? 0,
+      letter_grade: response.letter_grade ?? response.overall_letter_grade ?? 'N/A',
+      trend: response.trend ?? 0,
+    };
   }
 
   /**
@@ -164,7 +212,7 @@ class GradeService {
     const response = await apiClient.get<PerformanceAnalytics>(
       `/api/v1/classrooms/${classroomId}/students/${studentId}/performance`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -172,9 +220,9 @@ class GradeService {
    */
   async getMyPerformance(classroomId: string): Promise<PerformanceAnalytics> {
     const response = await apiClient.get<PerformanceAnalytics>(
-      `/api/v1/classrooms/${classroomId}/my-performance`
+      `/api/v1/classrooms/${classroomId}/performance/my`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -184,7 +232,7 @@ class GradeService {
     const response = await apiClient.get<ClassPerformance>(
       `/api/v1/classrooms/${classroomId}/performance`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -201,7 +249,7 @@ class GradeService {
         params: { period },
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -212,12 +260,12 @@ class GradeService {
     period?: string
   ): Promise<ReportCard> {
     const response = await apiClient.get<ReportCard>(
-      `/api/v1/classrooms/${classroomId}/my-report-card`,
+      `/api/v1/classrooms/${classroomId}/report-card/my`,
       {
         params: { period },
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -236,10 +284,12 @@ class GradeService {
    * Get grade weightings for classroom
    */
   async getGradeWeightings(classroomId: string): Promise<GradeWeighting[]> {
-    const response = await apiClient.get<GradeWeighting[]>(
+    const response = await apiClient.get<any>(
       `/api/v1/classrooms/${classroomId}/grade-weightings`
     );
-    return response.data;
+    return Array.isArray(response)
+      ? response
+      : [response].filter(Boolean);
   }
 
   /**
@@ -257,7 +307,7 @@ class GradeService {
         params: { page, limit },
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -266,10 +316,10 @@ class GradeService {
   async bulkUpdateGrades(
     classroomId: string,
     assignmentId: string,
-    grades: Array<{ student_id: string; grade: number; feedback?: string }>
+    grades: Array<{ submission_id: string; points_earned: number; feedback?: string }>
   ): Promise<void> {
     await apiClient.post(
-      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/bulk-grade`,
+      `/api/v1/classrooms/${classroomId}/assignments/${assignmentId}/grades/bulk`,
       { grades }
     );
   }
@@ -284,7 +334,7 @@ class GradeService {
         responseType: 'blob',
       }
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -294,13 +344,12 @@ class GradeService {
     classroomId: string,
     studentId: string
   ): Promise<Blob> {
-    const response = await apiClient.get(
-      `/api/v1/classrooms/${classroomId}/students/${studentId}/report-card/export`,
-      {
-        responseType: 'blob',
-      }
+    const response = await apiClient.get<ReportCard>(
+      `/api/v1/classrooms/${classroomId}/students/${studentId}/report-card`
     );
-    return response.data;
+    return new Blob([JSON.stringify(response, null, 2)], {
+      type: 'application/json',
+    });
   }
 
   /**
@@ -311,13 +360,19 @@ class GradeService {
     level: 'top' | 'average' | 'struggling',
     limit: number = 10
   ): Promise<StudentGrades[]> {
-    const response = await apiClient.get<StudentGrades[]>(
-      `/api/v1/classrooms/${classroomId}/students/by-performance`,
-      {
-        params: { level, limit },
-      }
-    );
-    return response.data;
+    const gradebook = await this.getGradebook(classroomId, 1, 200);
+    const sorted = [...gradebook.students].sort((a, b) => b.class_average - a.class_average);
+
+    if (level === 'top') {
+      return sorted.slice(0, limit);
+    }
+
+    if (level === 'struggling') {
+      return sorted.slice().reverse().slice(0, limit);
+    }
+
+    const midpoint = Math.max(0, Math.floor(sorted.length / 2) - Math.floor(limit / 2));
+    return sorted.slice(midpoint, midpoint + limit);
   }
 
   /**
@@ -334,7 +389,7 @@ class GradeService {
     const response = await apiClient.get(
       `/api/v1/classrooms/${classroomId}/grade-statistics`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -344,7 +399,7 @@ class GradeService {
     const response = await apiClient.get<ReportCard[]>(
       `/api/v1/classrooms/${classroomId}/progress-reports`
     );
-    return response.data;
+    return response;
   }
 
   /**
@@ -357,12 +412,12 @@ class GradeService {
     student_grades: number[];
   }> {
     const response = await apiClient.get(
-      `/api/v1/classrooms/${classroomId}/grade-trends`,
+      `/api/v1/classrooms/${classroomId}/grades/trends`,
       {
         params: { days },
       }
     );
-    return response.data;
+    return response;
   }
 }
 

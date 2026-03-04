@@ -13,15 +13,16 @@
 .backLink {
   display: inline-flex;
   align-items: center;
+  gap: 0.3rem;
   color: var(--primary-color);
   text-decoration: none;
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
-  transition: all 0.2s ease;
+  transition: color 0.2s;
 }
 
 .backLink:hover {
-  gap: 0.5rem;
+  color: #2A9D8F;
 }
 
 .title {
@@ -42,12 +43,8 @@
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-color);
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  color: var(--primary-color);
 }
 
 @keyframes spin {
@@ -135,7 +132,7 @@
 }
 
 .metric:hover {
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 102, 180, 0.15);
   transform: translateY(-2px);
 }
 
@@ -275,7 +272,7 @@
 
 .studentCard:hover {
   border-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 102, 180, 0.15);
   transform: translateY(-2px);
 }
 

@@ -130,6 +130,18 @@ def _run_column_migrations():
             END IF;
         END $$;
         """,
+        # Add file_type column to analysis_results (added later to model)
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = 'analysis_results' AND column_name = 'file_type'
+            ) THEN
+                ALTER TABLE analysis_results ADD COLUMN file_type VARCHAR(50);
+            END IF;
+        END $$;
+        """,
     ]
     with engine.connect() as conn:
         for sql in migrations:

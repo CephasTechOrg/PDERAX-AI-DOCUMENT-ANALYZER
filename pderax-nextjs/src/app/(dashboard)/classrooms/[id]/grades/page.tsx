@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/forms/Button';
+import { Download, ArrowLeft, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import gradeService from '@/services/grade_service';
 import styles from './page.module.css';
 
@@ -34,23 +34,17 @@ export default function GradesPage() {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [filterAssignment, setFilterAssignment] = useState<string>('all');
-  const [assignments, setAssignments] = useState<
-    Array<{ id: string; title: string }>
-  >([]);
+  const [assignments, setAssignments] = useState<Array<{ id: string; title: string }>>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(15);
-  const [selectedStudents, setSelectedStudents] = useState<Set<string>>(
-    new Set()
-  );
+  const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
   const [showBulkEdit, setShowBulkEdit] = useState(false);
   const [bulkGrade, setBulkGrade] = useState('');
   const [bulkFeedback, setBulkFeedback] = useState('');
-  const [exportFormat, setExportFormat] = useState<'csv' | 'json'>('csv');
+  const [exportFormat] = useState<'csv' | 'json'>('csv');
 
   useEffect(() => {
-    if (!authLoading) {
-      loadGradebook();
-    }
+    if (!authLoading) loadGradebook();
   }, [authLoading, sortField, sortOrder]);
 
   const loadGradebook = async () => {
@@ -62,7 +56,6 @@ export default function GradesPage() {
         student.grades.forEach((grade) => {
           gradeMap[grade.assignment_id] = grade.percentage ?? null;
         });
-
         return {
           student_id: student.student_id,
           student_name: student.student_name,
@@ -71,20 +64,14 @@ export default function GradesPage() {
           average: student.class_average ?? 0,
         };
       });
-
       setGradebook(rows);
-
-      // Extract unique assignments
-      const uniqueAssignments = data.assignments.map((assignment) => ({
-        id: assignment.assignment_id,
-        title: assignment.assignment_title,
+      const uniqueAssignments = data.assignments.map((a) => ({
+        id: a.assignment_id,
+        title: a.assignment_title,
       }));
-
       setAssignments(uniqueAssignments);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load gradebook';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to load gradebook');
     } finally {
       setIsLoading(false);
     }
@@ -101,61 +88,44 @@ export default function GradesPage() {
 
   const filterAndSortGradebook = () => {
     let filtered = [...gradebook];
-
     if (filterAssignment !== 'all') {
-      filtered = filtered.filter((entry) => {
-        const grades = entry.grades || {};
-        return filterAssignment in grades;
-      });
+      filtered = filtered.filter((entry) => filterAssignment in (entry.grades || {}));
     }
-
     filtered.sort((a, b) => {
       let compareValue = 0;
-
       if (sortField === 'name') {
         compareValue = a.student_name.localeCompare(b.student_name);
       } else if (sortField === 'grade') {
-        const aGrade = filterAssignment !== 'all'
-          ? (a.grades?.[filterAssignment] ?? 0)
-          : (a.average ?? 0);
-        const bGrade = filterAssignment !== 'all'
-          ? (b.grades?.[filterAssignment] ?? 0)
-          : (b.average ?? 0);
+        const aGrade = filterAssignment !== 'all' ? (a.grades?.[filterAssignment] ?? 0) : (a.average ?? 0);
+        const bGrade = filterAssignment !== 'all' ? (b.grades?.[filterAssignment] ?? 0) : (b.average ?? 0);
         compareValue = aGrade - bGrade;
       } else if (sortField === 'average') {
         compareValue = (a.average ?? 0) - (b.average ?? 0);
       }
-
       return sortOrder === 'asc' ? compareValue : -compareValue;
     });
-
     return filtered;
   };
 
   const handleSelectStudent = (studentId: string) => {
     const updated = new Set(selectedStudents);
-    if (updated.has(studentId)) {
-      updated.delete(studentId);
-    } else {
-      updated.add(studentId);
-    }
+    if (updated.has(studentId)) { updated.delete(studentId); } else { updated.add(studentId); }
     setSelectedStudents(updated);
   };
+
+  const filteredGradebook = filterAndSortGradebook();
 
   const handleSelectAll = () => {
     if (selectedStudents.size === filteredGradebook.length) {
       setSelectedStudents(new Set());
     } else {
-      setSelectedStudents(
-        new Set(filteredGradebook.map((entry) => entry.student_id))
-      );
+      setSelectedStudents(new Set(filteredGradebook.map((e) => e.student_id)));
     }
   };
 
   const handleBulkExport = async () => {
     try {
       const data = await gradeService.exportGradebook(classroomId);
-      // Handle download based on format
       const blob = new Blob([data], {
         type: exportFormat === 'csv' ? 'text/csv' : 'application/json',
       });
@@ -168,13 +138,10 @@ export default function GradesPage() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to export gradebook';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to export gradebook');
     }
   };
 
-  const filteredGradebook = filterAndSortGradebook();
   const paginatedGradebook = filteredGradebook.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -185,7 +152,7 @@ export default function GradesPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
+          <Loader2 size={36} className={styles.spinner} />
           <p>Loading gradebook...</p>
         </div>
       </div>
@@ -197,26 +164,13 @@ export default function GradesPage() {
       <header className={styles.header}>
         <div>
           <a href={`/classrooms/${classroomId}`} className={styles.backLink}>
-            ← Back to Classroom
+            <ArrowLeft size={14} /> Back to Classroom
           </a>
           <h1 className={styles.title}>Gradebook</h1>
         </div>
-        <Button variant="primary" onClick={handleBulkExport}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          Export
-        </Button>
+        <button className={styles.exportBtn} onClick={handleBulkExport}>
+          <Download size={15} /> Export
+        </button>
       </header>
 
       {error && <div className={styles.errorMessage}>{error}</div>}
@@ -226,32 +180,25 @@ export default function GradesPage() {
         <div className={styles.controlsLeft}>
           <select
             value={filterAssignment}
-            onChange={(e) => {
-              setFilterAssignment(e.target.value);
-              setCurrentPage(1);
-            }}
+            onChange={(e) => { setFilterAssignment(e.target.value); setCurrentPage(1); }}
             className={styles.filterSelect}
           >
             <option value="all">All Assignments</option>
-            {assignments.map((assignment) => (
-              <option key={assignment.id} value={assignment.id}>
-                {assignment.title}
-              </option>
+            {assignments.map((a) => (
+              <option key={a.id} value={a.id}>{a.title}</option>
             ))}
           </select>
         </div>
 
         {selectedStudents.size > 0 && (
           <div className={styles.bulkActions}>
-            <span className={styles.selectionInfo}>
-              {selectedStudents.size} selected
-            </span>
-            <Button
-              variant="secondary"
+            <span className={styles.selectionInfo}>{selectedStudents.size} selected</span>
+            <button
+              className={styles.bulkBtn}
               onClick={() => setShowBulkEdit(!showBulkEdit)}
             >
               Bulk Edit
-            </Button>
+            </button>
           </div>
         )}
       </div>
@@ -281,12 +228,12 @@ export default function GradesPage() {
                 />
               </div>
               <div className={styles.bulkActions}>
-                <Button variant="secondary" onClick={() => setShowBulkEdit(false)}>
+                <button className={styles.cancelBtn} onClick={() => setShowBulkEdit(false)}>
                   Cancel
-                </Button>
-                <Button variant="primary">
+                </button>
+                <button className={styles.exportBtn}>
                   Update {selectedStudents.size} Students
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -296,18 +243,9 @@ export default function GradesPage() {
       {/* Gradebook Table */}
       {gradebook.length === 0 ? (
         <div className={styles.emptyState}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <h2>No grades</h2>
           <p>Grades will appear here as assignments are submitted and graded</p>
@@ -321,43 +259,23 @@ export default function GradesPage() {
                   <th className={styles.checkboxColumn}>
                     <input
                       type="checkbox"
-                      checked={
-                        selectedStudents.size > 0 &&
-                        selectedStudents.size === paginatedGradebook.length
-                      }
+                      checked={selectedStudents.size > 0 && selectedStudents.size === paginatedGradebook.length}
                       onChange={handleSelectAll}
                     />
                   </th>
-                  <th
-                    className={styles.sortableHeader}
-                    onClick={() => handleSort('name')}
-                  >
+                  <th className={styles.sortableHeader} onClick={() => handleSort('name')}>
                     <div className={styles.headerContent}>
                       Student Name
-                      {sortField === 'name' && (
-                        <span className={styles.sortIcon}>
-                          {sortOrder === 'asc' ? '↑' : '↓'}
-                        </span>
-                      )}
+                      {sortField === 'name' && <span className={styles.sortIcon}>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
                     </div>
                   </th>
-                  {filterAssignment === 'all' &&
-                    assignments.map((assignment) => (
-                      <th key={assignment.id} className={styles.gradeHeader}>
-                        {assignment.title.slice(0, 15)}
-                      </th>
-                    ))}
-                  <th
-                    className={`${styles.sortableHeader} ${styles.averageHeader}`}
-                    onClick={() => handleSort('average')}
-                  >
+                  {filterAssignment === 'all' && assignments.map((a) => (
+                    <th key={a.id} className={styles.gradeHeader}>{a.title.slice(0, 15)}</th>
+                  ))}
+                  <th className={`${styles.sortableHeader} ${styles.averageHeader}`} onClick={() => handleSort('average')}>
                     <div className={styles.headerContent}>
                       Average
-                      {sortField === 'average' && (
-                        <span className={styles.sortIcon}>
-                          {sortOrder === 'asc' ? '↑' : '↓'}
-                        </span>
-                      )}
+                      {sortField === 'average' && <span className={styles.sortIcon}>{sortOrder === 'asc' ? '↑' : '↓'}</span>}
                     </div>
                   </th>
                 </tr>
@@ -374,27 +292,17 @@ export default function GradesPage() {
                     </td>
                     <td className={styles.nameCell}>
                       <div className={styles.studentInfo}>
-                        <div className={styles.studentName}>
-                          {entry.student_name}
-                        </div>
-                        <div className={styles.studentEmail}>
-                          {entry.student_email}
-                        </div>
+                        <div className={styles.studentName}>{entry.student_name}</div>
+                        <div className={styles.studentEmail}>{entry.student_email}</div>
                       </div>
                     </td>
-                    {filterAssignment === 'all' &&
-                      assignments.map((assignment) => (
-                        <td key={assignment.id} className={styles.gradeCell}>
-                          <GradeDisplay
-                            grade={entry.grades?.[assignment.id]}
-                          />
-                        </td>
-                      ))}
+                    {filterAssignment === 'all' && assignments.map((a) => (
+                      <td key={a.id} className={styles.gradeCell}>
+                        <GradeDisplay grade={entry.grades?.[a.id]} />
+                      </td>
+                    ))}
                     <td className={styles.averageCell}>
-                      <GradeDisplay
-                        grade={entry.average}
-                        isAverage={true}
-                      />
+                      <GradeDisplay grade={entry.average} isAverage />
                     </td>
                   </tr>
                 ))}
@@ -404,23 +312,21 @@ export default function GradesPage() {
 
           {totalPages > 1 && (
             <div className={styles.pagination}>
-              <Button
-                variant="secondary"
+              <button
+                className={styles.pageBtn}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
-                Previous
-              </Button>
-              <span className={styles.pageInfo}>
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button
-                variant="secondary"
+                <ChevronLeft size={15} /> Previous
+              </button>
+              <span className={styles.pageInfo}>Page {currentPage} of {totalPages}</span>
+              <button
+                className={styles.pageBtn}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
               >
-                Next
-              </Button>
+                Next <ChevronRight size={15} />
+              </button>
             </div>
           )}
         </>
@@ -429,23 +335,14 @@ export default function GradesPage() {
   );
 }
 
-function GradeDisplay({
-  grade,
-  isAverage = false,
-}: {
-  grade?: number | null;
-  isAverage?: boolean;
-}) {
+function GradeDisplay({ grade, isAverage = false }: { grade?: number | null; isAverage?: boolean }) {
   if (grade === null || grade === undefined) {
     return <span className={styles.gradeEmpty}>—</span>;
   }
-
-  const gradeColor = getGradeColor(grade);
-
   return (
     <span
       className={`${styles.grade} ${isAverage ? styles.boldGrade : ''}`}
-      style={{ color: gradeColor }}
+      style={{ color: getGradeColor(grade) }}
     >
       {grade.toFixed(1)}%
     </span>
@@ -453,9 +350,9 @@ function GradeDisplay({
 }
 
 function getGradeColor(grade: number): string {
-  if (grade >= 90) return '#10b981'; // Green
-  if (grade >= 80) return '#3b82f6'; // Blue
-  if (grade >= 70) return '#f59e0b'; // Yellow
-  if (grade >= 60) return '#ef4444'; // Red
-  return '#6b7280'; // Gray
+  if (grade >= 90) return '#10b981';
+  if (grade >= 80) return '#3b82f6';
+  if (grade >= 70) return '#f59e0b';
+  if (grade >= 60) return '#ef4444';
+  return '#6b7280';
 }

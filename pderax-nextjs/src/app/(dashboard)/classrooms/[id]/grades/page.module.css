@@ -17,15 +17,95 @@
 .backLink {
   display: inline-flex;
   align-items: center;
+  gap: 0.3rem;
   color: var(--primary-color);
   text-decoration: none;
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
-  transition: all 0.2s ease;
+  transition: color 0.2s;
 }
 
 .backLink:hover {
-  gap: 0.5rem;
+  color: #2A9D8F;
+}
+
+.exportBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: linear-gradient(135deg, #0066B4, #2A9D8F);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.exportBtn:hover {
+  opacity: 0.9;
+}
+
+.cancelBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #374151;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  border-color: #B3D4ED;
+  color: #0066B4;
+}
+
+.bulkBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #374151;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.bulkBtn:hover {
+  border-color: #B3D4ED;
+  color: #0066B4;
+}
+
+.pageBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #B3D4ED;
+  color: #0066B4;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .title {
@@ -46,12 +126,8 @@
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-color);
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  color: var(--primary-color);
 }
 
 @keyframes spin {
@@ -101,7 +177,7 @@
 .filterSelect:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 102, 180, 0.1);
 }
 
 .bulkActions {
@@ -246,7 +322,7 @@
 }
 
 .sortableHeader:hover {
-  background-color: rgba(79, 70, 229, 0.05);
+  background-color: rgba(0, 102, 180, 0.05);
 }
 
 .headerContent {
@@ -268,7 +344,7 @@
 
 .averageHeader {
   font-weight: 700;
-  background-color: rgba(79, 70, 229, 0.05);
+  background-color: rgba(0, 102, 180, 0.05);
 }
 
 .gradebookTable tbody tr {
@@ -315,7 +391,7 @@
 
 .averageCell {
   text-align: center;
-  background-color: rgba(79, 70, 229, 0.05);
+  background-color: rgba(0, 102, 180, 0.05);
   font-weight: 600;
   padding: 1rem 0.5rem;
 }

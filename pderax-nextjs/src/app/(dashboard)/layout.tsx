@@ -1,14 +1,16 @@
 /**
  * Dashboard Layout
- * Layout for authenticated pages (analyzer, study-tools, history, etc.)
- * Includes protected route wrapper
+ * Authenticated pages get a sidebar + main content area.
+ * The root Navigation bar is hidden via CSS class on body.
  */
 
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { Menu } from 'lucide-react';
 import styles from './layout.module.css';
 
 export default function DashboardLayout({
@@ -17,16 +19,23 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Redirect to login if not authenticated (after checking if loading)
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Show loading state while checking authentication
+  // Add class to body to hide root nav + footer on dashboard pages
+  useEffect(() => {
+    document.body.classList.add('dashboard-active');
+    return () => {
+      document.body.classList.remove('dashboard-active');
+    };
+  }, []);
+
   if (isLoading) {
     return (
       <div className={styles.loadingContainer}>
@@ -36,20 +45,29 @@ export default function DashboardLayout({
     );
   }
 
-  // Only render dashboard if authenticated
   if (!isAuthenticated) {
     return null;
   }
 
   return (
     <div className={styles.dashboardLayout}>
-      {/* Sidebar (Future) */}
-      {/* <aside className={styles.sidebar}>
-        {/* Navigation, project list, etc. */}
-      {/* </aside> */}
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main Content */}
-      <main className={styles.mainContent}>{children}</main>
+      <div className={styles.mainWrapper}>
+        {/* Mobile top bar with hamburger */}
+        <header className={styles.mobileHeader}>
+          <button
+            className={styles.hamburger}
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu size={22} />
+          </button>
+          <span className={styles.mobileTitle}>PDERAX</span>
+        </header>
+
+        <main className={styles.mainContent}>{children}</main>
+      </div>
     </div>
   );
 }

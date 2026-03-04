@@ -1,0 +1,86 @@
+.container {
+  display: flex; flex-direction: column; gap: 2rem;
+  max-width: 860px; margin: 0 auto; width: 100%;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.header { display: flex; flex-direction: column; gap: 0.625rem; }
+
+.headerBadge {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.3rem 0.75rem; border-radius: 999px;
+  background: #E6F0FA; color: #0066B4;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em;
+  text-transform: uppercase; width: fit-content;
+}
+
+.title {
+  font-size: 2rem; font-weight: 800; color: #111827; margin: 0;
+  letter-spacing: -0.03em; line-height: 1.2;
+}
+.subtitle { font-size: 1rem; color: #6b7280; margin: 0; max-width: 480px; line-height: 1.5; }
+
+/* ── Tool grid ───────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+@media (min-width: 769px) and (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── Card ────────────────────────────────────────────────── */
+.card {
+  display: flex; flex-direction: column; gap: 0.875rem;
+  padding: 1.75rem 1.5rem; background: #fff;
+  border: 1.5px solid #e5e7eb; border-radius: 1.125rem;
+  text-decoration: none; cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  position: relative; overflow: hidden;
+}
+.card::after {
+  content: ''; position: absolute; inset: 0; opacity: 0;
+  background: linear-gradient(135deg, rgba(0,102,180,0.03), transparent);
+  transition: opacity 0.2s;
+}
+.card:hover {
+  border-color: #B3D4ED;
+  box-shadow: 0 8px 24px rgba(0,102,180,0.1);
+  transform: translateY(-3px);
+}
+.card:hover::after { opacity: 1; }
+
+.cardTop { display: flex; align-items: flex-start; justify-content: space-between; }
+
+.cardIcon {
+  display: flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px; border-radius: 0.875rem;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.625rem;
+  border-radius: 999px; letter-spacing: 0.03em; white-space: nowrap;
+}
+
+.cardTitle { font-size: 1.2rem; font-weight: 700; color: #111827; margin: 0; }
+.cardDesc {
+  font-size: 0.875rem; color: #6b7280; line-height: 1.6; margin: 0; flex: 1;
+}
+.cardAction {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-size: 0.875rem; font-weight: 700; margin-top: 0.25rem;
+  transition: gap 0.15s;
+}
+.card:hover .cardAction { gap: 0.5rem; }
+
+/* ── Tip banner ──────────────────────────────────────────── */
+.tip {
+  display: flex; align-items: flex-start; gap: 0.625rem;
+  padding: 0.875rem 1.125rem; background: #f9fafb;
+  border: 1px solid #e5e7eb; border-radius: 0.75rem;
+  font-size: 0.875rem; color: #6b7280;
+}
+.tipIcon { color: #0066B4; flex-shrink: 0; margin-top: 1px; }
+.tipText { margin: 0; line-height: 1.5; }
+.tipText strong { color: #374151; }

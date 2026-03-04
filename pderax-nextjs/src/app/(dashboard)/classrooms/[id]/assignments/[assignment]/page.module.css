@@ -9,15 +9,68 @@
 .backLink {
   display: inline-flex;
   align-items: center;
+  gap: 0.3rem;
   color: var(--primary-color);
   text-decoration: none;
   font-size: 0.875rem;
   margin-bottom: 1.5rem;
-  transition: all 0.2s ease;
+  transition: color 0.2s;
 }
 
 .backLink:hover {
-  gap: 0.5rem;
+  color: #2A9D8F;
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #0066B4, #2A9D8F);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: #B3D4ED;
+  color: #0066B4;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.spinIcon {
+  animation: spin 0.8s linear infinite;
 }
 
 .loading {
@@ -31,12 +84,8 @@
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-color);
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
   animation: spin 0.8s linear infinite;
+  color: var(--primary-color);
 }
 
 @keyframes spin {
@@ -401,7 +450,7 @@
 .formGroup input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 102, 180, 0.1);
 }
 
 .formGroup textarea {
@@ -536,16 +585,20 @@
 }
 
 .closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  font-size: 1.5rem;
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 0;
-  transition: all 0.2s ease;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
 }
 
 .closeButton:hover {
+  background: #f3f4f6;
   color: var(--text-color);
 }
 

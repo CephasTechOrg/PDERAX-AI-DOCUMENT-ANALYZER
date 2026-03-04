@@ -1,48 +1,74 @@
-/**
- * Dashboard Layout Styles
- */
+/* Dashboard Layout — sidebar + main */
 
 .dashboardLayout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: 2rem 1.5rem;
-  max-width: 1280px;
-  margin: 0 auto;
-  width: 100%;
+  display: flex;
+  min-height: 100vh;
+  background: #f8f9fc;
+}
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 250px 1fr;
-    gap: 2rem;
-  }
+.mainWrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .mainContent {
+  flex: 1;
+  padding: 2.25rem 2.5rem 3rem;
   width: 100%;
-  min-height: calc(100vh - 200px);
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-.loadingContainer {
-  display: flex;
-  flex-direction: column;
+/* ── Mobile top bar ────────────────────────────────────────── */
+.mobileHeader {
+  display: none;
   align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 4rem);
-  gap: 1rem;
-  color: #6b7280;
+  gap: 0.75rem;
+  padding: 0.875rem 1.125rem;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.hamburger {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border: none; background: none;
+  color: #374151; cursor: pointer; border-radius: 0.5rem;
+  transition: background 0.15s;
+}
+.hamburger:hover { background: #f3f4f6; }
+
+.mobileTitle {
+  font-size: 1.05rem; font-weight: 800;
+  background: linear-gradient(135deg, #0066B4, #2A9D8F);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Loading screen ────────────────────────────────────────── */
+.loadingContainer {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 100vh; gap: 1rem; color: #6b7280;
 }
 
 .spinner {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.5rem; height: 2.5rem;
   border: 3px solid #e5e7eb;
-  border-top-color: #4f46e5;
+  border-top-color: #0066B4;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Mobile ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mobileHeader { display: flex; }
+  .mainContent { padding: 1.5rem 1.125rem 2.5rem; }
 }

@@ -597,22 +597,49 @@ async def submit_assignment(
     if not assignment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Assignment not found")
     
+    # Reject submissions to draft or archived assignments
+    if assignment.status not in ("published", "closed"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Assignment is not accepting submissions")
+    
+    settings = assignment.settings or {}
+    
+    # If assignment is closed, check if late submissions are allowed
+    if assignment.status == "closed" and not settings.get("allow_late", True):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Assignment is closed and late submissions are not allowed")
+    
+    # If past due date, check allow_late
+    if assignment.due_date and datetime.utcnow() > assignment.due_date and not settings.get("allow_late", True):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Assignment is past due and late submissions are not allowed")
+    
     # Get or create submission
     submission = db.query(Submission).filter(
         Submission.assignment_id == assignment_id,
         Submission.student_id == current_user.id
     ).first()
     
+    # If resubmitting, check allow_resubmit
+    if submission and not settings.get("allow_resubmit", True):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Resubmissions are not allowed for this assignment")
+    
     # Store uploaded files
     attachment_paths = []
     for file in files:
         if file.filename:
+            # Sanitize filename — strip path components & reject traversal
+            safe_name = os.path.basename(file.filename)
+            if not safe_name or ".." in safe_name:
+                continue
+            
             # Create directory for this submission
             submission_dir = UPLOAD_DIR / str(assignment_id) / str(current_user.id)
             submission_dir.mkdir(parents=True, exist_ok=True)
             
-            # Save file
-            file_path = submission_dir / file.filename
+            # Save file with sanitized name
+            file_path = submission_dir / safe_name
+            # Final check: resolved path must stay inside UPLOAD_DIR
+            if not str(file_path.resolve()).startswith(str(UPLOAD_DIR.resolve())):
+                continue
+            
             with open(file_path, "wb") as f:
                 f.write(await file.read())
             
@@ -797,6 +824,13 @@ async def grade_submission(
     
     assignment = db.query(Assignment).filter(Assignment.id == assignment_id).first()
     
+    # Validate points_earned doesn't exceed points_possible
+    if grade_data.points_earned > assignment.points_possible:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Points earned ({grade_data.points_earned}) cannot exceed points possible ({assignment.points_possible})"
+        )
+    
     # Calculate percentage and letter grade
     percentage = calculate_percentage(grade_data.points_earned, assignment.points_possible)
     letter_grade = calculate_letter_grade(percentage)
@@ -881,6 +915,9 @@ async def bulk_update_grades(
         
         if not submission_id or points_earned is None:
             continue
+        
+        # Clamp points_earned to valid range
+        points_earned = max(0, min(float(points_earned), assignment.points_possible))
         
         submission = db.query(Submission).filter(Submission.id == submission_id).first()
         if not submission:
@@ -1120,11 +1157,14 @@ async def export_submissions(
         
         csv_content = output.getvalue()
         
+        import re as _re
+        safe_title = _re.sub(r'[^\w\s-]', '', assignment.title).strip().replace(' ', '_')[:50]
+        
         return Response(
             content=csv_content,
             media_type="text/csv",
             headers={
-                "Content-Disposition": f"attachment; filename=assignment_{assignment.title}_submissions.csv"
+                "Content-Disposition": f'attachment; filename="assignment_{safe_title}_submissions.csv"'
             }
         )
     
@@ -1167,10 +1207,13 @@ async def export_submissions(
         
         zip_buffer.seek(0)
         
+        import re as _re
+        safe_title = _re.sub(r'[^\w\s-]', '', assignment.title).strip().replace(' ', '_')[:50]
+        
         return Response(
             content=zip_buffer.getvalue(),
             media_type="application/zip",
             headers={
-                "Content-Disposition": f"attachment; filename=assignment_{assignment.title}_submissions.zip"
+                "Content-Disposition": f'attachment; filename="assignment_{safe_title}_submissions.zip"'
             }
         )

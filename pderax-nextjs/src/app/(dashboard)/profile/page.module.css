@@ -103,7 +103,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, #0066B4, #2A9D8F);
   color: white;
   font-size: 2rem;
   font-weight: 700;
@@ -156,13 +156,13 @@
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: var(--primary, #4f46e5);
+    border-color: var(--primary, #0066B4);
   }
 
   &:focus {
     outline: none;
-    border-color: var(--primary, #4f46e5);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    border-color: var(--primary, #0066B4);
+    box-shadow: 0 0 0 3px rgba(0, 102, 180, 0.1);
   }
 }
 
@@ -229,7 +229,7 @@
   width: 1.5rem;
   height: 1.5rem;
   cursor: pointer;
-  accent-color: var(--primary, #4f46e5);
+  accent-color: var(--primary, #0066B4);
 }
 
 .dangerCard {

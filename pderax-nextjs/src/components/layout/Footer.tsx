@@ -3,15 +3,24 @@
  * Professional footer with links, social media, and copyright
  */
 
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './Footer.module.css';
 
+const PUBLIC_PATHS = ['/'];
+
 export function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
+  // Hidden on dashboard/app pages
+  if (!PUBLIC_PATHS.includes(pathname)) return null;
+
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-root-footer>
       <div className={styles.footerContainer}>
         {/* Brand Section */}
         <div className={styles.footerSection}>

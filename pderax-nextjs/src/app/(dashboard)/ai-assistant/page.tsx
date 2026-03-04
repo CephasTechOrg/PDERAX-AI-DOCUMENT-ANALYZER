@@ -1,66 +1,77 @@
 /**
  * AI Assistant Page
- * Main chat interface with AI assistant
+ * Chat interface with session sidebar, mode toggle, document upload
  */
 
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import ChatMessageComponent from '@/components/ai/ChatMessage';
-import ChatInput from '@/components/ai/ChatInput';
-import { Button } from '@/components/forms/Button';
-import aiService, { ChatSession } from '@/services/ai_service';
-import { ChatMessage } from '@/services/ai_service';
+import aiService, { ChatSession, ChatMessage } from '@/services/ai_service';
+import {
+  Plus, Trash2, MessageSquare, GraduationCap, Wrench,
+  Send, Loader2, Bot, User, FileText, Paperclip,
+  PanelLeftClose, PanelLeftOpen,
+} from 'lucide-react';
 import styles from './page.module.css';
 
 export default function AIAssistantPage() {
   const { isLoading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
+  const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const [isLoadingSessions, setIsLoadingSessions] = useState(true);
+  const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(true);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<'teacher' | 'helper'>('teacher');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!authLoading) {
-      loadSessions();
-    }
+    if (!authLoading) loadSessions();
   }, [authLoading]);
 
-  // Auto-scroll to newest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height =
+        Math.min(textareaRef.current.scrollHeight, 150) + 'px';
+    }
+  }, [input]);
+
   const loadSessions = async () => {
     try {
       setIsLoadingSessions(true);
-      const response = await aiService.getSessions();
-      setSessions(response.items);
-      
-      if (response.items.length > 0) {
-        setCurrentSession(response.items[0]);
-        loadMessages(response.items[0].id);
+      const list = await aiService.getSessions();
+      setSessions(list);
+      if (list.length > 0) {
+        selectSession(list[0]);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load sessions';
-      setError(errorMessage);
+    } catch {
+      setError('Failed to load chat sessions');
     } finally {
       setIsLoadingSessions(false);
     }
   };
 
-  const loadMessages = async (sessionId: string) => {
+  const selectSession = async (session: ChatSession) => {
+    setActiveSession(session);
+    setMode(session.mode as 'teacher' | 'helper');
+    setError(null);
     try {
       setIsLoadingMessages(true);
-      const response = await aiService.getChatHistory(sessionId);
-      setMessages(response.items);
-    } catch (err) {
-      console.error('Failed to load messages:', err);
+      const detail = await aiService.getSession(session.id);
+      setMessages(detail.messages || []);
+    } catch {
+      setMessages([]);
     } finally {
       setIsLoadingMessages(false);
     }
@@ -68,200 +79,265 @@ export default function AIAssistantPage() {
 
   const handleCreateSession = async () => {
     try {
-      const session = await aiService.createSession('New Chat');
-      setSessions([session, ...sessions]);
-      setCurrentSession(session);
+      setError(null);
+      const session = await aiService.createSession(mode);
+      setSessions((prev) => [session, ...prev]);
+      setActiveSession(session);
       setMessages([]);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create session';
-      setError(errorMessage);
+    } catch {
+      setError('Failed to create session');
     }
   };
 
-  const handleSendMessage = async (content: string) => {
-    if (!currentSession) return;
+  const handleDeleteSession = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!window.confirm('Delete this conversation?')) return;
+    try {
+      await aiService.deleteSession(id);
+      const remaining = sessions.filter((s) => s.id !== id);
+      setSessions(remaining);
+      if (activeSession?.id === id) {
+        if (remaining.length > 0) {
+          selectSession(remaining[0]);
+        } else {
+          setActiveSession(null);
+          setMessages([]);
+        }
+      }
+    } catch {
+      setError('Failed to delete session');
+    }
+  };
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || !activeSession || isSending) return;
+
+    const tempUserMsg: ChatMessage = {
+      id: `temp-${Date.now()}`,
+      role: 'user',
+      content: text,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, tempUserMsg]);
+    setInput('');
+    setIsSending(true);
+    setError(null);
 
     try {
-      setIsSending(true);
-      setError(null);
-
-      // Add user message immediately
-      const userMessage: ChatMessage = {
-        id: Math.random().toString(),
-        user_id: '',
-        role: 'user',
-        content,
-        created_at: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, userMessage]);
-
-      // Send to AI
-      const assistantMessage = await aiService.sendMessage(
-        currentSession.id,
-        content
+      const reply = await aiService.sendMessage(activeSession.id, text);
+      setMessages((prev) => [...prev, reply]);
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === activeSession.id
+            ? { ...s, message_count: s.message_count + 2 }
+            : s
+        )
       );
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to send message';
-      setError(errorMessage);
+    } catch {
+      setError('Failed to get AI response. Please try again.');
     } finally {
       setIsSending(false);
     }
   };
 
-  const handleSelectSession = (session: ChatSession) => {
-    setCurrentSession(session);
-    loadMessages(session.id);
-  };
-
-  const handleDeleteSession = async (sessionId: string) => {
-    if (!window.confirm('Delete this chat session?')) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeSession) return;
 
     try {
-      await aiService.deleteSession(sessionId);
-      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
-      if (currentSession?.id === sessionId) {
-        if (sessions.length > 1) {
-          const remaining = sessions.filter((s) => s.id !== sessionId);
-          setCurrentSession(remaining[0]);
-          loadMessages(remaining[0].id);
-        } else {
-          setCurrentSession(null);
-          setMessages([]);
-        }
+      setError(null);
+      const result = await aiService.uploadDocument(activeSession.id, file);
+      if (result.success) {
+        const uploadMsg: ChatMessage = {
+          id: `upload-${Date.now()}`,
+          role: 'assistant',
+          content: `Document "${result.filename}" uploaded successfully. I now have context from this document (${result.context_length} characters). Ask me anything about it!`,
+          created_at: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, uploadMsg]);
       }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to delete session';
-      setError(errorMessage);
+    } catch {
+      setError('Failed to upload document');
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
+  const formatTime = (dateStr: string) =>
+    new Date(dateStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
   if (authLoading || isLoadingSessions) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Loading AI Assistant...</p>
-        </div>
+      <div className={styles.loadingPage}>
+        <Loader2 size={32} className={styles.spin} />
+        <p>Loading AI Assistant...</p>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <div className={styles.sidebarHeader}>
-          <h2 className={styles.sidebarTitle}>Conversations</h2>
-          <Button
-            variant="primary"
-            onClick={handleCreateSession}
-            className={styles.newChatButton}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <div className={styles.chatLayout}>
+      {/* Session sidebar */}
+      <aside className={`${styles.sessionBar} ${sidebarOpen ? '' : styles.sessionBarCollapsed}`}>
+        <div className={styles.sessionHeader}>
+          <h3 className={styles.sessionHeading}>{sidebarOpen ? 'Chats' : ''}</h3>
+          <div className={styles.sessionHeaderBtns}>
+            {sidebarOpen && (
+              <button className={styles.newBtn} onClick={handleCreateSession} title="New chat">
+                <Plus size={16} />
+              </button>
+            )}
+            <button
+              className={styles.collapseBtn}
+              onClick={() => setSidebarOpen((v) => !v)}
+              title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            New Chat
-          </Button>
+              {sidebarOpen ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
+            </button>
+          </div>
         </div>
 
-        <div className={styles.sessionList}>
+        {sidebarOpen && (
+          <div className={styles.modeToggle}>
+            <button
+              className={`${styles.modeBtn} ${mode === 'teacher' ? styles.modeActive : ''}`}
+              onClick={() => setMode('teacher')}
+            >
+              <GraduationCap size={14} /> Teacher
+            </button>
+            <button
+              className={`${styles.modeBtn} ${mode === 'helper' ? styles.modeActive : ''}`}
+              onClick={() => setMode('helper')}
+            >
+              <Wrench size={14} /> Helper
+            </button>
+          </div>
+        )}
+
+        <div className={`${styles.sessionList} ${!sidebarOpen ? styles.sessionListHidden : ''}`}>
           {sessions.length === 0 ? (
-            <p className={styles.noSessions}>No conversations yet</p>
+            <p className={styles.emptySessions}>No conversations yet</p>
           ) : (
-            sessions.map((session) => (
+            sessions.map((s) => (
               <div
-                key={session.id}
-                className={`${styles.sessionItem} ${
-                  currentSession?.id === session.id ? styles.active : ''
-                }`}
-                onClick={() => handleSelectSession(session)}
+                key={s.id}
+                className={`${styles.sessionItem} ${activeSession?.id === s.id ? styles.sessionActive : ''}`}
+                onClick={() => selectSession(s)}
               >
+                <MessageSquare size={14} className={styles.sessionIcon} />
                 <div className={styles.sessionInfo}>
-                  <p className={styles.sessionTitle}>{session.title}</p>
-                  <p className={styles.sessionMeta}>
-                    {session.message_count} messages
-                  </p>
+                  <span className={styles.sessionName}>{s.title || 'New Chat'}</span>
+                  <span className={styles.sessionMeta}>
+                    {s.message_count} msgs
+                    {s.document_filename && <> &middot; <FileText size={11} /></>}
+                  </span>
                 </div>
                 <button
-                  className={styles.deleteSession}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteSession(session.id);
-                  }}
-                  title="Delete session"
+                  className={styles.deleteBtn}
+                  onClick={(e) => handleDeleteSession(e, s.id)}
+                  title="Delete"
                 >
-                  ×
+                  <Trash2 size={14} />
                 </button>
               </div>
             ))
           )}
         </div>
-      </div>
+      </aside>
 
+      {/* Chat area */}
       <div className={styles.chatArea}>
-        {!currentSession ? (
-          <div className={styles.emptyState}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h3>Start a conversation</h3>
-            <p>Click "New Chat" to begin talking with the AI assistant</p>
-            <Button onClick={handleCreateSession}>Create First Chat</Button>
+        {!activeSession ? (
+          <div className={styles.welcome}>
+            <Bot size={48} className={styles.welcomeIcon} />
+            <h2>AI Study Assistant</h2>
+            <p>Upload documents and get help studying, understanding concepts, and preparing for exams.</p>
+            <button className={styles.startBtn} onClick={handleCreateSession}>
+              <Plus size={18} /> Start New Chat
+            </button>
           </div>
         ) : (
           <>
-            <div className={styles.messagesContainer}>
+            <div className={styles.messages}>
               {isLoadingMessages ? (
-                <div className={styles.loading}>
-                  <div className={styles.spinner}></div>
+                <div className={styles.loadingMessages}>
+                  <Loader2 size={24} className={styles.spin} />
                 </div>
               ) : messages.length === 0 ? (
-                <div className={styles.newChatWelcome}>
-                  <h3>Welcome to AI Assistant</h3>
-                  <p>Ask questions about your documents or general topics</p>
+                <div className={styles.emptyChat}>
+                  <Bot size={36} className={styles.welcomeIcon} />
+                  <p>Start the conversation! Ask a question or upload a document.</p>
                 </div>
               ) : (
-                messages.map((message) => (
-                  <ChatMessageComponent
-                    key={message.id}
-                    message={message}
-                    isCurrentUser={message.role === 'user'}
-                  />
+                messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`${styles.msgRow} ${msg.role === 'user' ? styles.msgUser : styles.msgAssistant}`}
+                  >
+                    <div className={styles.msgAvatar}>
+                      {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
+                    </div>
+                    <div className={styles.msgBubble}>
+                      <div className={styles.msgContent}>{msg.content}</div>
+                      <span className={styles.msgTime}>{formatTime(msg.created_at)}</span>
+                    </div>
+                  </div>
                 ))
               )}
-              {error && <div className={styles.errorMessage}>{error}</div>}
+
+              {isSending && (
+                <div className={`${styles.msgRow} ${styles.msgAssistant}`}>
+                  <div className={styles.msgAvatar}><Bot size={16} /></div>
+                  <div className={styles.msgBubble}>
+                    <div className={styles.typing}><span /><span /><span /></div>
+                  </div>
+                </div>
+              )}
+
+              {error && <div className={styles.errorMsg}>{error}</div>}
               <div ref={messagesEndRef} />
             </div>
 
-            <div className={styles.inputArea}>
-              <ChatInput
-                onSend={handleSendMessage}
-                isLoading={isSending}
-                disabled={isSending}
-                placeholder="Ask anything..."
+            <div className={styles.inputBar}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.docx,.doc,.txt,.xlsx,.xls"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
               />
+              <button
+                className={styles.attachBtn}
+                onClick={() => fileInputRef.current?.click()}
+                title="Upload document"
+              >
+                <Paperclip size={18} />
+              </button>
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask anything..."
+                disabled={isSending}
+                rows={1}
+                className={styles.textarea}
+              />
+              <button
+                className={styles.sendBtn}
+                onClick={handleSend}
+                disabled={!input.trim() || isSending}
+                title="Send"
+              >
+                {isSending ? <Loader2 size={18} className={styles.spin} /> : <Send size={18} />}
+              </button>
             </div>
           </>
         )}

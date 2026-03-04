@@ -98,6 +98,99 @@ export interface PaginatedResponse<T> {
   total_pages: number;
 }
 
+// ── Analysis (from POST /api/v1/upload) ─────────────────────────────────────
+export interface QAPair {
+  question: string;
+  answer: string;
+}
+
+export interface WordCountInfo {
+  original_word_count?: number;
+  processed_word_count?: number;
+  was_truncated?: boolean;
+  word_limit?: number;
+  original?: number;
+  processed?: number;
+  limit?: number;
+}
+
+export interface AnalysisWarning {
+  type: string;
+  message: string;
+  original_words?: number;
+  processed_words?: number;
+  limit?: number;
+}
+
+export interface AnalysisData {
+  summary: string;
+  insights: string[];
+  questions_answers: QAPair[];
+  word_count_info?: WordCountInfo;
+}
+
+export interface AnalysisResponse {
+  filename: string;
+  extracted_text_length: number;
+  analysis: AnalysisData;
+  export_files: Record<string, string>;
+  status: 'success' | 'error';
+  word_count_info: WordCountInfo;
+  analysis_id?: string;
+  warnings?: AnalysisWarning[];
+  error?: string;
+  extracted_text?: string;
+}
+
+export interface AnalysisHistoryItem {
+  id: string;
+  filename: string;
+  file_type: string | null;
+  analysis: AnalysisData;
+  word_count: number | null;
+  created_at: string;
+}
+
+// ── Quiz ─────────────────────────────────────────────────────────────────────
+export interface QuizOption {
+  label: string;
+  text: string;
+}
+
+export interface QuizQuestion {
+  question: string;
+  options: QuizOption[];
+  correct_answer: string;
+  explanation: string;
+  category?: string;
+}
+
+export interface QuizGenerateResponse {
+  questions: QuizQuestion[];
+  source_summary: string;
+  total_count: number;
+  difficulty: string;
+  generated_at: string;
+}
+
+export interface QuizHistoryItem {
+  id: string;
+  analysis_id: string | null;
+  title: string | null;
+  difficulty: string;
+  questions: QuizQuestion[];
+  question_count: number;
+  created_at: string;
+}
+
+// ── Flashcard generation response ────────────────────────────────────────────
+export interface FlashcardGenerateResponse {
+  flashcards: Array<{ front: string; back: string; category?: string }>;
+  source_summary: string;
+  total_count: number;
+  generated_at: string;
+}
+
 // Request/Response DTOs
 export interface LoginRequest {
   email: string;

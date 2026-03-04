@@ -34,27 +34,27 @@ class QuickGenerateRequest(BaseModel):
 @flashcard_router.post("/generate", response_model=FlashcardGenerateResponse)
 @_limiter.limit("30/hour")
 async def generate_flashcards(
-    http_request: Request,
-    request: FlashcardGenerateRequest,
+    request: Request,
+    payload: FlashcardGenerateRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Generate flashcards from provided text using AI"""
-    
+
     try:
         result = await ai_service.generate_flashcards(
-            text=request.text,
-            count=request.count,
-            difficulty=request.difficulty,
-            focus_topics=request.focus_topics
+            text=payload.text,
+            count=payload.count,
+            difficulty=payload.difficulty,
+            focus_topics=payload.focus_topics
         )
-        
+
         if not result.get("flashcards"):
             raise HTTPException(
                 status_code=500,
                 detail="Failed to generate flashcards. Please try again."
             )
-        
+
         # Convert to response model
         flashcard_items = [
             FlashcardItem(
@@ -64,7 +64,7 @@ async def generate_flashcards(
             )
             for card in result["flashcards"]
         ]
-        
+
         # Persist flashcard set
         try:
             cards_data = [
@@ -72,17 +72,17 @@ async def generate_flashcards(
                 for c in flashcard_items
             ]
             analysis_uuid = None
-            if getattr(request, "analysis_id", None):
+            if getattr(payload, "analysis_id", None):
                 import uuid as _uuid
                 try:
-                    analysis_uuid = _uuid.UUID(request.analysis_id)
+                    analysis_uuid = _uuid.UUID(payload.analysis_id)
                 except ValueError:
                     pass
             fs = FlashcardSet(
                 user_id=current_user.id,
                 analysis_id=analysis_uuid,
-                title=f"Flashcards from {getattr(request, 'source_title', 'document')}",
-                difficulty=request.difficulty,
+                title=f"Flashcards from {getattr(payload, 'source_title', 'document')}",
+                difficulty=payload.difficulty,
                 cards=cards_data,
                 card_count=len(cards_data),
             )
@@ -110,15 +110,15 @@ async def generate_flashcards(
 @flashcard_router.post("/generate-quick")
 @_limiter.limit("30/hour")
 async def generate_flashcards_quick(
-    http_request: Request,
-    request: QuickGenerateRequest,
+    request: Request,
+    payload: QuickGenerateRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """Quick flashcard generation endpoint — accepts text in the request body."""
-    text = request.text
-    count = request.count
-    difficulty = request.difficulty
+    text = payload.text
+    count = payload.count
+    difficulty = payload.difficulty
 
     if not text or len(text) < 50:
         raise HTTPException(status_code=400, detail="Text must be at least 50 characters long")
@@ -135,10 +135,10 @@ async def generate_flashcards_quick(
         # Persist flashcard set
         try:
             analysis_uuid = None
-            if request.analysis_id:
+            if payload.analysis_id:
                 import uuid as _uuid
                 try:
-                    analysis_uuid = _uuid.UUID(request.analysis_id)
+                    analysis_uuid = _uuid.UUID(payload.analysis_id)
                 except ValueError:
                     pass
             fs = FlashcardSet(

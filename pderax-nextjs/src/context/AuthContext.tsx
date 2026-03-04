@@ -1,11 +1,11 @@
 /**
  * Authentication Context
- * Provides user state and auth methods to entire application
+ * Initialises synchronously from localStorage so there is no loading flash.
  */
 
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { User, AuthSession } from '@/types';
 import authService from '@/services/auth';
 
@@ -24,31 +24,23 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/** Read stored session synchronously — safe to call during render */
+function readStoredSession(): AuthSession | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return authService.getSession();
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<AuthSession | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Initialize auth state from stored session
-  useEffect(() => {
-    const initializeAuth = () => {
-      try {
-        const storedSession = authService.getSession();
-        if (storedSession) {
-          setSession(storedSession);
-          setUser(storedSession.user);
-        }
-      } catch (err) {
-        console.error('[AuthProvider] Failed to initialize auth:', err);
-        setError('Failed to initialize authentication');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeAuth();
-  }, []);
+  // Initialise directly from localStorage — no useEffect, no loading flash.
+  const [session, setSession] = useState<AuthSession | null>(() => readStoredSession());
+  const [user, setUser]       = useState<User | null>(() => readStoredSession()?.user ?? null);
+  // isLoading is only true during async operations (login / logout / refresh).
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError]         = useState<string | null>(null);
 
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
@@ -58,42 +50,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(authSession);
       setUser(authSession.user);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
+      const msg = err instanceof Error ? err.message : 'Login failed';
+      setError(msg);
       throw err;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const signup = useCallback(
-    async (
-      email: string,
-      full_name: string,
-      password: string,
-      password_confirm: string
-    ): Promise<{ message: string }> => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        // Backend returns { message } — user must verify email before logging in
-        const result = await authService.signup({
-          email,
-          full_name,
-          password,
-          password_confirm,
-        });
-        return result;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Signup failed';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
+  const signup = useCallback(async (
+    email: string,
+    full_name: string,
+    password: string,
+    password_confirm: string,
+  ): Promise<{ message: string }> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await authService.signup({ email, full_name, password, password_confirm });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Signup failed';
+      setError(msg);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const logout = useCallback(async () => {
     setIsLoading(true);
@@ -103,8 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setSession(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Logout failed';
-      setError(errorMessage);
+      const msg = err instanceof Error ? err.message : 'Logout failed';
+      setError(msg);
       throw err;
     } finally {
       setIsLoading(false);
@@ -117,15 +99,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(newSession);
       setUser(newSession.user);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Session refresh failed';
-      setError(errorMessage);
+      const msg = err instanceof Error ? err.message : 'Session refresh failed';
+      setError(msg);
       throw err;
     }
   }, []);
 
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+  const clearError = useCallback(() => setError(null), []);
 
   const value: AuthContextType = {
     user,
@@ -143,10 +123,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-/**
- * Hook to use auth context
- * Throws error if used outside AuthProvider
- */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

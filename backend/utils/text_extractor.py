@@ -8,15 +8,18 @@ class TextExtractor:
     @staticmethod
     def extract_text_from_pdf(file_path: str) -> str:
         """Extract text from PDF file"""
+        doc = None
         try:
             doc = fitz.open(file_path)
             text = ""
             for page in doc:
                 text += page.get_text()
-            doc.close()
             return text.strip()
         except Exception as e:
             raise Exception(f"PDF extraction error: {str(e)}")
+        finally:
+            if doc:
+                doc.close()
 
     @staticmethod
     def extract_text_from_docx(file_path: str) -> str:
@@ -44,12 +47,16 @@ class TextExtractor:
             
             for sheet_name in excel_file.sheet_names:
                 df = pd.read_excel(file_path, sheet_name=sheet_name)
+                # Drop fully empty rows/columns and replace NaN with empty string
+                df = df.dropna(how='all').dropna(axis=1, how='all').fillna('')
+                if df.empty:
+                    continue
                 text += f"--- Sheet: {sheet_name} ---\n"
                 
                 # Convert dataframe to string
                 text += df.to_string(index=False) + "\n\n"
                 
-            return text.strip()
+            return text.strip() if text.strip() else "(Empty spreadsheet — no readable data found)"
         except Exception as e:
             raise Exception(f"Excel extraction error: {str(e)}")
 
@@ -99,13 +106,18 @@ class TextExtractor:
         # Truncate to word limit
         truncated_words = words[:word_limit]
         
-        # Reconstruct text while preserving as much structure as possible
-        # Find the position where the last word ends
-        pattern = r'(?:\b\w+\b\W*){' + str(word_limit) + '}'
-        match = re.search(pattern, text)
+        # Reconstruct text preserving original structure by finding the
+        # byte offset where the Nth word boundary falls.
+        count = 0
+        end_pos = 0
+        for m in re.finditer(r'\b\w+\b', text):
+            count += 1
+            end_pos = m.end()
+            if count >= word_limit:
+                break
         
-        if match:
-            truncated_text = match.group(0).strip()
+        if end_pos > 0:
+            truncated_text = text[:end_pos].strip()
         else:
             # Fallback: join words with spaces
             truncated_text = ' '.join(truncated_words)

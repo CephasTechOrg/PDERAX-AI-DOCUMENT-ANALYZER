@@ -47,9 +47,9 @@
 }
 
 .cardFront {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #0066B4 0%, #2A9D8F 100%);
   color: white;
-  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 102, 180, 0.2);
 }
 
 .cardBack {

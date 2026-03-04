@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/forms/Button';
+import { Loader2, ArrowLeft, X, ChevronLeft, ChevronRight, Send } from 'lucide-react';
 import assignmentService, {
   Assignment,
   Submission,
@@ -16,7 +16,7 @@ import assignmentService, {
 } from '@/services/assignment_service';
 import styles from './page.module.css';
 
-type TabType = 'overview' | 'submissions' | 'submissions-detail';
+type TabType = 'overview' | 'submissions';
 
 interface SubmissionWithGrade extends Submission {
   student_name: string;
@@ -31,8 +31,7 @@ export default function AssignmentDetailPage() {
 
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [submissions, setSubmissions] = useState<SubmissionWithGrade[]>([]);
-  const [selectedSubmission, setSelectedSubmission] =
-    useState<SubmissionWithGrade | null>(null);
+  const [selectedSubmission, setSelectedSubmission] = useState<SubmissionWithGrade | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
@@ -40,10 +39,7 @@ export default function AssignmentDetailPage() {
   const [submissionContent, setSubmissionContent] = useState('');
   const [submissionFile, setSubmissionFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [gradeData, setGradeData] = useState({
-    points: 0,
-    feedback: '',
-  });
+  const [gradeData, setGradeData] = useState({ points: 0, feedback: '' });
   const [isGrading, setIsGrading] = useState(false);
   const [submissionPage, setSubmissionPage] = useState(1);
   const [totalSubmissionPages, setTotalSubmissionPages] = useState(1);
@@ -56,27 +52,18 @@ export default function AssignmentDetailPage() {
   }, [authLoading]);
 
   useEffect(() => {
-    if (assignment && isTeacher()) {
-      loadSubmissions();
-    }
+    if (assignment && isTeacher()) loadSubmissions();
   }, [assignment, submissionPage]);
 
-  const isTeacher = () => {
-    return user?.role === 'teacher' || user?.role === 'admin';
-  };
+  const isTeacher = () => user?.role === 'teacher' || user?.role === 'admin';
 
   const loadAssignment = async () => {
     try {
       setIsLoading(true);
-      const data = await assignmentService.getAssignment(
-        classroomId,
-        assignmentId
-      );
+      const data = await assignmentService.getAssignment(classroomId, assignmentId);
       setAssignment(data);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load assignment';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to load assignment');
     } finally {
       setIsLoading(false);
     }
@@ -84,31 +71,20 @@ export default function AssignmentDetailPage() {
 
   const loadMySubmission = async () => {
     try {
-      const data = await assignmentService.getMySubmission(
-        classroomId,
-        assignmentId
-      );
+      const data = await assignmentService.getMySubmission(classroomId, assignmentId);
       setMySubmission(data);
-    } catch (err) {
-      // No submission yet is not an error
+    } catch {
       setMySubmission(null);
     }
   };
 
   const loadSubmissions = async () => {
     try {
-      const data = await assignmentService.getSubmissions(
-        classroomId,
-        assignmentId,
-        submissionPage,
-        12
-      );
+      const data = await assignmentService.getSubmissions(classroomId, assignmentId, submissionPage, 12);
       setSubmissions(data.items);
       setTotalSubmissionPages(Math.ceil(data.total / data.per_page));
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load submissions';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to load submissions');
     }
   };
 
@@ -117,25 +93,18 @@ export default function AssignmentDetailPage() {
       setError('Please provide submission content or a file');
       return;
     }
-
     try {
       setIsSubmitting(true);
       setError(null);
-
       await assignmentService.submitAssignment(
-        classroomId,
-        assignmentId,
-        submissionContent,
+        classroomId, assignmentId, submissionContent,
         submissionFile ? [submissionFile] : undefined
       );
-
       setSubmissionContent('');
       setSubmissionFile(null);
       loadMySubmission();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to submit assignment';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to submit assignment');
     } finally {
       setIsSubmitting(false);
     }
@@ -143,39 +112,26 @@ export default function AssignmentDetailPage() {
 
   const handleGradeSubmission = async () => {
     if (!selectedSubmission) return;
-
     try {
       setIsGrading(true);
       setError(null);
-
       const gradeRequest: GradeRequest = {
-        grade: gradeData.points,
+        points_earned: gradeData.points,
         feedback: gradeData.feedback,
         return_for_revision: false,
       };
-
-      await assignmentService.gradeSubmission(
-        classroomId,
-        assignmentId,
-        selectedSubmission.id,
-        gradeRequest
-      );
-
+      await assignmentService.gradeSubmission(classroomId, assignmentId, selectedSubmission.id, gradeRequest);
       setGradeData({ points: 0, feedback: '' });
       setSelectedSubmission(null);
       loadSubmissions();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to grade submission';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to grade submission');
     } finally {
       setIsGrading(false);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
+  const formatDate = (dateString: string) => new Date(dateString).toLocaleString();
 
   const getSubmissionStatus = (submission: Submission) => {
     if (submission.status === 'graded') return 'Graded';
@@ -187,7 +143,7 @@ export default function AssignmentDetailPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
+          <Loader2 size={36} className={styles.spinner} />
           <p>Loading assignment...</p>
         </div>
       </div>
@@ -204,8 +160,8 @@ export default function AssignmentDetailPage() {
 
   return (
     <div className={styles.container}>
-      <a href={`/classrooms/${classroomId}/assignments`} className={styles.backLink}>
-        ← Back to Assignments
+      <a href={`/assignments?classroom_id=${classroomId}`} className={styles.backLink}>
+        <ArrowLeft size={14} /> Back to Assignments
       </a>
 
       {error && <div className={styles.errorMessage}>{error}</div>}
@@ -214,7 +170,6 @@ export default function AssignmentDetailPage() {
         <div className={styles.headerContent}>
           <h1 className={styles.title}>{assignment.title}</h1>
           <p className={styles.description}>{assignment.description}</p>
-
           <div className={styles.meta}>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Due Date:</span>
@@ -258,7 +213,6 @@ export default function AssignmentDetailPage() {
         )}
       </div>
 
-      {/* Tab Content */}
       <div className={styles.tabContent}>
         {/* Overview Tab */}
         {activeTab === 'overview' && (
@@ -268,21 +222,15 @@ export default function AssignmentDetailPage() {
               <div className={styles.infoGrid}>
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Total Points</span>
-                  <span className={styles.infoValue}>
-                    {assignment.points_possible}
-                  </span>
+                  <span className={styles.infoValue}>{assignment.points_possible}</span>
                 </div>
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Submissions</span>
-                  <span className={styles.infoValue}>
-                    {assignment.submission_count}
-                  </span>
+                  <span className={styles.infoValue}>{assignment.submission_count}</span>
                 </div>
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Graded</span>
-                  <span className={styles.infoValue}>
-                    {assignment.graded_count}
-                  </span>
+                  <span className={styles.infoValue}>{assignment.graded_count}</span>
                 </div>
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Status</span>
@@ -295,8 +243,7 @@ export default function AssignmentDetailPage() {
               <div className={styles.infoCard}>
                 <h2>Instructions</h2>
                 <p className={styles.instructions}>
-                  {assignment.description ||
-                    'No additional instructions provided.'}
+                  {assignment.description || 'No additional instructions provided.'}
                 </p>
               </div>
             )}
@@ -310,13 +257,10 @@ export default function AssignmentDetailPage() {
               <div className={styles.submissionCard}>
                 <div className={styles.submissionHeader}>
                   <h3>Your Submission</h3>
-                  <span
-                    className={`${styles.submissionStatus} ${styles[mySubmission.status]}`}
-                  >
+                  <span className={`${styles.submissionStatus} ${styles[mySubmission.status]}`}>
                     {getSubmissionStatus(mySubmission)}
                   </span>
                 </div>
-
                 <div className={styles.submissionMeta}>
                   <div className={styles.metaItem}>
                     <span>Submitted:</span>
@@ -331,41 +275,24 @@ export default function AssignmentDetailPage() {
                     </div>
                   )}
                 </div>
-
                 <div className={styles.submissionContent}>
                   <h4>Your Answer:</h4>
                   <p>{mySubmission.content}</p>
                 </div>
-
                 {mySubmission.feedback && (
                   <div className={styles.feedbackSection}>
                     <h4>Teacher Feedback:</h4>
                     <div className={styles.feedback}>{mySubmission.feedback}</div>
                   </div>
                 )}
-
                 {mySubmission.status === 'submitted' && (
                   <p className={styles.note}>
-                    This submission is pending review. Your teacher will grade it
-                    soon.
+                    This submission is pending review. Your teacher will grade it soon.
                   </p>
                 )}
               </div>
             ) : (
               <div className={styles.noSubmissionCard}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4v2m0 0v2m0-6v2m0 0v2"
-                  />
-                </svg>
                 <h3>No Submission Yet</h3>
                 <p>Submit your assignment below</p>
               </div>
@@ -373,13 +300,9 @@ export default function AssignmentDetailPage() {
 
             <form
               className={styles.submissionForm}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmitAssignment();
-              }}
+              onSubmit={(e) => { e.preventDefault(); handleSubmitAssignment(); }}
             >
               <h3>Submit Assignment</h3>
-
               <div className={styles.formGroup}>
                 <label>Your Answer *</label>
                 <textarea
@@ -389,7 +312,6 @@ export default function AssignmentDetailPage() {
                   rows={6}
                 />
               </div>
-
               <div className={styles.formGroup}>
                 <label>Upload File (Optional)</label>
                 <input
@@ -398,15 +320,16 @@ export default function AssignmentDetailPage() {
                   className={styles.fileInput}
                 />
               </div>
-
-              <Button
-                variant="primary"
+              <button
                 type="submit"
-                isLoading={isSubmitting}
-                disabled={!submissionContent.trim() && !submissionFile}
+                className={styles.submitBtn}
+                disabled={isSubmitting || (!submissionContent.trim() && !submissionFile)}
               >
-                Submit Assignment
-              </Button>
+                {isSubmitting
+                  ? <><Loader2 size={14} className={styles.spinIcon} /> Submitting...</>
+                  : <><Send size={14} /> Submit Assignment</>
+                }
+              </button>
             </form>
           </div>
         )}
@@ -416,26 +339,19 @@ export default function AssignmentDetailPage() {
           <div className={styles.submissionsListTab}>
             <div className={styles.submissionsList}>
               {submissions.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <p>No submissions yet</p>
-                </div>
+                <div className={styles.emptyState}><p>No submissions yet</p></div>
               ) : (
                 submissions.map((submission) => (
                   <div
                     key={submission.id}
                     className={`${styles.submissionItem} ${selectedSubmission?.id === submission.id ? styles.selected : ''}`}
-                    onClick={() => {
-                      setSelectedSubmission(submission);
-                      setActiveTab('submissions');
-                    }}
+                    onClick={() => setSelectedSubmission(submission)}
                   >
                     <div className={styles.submissionItemHeader}>
                       <span className={styles.studentName}>
                         {submission.student_name || 'Unknown Student'}
                       </span>
-                      <span
-                        className={`${styles.submissionBadge} ${styles[submission.status]}`}
-                      >
+                      <span className={`${styles.submissionBadge} ${styles[submission.status]}`}>
                         {getSubmissionStatus(submission)}
                       </span>
                     </div>
@@ -458,7 +374,7 @@ export default function AssignmentDetailPage() {
                     className={styles.closeButton}
                     onClick={() => setSelectedSubmission(null)}
                   >
-                    ✕
+                    <X size={16} />
                   </button>
                 </div>
 
@@ -480,78 +396,57 @@ export default function AssignmentDetailPage() {
 
                 <form
                   className={styles.gradeForm}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleGradeSubmission();
-                  }}
+                  onSubmit={(e) => { e.preventDefault(); handleGradeSubmission(); }}
                 >
                   <h4>Grade Submission</h4>
-
                   <div className={styles.formGroup}>
-                    <label>
-                      Points ({gradeData.points}/{assignment.points_possible})
-                    </label>
+                    <label>Points ({gradeData.points}/{assignment.points_possible})</label>
                     <input
                       type="number"
                       value={gradeData.points}
-                      onChange={(e) =>
-                        setGradeData((p) => ({
-                          ...p,
-                          points: parseInt(e.target.value, 10),
-                        }))
-                      }
+                      onChange={(e) => setGradeData((p) => ({ ...p, points: parseInt(e.target.value, 10) }))}
                       min="0"
                       max={assignment.points_possible}
                     />
                   </div>
-
                   <div className={styles.formGroup}>
                     <label>Feedback</label>
                     <textarea
                       value={gradeData.feedback}
-                      onChange={(e) =>
-                        setGradeData((p) => ({
-                          ...p,
-                          feedback: e.target.value,
-                        }))
-                      }
+                      onChange={(e) => setGradeData((p) => ({ ...p, feedback: e.target.value }))}
                       placeholder="Provide feedback to the student..."
                       rows={4}
                     />
                   </div>
-
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    isLoading={isGrading}
-                  >
-                    Save Grade
-                  </Button>
+                  <button type="submit" className={styles.submitBtn} disabled={isGrading}>
+                    {isGrading
+                      ? <><Loader2 size={14} className={styles.spinIcon} /> Saving...</>
+                      : 'Save Grade'
+                    }
+                  </button>
                 </form>
               </div>
             )}
 
             {totalSubmissionPages > 1 && (
               <div className={styles.pagination}>
-                <Button
-                  variant="secondary"
+                <button
+                  className={styles.pageBtn}
                   onClick={() => setSubmissionPage((p) => Math.max(1, p - 1))}
                   disabled={submissionPage === 1}
                 >
-                  Previous
-                </Button>
+                  <ChevronLeft size={15} /> Previous
+                </button>
                 <span className={styles.pageInfo}>
                   Page {submissionPage} of {totalSubmissionPages}
                 </span>
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    setSubmissionPage((p) => Math.min(totalSubmissionPages, p + 1))
-                  }
+                <button
+                  className={styles.pageBtn}
+                  onClick={() => setSubmissionPage((p) => Math.min(totalSubmissionPages, p + 1))}
                   disabled={submissionPage === totalSubmissionPages}
                 >
-                  Next
-                </Button>
+                  Next <ChevronRight size={15} />
+                </button>
               </div>
             )}
           </div>

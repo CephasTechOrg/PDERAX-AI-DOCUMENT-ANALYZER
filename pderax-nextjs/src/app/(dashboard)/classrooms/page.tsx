@@ -6,16 +6,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/forms/Button';
-import classroomService, {
-  Classroom,
-  PaginatedClassrooms,
-} from '@/services/classroom_service';
+import classroomService, { Classroom } from '@/services/classroom_service';
+import {
+  Plus, Users, Zap, ChevronRight, Loader2,
+  BookOpen, X, UserPlus, GraduationCap,
+} from 'lucide-react';
 import styles from './page.module.css';
 
 export default function ClassroomsPage() {
   const { isLoading: authLoading } = useAuth();
+  const router = useRouter();
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,19 +26,15 @@ export default function ClassroomsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [newClassroom, setNewClassroom] = useState({
-    name: '',
-    description: '',
-    subject: '',
-    grade_level: '',
+    name: '', description: '', subject: '', grade_level: 'college',
   });
   const [inviteCode, setInviteCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
+  const [createdInviteCode, setCreatedInviteCode] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading) {
-      loadClassrooms();
-    }
+    if (!authLoading) loadClassrooms();
   }, [authLoading, currentPage]);
 
   const loadClassrooms = async () => {
@@ -46,62 +44,40 @@ export default function ClassroomsPage() {
       setClassrooms(data.items);
       setTotalPages(Math.ceil(data.total / data.per_page));
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load classrooms';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to load classrooms');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCreateClassroom = async () => {
-    if (!newClassroom.name.trim()) {
-      setError('Classroom name is required');
-      return;
-    }
-
+    if (!newClassroom.name.trim()) { setError('Classroom name is required'); return; }
+    if (!newClassroom.subject.trim()) { setError('Subject is required'); return; }
     try {
-      setIsCreating(true);
-      setError(null);
-
-      await classroomService.createClassroom(newClassroom);
-
-      setNewClassroom({
-        name: '',
-        description: '',
-        subject: '',
-        grade_level: '',
-      });
+      setIsCreating(true); setError(null);
+      const created = await classroomService.createClassroom(newClassroom);
+      setNewClassroom({ name: '', description: '', subject: '', grade_level: 'college' });
       setShowCreateModal(false);
+      // Show the invite code prominently, then navigate to the new classroom
+      setCreatedInviteCode(created.invite_code);
       loadClassrooms();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to create classroom';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to create classroom');
     } finally {
       setIsCreating(false);
     }
   };
 
   const handleJoinClassroom = async () => {
-    if (!inviteCode.trim()) {
-      setError('Invite code is required');
-      return;
-    }
-
+    if (!inviteCode.trim()) { setError('Invite code is required'); return; }
     try {
-      setIsJoining(true);
-      setError(null);
-
+      setIsJoining(true); setError(null);
       await classroomService.joinClassroomWithCode(inviteCode);
-
       setInviteCode('');
       setShowJoinModal(false);
       loadClassrooms();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to join classroom';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to join classroom');
     } finally {
       setIsJoining(false);
     }
@@ -111,7 +87,7 @@ export default function ClassroomsPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
+          <Loader2 size={36} className={styles.spinner} />
           <p>Loading classrooms...</p>
         </div>
       </div>
@@ -123,183 +99,124 @@ export default function ClassroomsPage() {
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>Classrooms</h1>
-          <p className={styles.subtitle}>
-            Manage and organize your teaching classrooms
-          </p>
+          <p className={styles.subtitle}>Manage and collaborate in your classrooms</p>
         </div>
         <div className={styles.actions}>
-          <Button
-            variant="secondary"
-            onClick={() => setShowJoinModal(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-              />
-            </svg>
-            Join Classroom
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => setShowCreateModal(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            New Classroom
-          </Button>
+          <button className={styles.joinBtn} onClick={() => setShowJoinModal(true)}>
+            <UserPlus size={16} /> Join
+          </button>
+          <button className={styles.createBtn} onClick={() => setShowCreateModal(true)}>
+            <Plus size={16} /> New Classroom
+          </button>
         </div>
       </header>
 
-      {error && <div className={styles.errorMessage}>{error}</div>}
+      {error && (
+        <div className={styles.errorMessage}>
+          <span>{error}</span>
+          <button className={styles.errorClose} onClick={() => setError(null)}>
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Invite code banner shown after classroom creation */}
+      {createdInviteCode && (
+        <div className={styles.inviteBanner}>
+          <div className={styles.inviteBannerLeft}>
+            <GraduationCap size={20} className={styles.inviteBannerIcon} />
+            <div>
+              <p className={styles.inviteBannerTitle}>Classroom created!</p>
+              <p className={styles.inviteBannerSub}>Share this invite code with students to join:</p>
+            </div>
+          </div>
+          <div className={styles.inviteCodeBox}>
+            <span className={styles.inviteCodeText}>{createdInviteCode}</span>
+            <button
+              className={styles.copyCodeBtn}
+              onClick={() => {
+                navigator.clipboard.writeText(createdInviteCode);
+              }}
+              title="Copy code"
+            >
+              Copy
+            </button>
+          </div>
+          <button className={styles.errorClose} onClick={() => setCreatedInviteCode(null)}>
+            <X size={16} />
+          </button>
+        </div>
+      )}
 
       {classrooms.length === 0 ? (
         <div className={styles.emptyState}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
-            />
-          </svg>
+          <div className={styles.emptyIcon}><GraduationCap size={40} /></div>
           <h2>No classrooms yet</h2>
           <p>Create a new classroom or join an existing one to get started</p>
           <div className={styles.emptyActions}>
-            <Button
-              variant="primary"
-              onClick={() => setShowCreateModal(true)}
-            >
-              Create Classroom
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => setShowJoinModal(true)}
-            >
-              Join Classroom
-            </Button>
+            <button className={styles.createBtn} onClick={() => setShowCreateModal(true)}>
+              <Plus size={16} /> Create Classroom
+            </button>
+            <button className={styles.joinBtn} onClick={() => setShowJoinModal(true)}>
+              <UserPlus size={16} /> Join Classroom
+            </button>
           </div>
         </div>
       ) : (
         <>
           <div className={styles.gridContainer}>
             {classrooms.map((classroom) => (
-              <a
-                key={classroom.id}
-                href={`/classrooms/${classroom.id}`}
-                className={styles.classroomCard}
-              >
-                <div className={styles.cardHeader}>
-                  <h3 className={styles.cardTitle}>{classroom.name}</h3>
+              <a key={classroom.id} href={`/classrooms/${classroom.id}`} className={styles.classroomCard}>
+                <div className={styles.cardTop}>
+                  <div className={styles.cardIconWrap}>
+                    <BookOpen size={22} />
+                  </div>
                   <span className={styles.badge}>{classroom.subject}</span>
                 </div>
 
-                <p className={styles.cardDescription}>{classroom.description}</p>
+                <h3 className={styles.cardTitle}>{classroom.name}</h3>
+                {classroom.description && (
+                  <p className={styles.cardDescription}>{classroom.description}</p>
+                )}
 
                 <div className={styles.cardMeta}>
                   <div className={styles.metaItem}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-2a6 6 0 0112 0v2zm0 0h6v-2a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
+                    <Users size={14} />
                     <span>{classroom.student_count} students</span>
                   </div>
-
                   <div className={styles.metaItem}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
+                    <Zap size={14} />
                     <span>Grade {classroom.grade_level}</span>
                   </div>
                 </div>
 
                 <div className={styles.cardFooter}>
                   <span className={styles.createdDate}>
-                    Created{' '}
                     {new Date(classroom.created_at).toLocaleDateString()}
                   </span>
-                  <div className={styles.arrowIcon}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
+                  <ChevronRight size={18} className={styles.arrowIcon} />
                 </div>
               </a>
             ))}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className={styles.pagination}>
-              <Button
-                variant="secondary"
+              <button
+                className={styles.pageBtn}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
                 Previous
-              </Button>
-              <span className={styles.pageInfo}>
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button
-                variant="secondary"
+              </button>
+              <span className={styles.pageInfo}>Page {currentPage} of {totalPages}</span>
+              <button
+                className={styles.pageBtn}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
               >
                 Next
-              </Button>
+              </button>
             </div>
           )}
         </>
@@ -307,79 +224,38 @@ export default function ClassroomsPage() {
 
       {/* Create Classroom Modal */}
       {showCreateModal && (
-        <div className={styles.modal}>
+        <div className={styles.modal} onClick={(e) => e.target === e.currentTarget && setShowCreateModal(false)}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
-              <h2>Create New Classroom</h2>
-              <button
-                className={styles.closeButton}
-                onClick={() => setShowCreateModal(false)}
-              >
-                ✕
+              <h2>Create Classroom</h2>
+              <button className={styles.closeButton} onClick={() => setShowCreateModal(false)}>
+                <X size={20} />
               </button>
             </div>
-
-            <form
-              className={styles.form}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleCreateClassroom();
-              }}
-            >
+            <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleCreateClassroom(); }}>
               <div className={styles.formGroup}>
                 <label>Classroom Name *</label>
-                <input
-                  type="text"
-                  value={newClassroom.name}
-                  onChange={(e) =>
-                    setNewClassroom((p) => ({ ...p, name: e.target.value }))
-                  }
-                  placeholder="e.g., Biology 101"
-                />
+                <input type="text" value={newClassroom.name}
+                  onChange={(e) => setNewClassroom((p) => ({ ...p, name: e.target.value }))}
+                  placeholder="e.g., Biology 101" />
               </div>
-
               <div className={styles.formGroup}>
                 <label>Description</label>
-                <textarea
-                  value={newClassroom.description}
-                  onChange={(e) =>
-                    setNewClassroom((p) => ({
-                      ...p,
-                      description: e.target.value,
-                    }))
-                  }
-                  placeholder="What is this class about?"
-                  rows={3}
-                />
+                <textarea value={newClassroom.description} rows={3}
+                  onChange={(e) => setNewClassroom((p) => ({ ...p, description: e.target.value }))}
+                  placeholder="What is this class about?" />
               </div>
-
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label>Subject</label>
-                  <input
-                    type="text"
-                    value={newClassroom.subject}
-                    onChange={(e) =>
-                      setNewClassroom((p) => ({
-                        ...p,
-                        subject: e.target.value,
-                      }))
-                    }
-                    placeholder="e.g., Biology"
-                  />
+                  <label>Subject *</label>
+                  <input type="text" value={newClassroom.subject}
+                    onChange={(e) => setNewClassroom((p) => ({ ...p, subject: e.target.value }))}
+                    placeholder="e.g., Biology" />
                 </div>
-
                 <div className={styles.formGroup}>
-                  <label>Grade Level</label>
-                  <select
-                    value={newClassroom.grade_level}
-                    onChange={(e) =>
-                      setNewClassroom((p) => ({
-                        ...p,
-                        grade_level: e.target.value,
-                      }))
-                    }
-                  >
+                  <label>Grade Level *</label>
+                  <select value={newClassroom.grade_level}
+                    onChange={(e) => setNewClassroom((p) => ({ ...p, grade_level: e.target.value }))}>
                     <option value="">Select Grade</option>
                     <option value="9">Grade 9</option>
                     <option value="10">Grade 10</option>
@@ -389,22 +265,14 @@ export default function ClassroomsPage() {
                   </select>
                 </div>
               </div>
-
               <div className={styles.formActions}>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowCreateModal(false)}
-                  type="button"
-                >
+                <button type="button" className={styles.cancelBtn} onClick={() => setShowCreateModal(false)}>
                   Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  isLoading={isCreating}
-                >
-                  Create Classroom
-                </Button>
+                </button>
+                <button type="submit" className={styles.submitBtn} disabled={isCreating}>
+                  {isCreating ? <Loader2 size={16} className={styles.spinner} /> : <Plus size={16} />}
+                  {isCreating ? 'Creating...' : 'Create Classroom'}
+                </button>
               </div>
             </form>
           </div>
@@ -413,54 +281,30 @@ export default function ClassroomsPage() {
 
       {/* Join Classroom Modal */}
       {showJoinModal && (
-        <div className={styles.modal}>
+        <div className={styles.modal} onClick={(e) => e.target === e.currentTarget && setShowJoinModal(false)}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2>Join Classroom</h2>
-              <button
-                className={styles.closeButton}
-                onClick={() => setShowJoinModal(false)}
-              >
-                ✕
+              <button className={styles.closeButton} onClick={() => setShowJoinModal(false)}>
+                <X size={20} />
               </button>
             </div>
-
-            <form
-              className={styles.form}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleJoinClassroom();
-              }}
-            >
+            <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleJoinClassroom(); }}>
               <div className={styles.formGroup}>
                 <label>Invite Code *</label>
-                <input
-                  type="text"
-                  value={inviteCode}
+                <input type="text" value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                  placeholder="Enter the invite code"
-                  maxLength={8}
-                />
-                <p className={styles.helperText}>
-                  Ask your teacher for the classroom invite code
-                </p>
+                  placeholder="Enter invite code" maxLength={8} />
+                <p className={styles.helperText}>Ask your teacher for the classroom invite code</p>
               </div>
-
               <div className={styles.formActions}>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowJoinModal(false)}
-                  type="button"
-                >
+                <button type="button" className={styles.cancelBtn} onClick={() => setShowJoinModal(false)}>
                   Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  isLoading={isJoining}
-                >
-                  Join Classroom
-                </Button>
+                </button>
+                <button type="submit" className={styles.submitBtn} disabled={isJoining}>
+                  {isJoining ? <Loader2 size={16} className={styles.spinner} /> : <UserPlus size={16} />}
+                  {isJoining ? 'Joining...' : 'Join Classroom'}
+                </button>
               </div>
             </form>
           </div>

@@ -1,378 +1,837 @@
-/* Analytics Page Styles */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* PDERAX Analytics — Pinnacle Design System                                 */
+/* ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── DESIGN TOKENS ──────────────────────────────────────────────────────── */
+/* Primary: #0066B4 (institutional blue)   */
+/* Secondary: #2A9D8F (green accent)       */
+/* Background: #F2F5F9 (light blue-gray)   */
+/* Text-dark: #0A2A3A                      */
+/* Text-muted: #3F657B                     */
+
+/* ── Container ──────────────────────────────────────────── */
 .container {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-.header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1E2F3D;
+}
+
+/* ── Page Header ────────────────────────────────────────── */
+.pageHeader {
+  display: flex;
   align-items: center;
-  margin-bottom: 2.5rem;
-  gap: 2rem;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
-.header h1 {
-  margin: 0;
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.5rem 0;
-}
-
-.subtitle {
-  color: #6b7280;
-  font-size: 0.9rem;
-  margin: 0;
-}
-
-.loading,
-.error {
+.headerIcon {
+  background: #0066B4;
+  color: white;
+  width: 70px;
+  height: 70px;
+  border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  box-shadow: 0 12px 20px -12px #0066B4;
+  flex-shrink: 0;
+}
+
+.headerTextBlock h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #0A2A3A;
+  margin: 0 0 0.2rem;
+  letter-spacing: -0.02em;
+}
+
+.headerTextBlock p {
+  font-size: 1rem;
+  color: #3F657B;
+  margin: 0;
+}
+
+/* ── Loading / Error ────────────────────────────────────── */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
   flex-direction: column;
   gap: 1rem;
+  color: #3F657B;
 }
 
 .spinner {
-  width: 3rem;
-  height: 3rem;
-  border: 3px solid #e5e7eb;
-  border-top-color: #4f46e5;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spinAnim 0.9s linear infinite;
+  color: #0066B4;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@keyframes spinAnim { to { transform: rotate(360deg); } }
 
 .error {
-  background: #fee2e2;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  color: #991b1b;
-  font-weight: 500;
+  padding: 1.25rem 1.5rem;
+  background: #FDF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 20px;
+  color: #991B1B;
+  font-size: 0.9rem;
 }
 
-.errorMessage {
-  background: #fee2e2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
-  padding: 1rem;
-  border-radius: 0.5rem;
+/* ── KPI Stat Badges Row ────────────────────────────────── */
+.kpiGrid {
+  display: flex;
+  gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.kpi {
+  flex: 1;
+  min-width: 140px;
+  background: #F4F9FD;
+  border-radius: 60px;
+  padding: 0.6rem 1.5rem 0.6rem 1.1rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-/* Metrics Section */
-.metricsSection {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
+.kpi:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 102, 180, 0.08);
 }
 
-.metric {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.metric:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.metricIcon {
-  flex-shrink: 0;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4f46e5;
-}
-
-.metricIcon svg {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.metricInfo {
-  flex: 1;
-}
-
-.metricLabel {
-  font-size: 0.85rem;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 500;
-  margin: 0;
-}
-
-.metricValue {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0.25rem 0 0 0;
-}
-
-/* Sections */
-.section {
-  margin-bottom: 2.5rem;
-}
-
-.sectionTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 1.5rem 0;
-}
-
-/* Study Time Card */
-.studyTimeCard {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.largeValue {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 1rem 0;
-}
-
-.description {
-  opacity: 0.9;
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-/* Documents List */
-.documentsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.documentItem {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
-  border-left: 4px solid #4f46e5;
-}
-
-.documentItem:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateX(4px);
-}
-
-.documentRank {
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f3f4f6;
+.kpiIcon {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpiInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiValue {
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: #0A2A3A;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-.documentDetails {
-  flex: 1;
+.kpiLabel {
+  font-size: 0.72rem;
+  color: #3F657B;
+  font-weight: 500;
+  margin-top: 1px;
 }
 
-.documentTitle {
-  font-weight: 600;
-  color: #1f2937;
+/* ── 2-Column Overview Row ──────────────────────────────── */
+.overviewRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Card Base ──────────────────────────────────────────── */
+.card {
+  background: #FFFFFF;
+  border: 1px solid #E4EAF0;
+  border-radius: 28px;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 24px rgba(0, 102, 180, 0.06);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0A2A3A;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardTitleIcon {
+  color: #0066B4;
+}
+
+.cardSub {
+  font-size: 0.75rem;
+  color: #3F657B;
+  font-weight: 500;
+  background: #F4F9FD;
+  padding: 0.25rem 0.75rem;
+  border-radius: 60px;
+}
+
+/* ── Score Ring Section ─────────────────────────────────── */
+.scoreCard {
+  composes: card;
+  align-items: center;
+  text-align: center;
+}
+
+.ringWrap {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.ringSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.ringCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.ringScore {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0A2A3A;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.ringGrade {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.ringSubtext {
+  font-size: 0.82rem;
+  color: #3F657B;
   margin: 0;
 }
 
-.documentStats {
+/* Grade scale rubric — horizontal pills */
+.gradeScale {
   display: flex;
-  gap: 0.75rem;
-  color: #6b7280;
-  font-size: 0.85rem;
-  margin: 0.5rem 0 0 0;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.25rem;
 }
 
-.accuracyBadge {
-  flex-shrink: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 0.5rem 1rem;
-  border-radius: 2rem;
-}
-
-.accuracyValue {
-  color: white;
-  font-weight: 700;
-}
-
-.emptyState {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #6b7280;
-  background: #f9fafb;
-  border: 1px dashed #d1d5db;
-  border-radius: 0.75rem;
-}
-
-/* Progress Card */
-.progressCard {
-  background: white;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.progressBars {
+.gradePill {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.progressItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.progressLabel {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 60px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.gradePillLetter {
+  font-weight: 800;
+}
+
+.gradePillRange {
+  opacity: 0.7;
   font-weight: 500;
-  color: #374151;
 }
 
-.progressValue {
-  color: #4f46e5;
-  font-weight: 700;
-}
-
-.progressBar {
-  height: 8px;
-  background: #e5e7eb;
-  border-radius: 4px;
+/* ── Study Time Hero Card ───────────────────────────────── */
+.studyHero {
+  background: linear-gradient(135deg, #0066B4 0%, #0084E8 50%, #2A9D8F 100%);
+  border: none;
+  border-radius: 28px;
+  padding: 1.75rem 2rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
   overflow: hidden;
 }
 
-.progressFill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease;
+.studyHero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-/* Quick Actions */
-.actionsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.studyHero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.studyHeroTop {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.9;
+  z-index: 1;
+}
+
+.studyHeroValue {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  z-index: 1;
+}
+
+.studyHeroSub {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.studyHeroStats {
+  display: flex;
   gap: 1.5rem;
+  margin-top: 0.5rem;
+  z-index: 1;
 }
 
-.actionCard {
-  background: white;
-  border: 2px solid #e5e7eb;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
+.studyHeroStat {
+  display: flex;
+  flex-direction: column;
+}
+
+.studyHeroStatValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.studyHeroStatLabel {
+  font-size: 0.7rem;
+  opacity: 0.75;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Activity Timeline ──────────────────────────────────── */
+.activityTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #F0F3F7;
+  transition: background 0.15s;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activityContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.activityDesc {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #0A2A3A;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.activityMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.activityTime {
+  font-size: 0.72rem;
+  color: #7A94A8;
+  font-weight: 500;
+}
+
+.activityBadge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 60px;
+}
+
+/* ── Quiz Performance Chart ─────────────────────────────── */
+.quizChartWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chartArea {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Y-axis labels */
+.chartYAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 0.5rem 1.75rem 0;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.chartYLabel {
+  font-size: 0.62rem;
+  color: #7A94A8;
+  font-weight: 600;
+  text-align: right;
+  line-height: 1;
+}
+
+/* The bars section */
+.chartBars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.35rem;
+  padding-bottom: 1.75rem;
+  position: relative;
+}
+
+/* Horizontal grid lines */
+.chartGridLines {
+  position: absolute;
+  inset: 0;
+  bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.chartGridLine {
+  width: 100%;
+  height: 1px;
+  background: #F0F3F7;
+}
+
+.chartGridLine:last-child {
+  background: #E4EAF0;
+}
+
+/* Individual bar column */
+.chartCol {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  text-align: center;
+  position: relative;
+  height: 100%;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+.chartColInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  justify-content: flex-end;
+  gap: 0.3rem;
+}
+
+.chartColScore {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0A2A3A;
+  line-height: 1;
+}
+
+.chartColTrack {
+  width: 85%;
+  max-width: 48px;
+  flex: 1;
+  max-height: 140px;
+  background: #F4F9FD;
+  border-radius: 8px 8px 4px 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.chartColFill {
+  width: 100%;
+  border-radius: 8px 8px 4px 4px;
+  transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 4px;
+  position: relative;
+}
+
+.chartColFill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+  border-radius: 8px 8px 0 0;
+}
+
+.chartColGrade {
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 0.12rem 0.4rem;
+  border-radius: 60px;
+}
+
+.chartColDate {
+  font-size: 0.62rem;
+  color: #7A94A8;
   font-weight: 500;
-  color: #374151;
+  text-align: center;
+  white-space: nowrap;
+  position: absolute;
+  bottom: 0;
 }
 
-.actionCard svg {
-  width: 2rem;
-  height: 2rem;
-  color: #4f46e5;
+/* Average line */
+.chartAvgLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 2px dashed #0066B4;
+  opacity: 0.4;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.actionCard:hover {
-  border-color: #4f46e5;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
-  transform: translateY(-2px);
-  color: #4f46e5;
+.chartAvgLabel {
+  position: absolute;
+  right: 0;
+  top: -14px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #0066B4;
+  background: #E6F0FA;
+  padding: 0.1rem 0.45rem;
+  border-radius: 60px;
 }
 
-.actionCard:active {
-  transform: translateY(0);
+/* ── Subject Breakdown ──────────────────────────────────── */
+.subjectList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .container {
-    padding: 1.5rem 1rem;
+.subjectItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.subjectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subjectName {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #0A2A3A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.subjectCount {
+  font-size: 0.72rem;
+  color: #7A94A8;
+  font-weight: 600;
+  background: #F4F9FD;
+  padding: 0.15rem 0.6rem;
+  border-radius: 60px;
+}
+
+.subjectBarTrack {
+  height: 8px;
+  background: #F4F9FD;
+  border-radius: 60px;
+  overflow: hidden;
+}
+
+.subjectBarFill {
+  height: 100%;
+  border-radius: 60px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.subjectBarFill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+  border-radius: 60px;
+}
+
+/* ── Weekly Activity Heatmap ────────────────────────────── */
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.weekDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.weekDayLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #7A94A8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.weekDayDot {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+
+.weekDayDot:hover {
+  transform: scale(1.1);
+}
+
+/* ── Streak Card ────────────────────────────────────────── */
+.streakCard {
+  composes: card;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.streakIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+}
+
+.streakInfo {
+  flex: 1;
+}
+
+.streakValue {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0A2A3A;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.streakLabel {
+  font-size: 0.8rem;
+  color: #3F657B;
+  margin-top: 0.15rem;
+}
+
+.streakMotivation {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.85rem;
+  border-radius: 60px;
+  white-space: nowrap;
+}
+
+/* ── Bottom Row ─────────────────────────────────────────── */
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Full-width chart row ───────────────────────────────── */
+.fullRow {
+  margin-bottom: 1.5rem;
+}
+
+/* ── Empty State ────────────────────────────────────────── */
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #7A94A8;
+  background: #FFFFFF;
+  border: 2px dashed #D5DDE5;
+  border-radius: 28px;
+}
+
+.emptyIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  background: #F4F9FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: #0066B4;
+}
+
+.emptyState h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0A2A3A;
+  margin: 0 0 0.4rem;
+}
+
+.emptyState p {
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 380px;
+  margin-inline: auto;
+  line-height: 1.5;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .kpiGrid {
+    flex-wrap: wrap;
   }
-
-  .header {
-    flex-direction: column;
-    align-items: stretch;
+  .kpi {
+    min-width: calc(50% - 0.5rem);
+    flex: unset;
   }
-
-  .title {
-    font-size: 1.5rem;
-  }
-
-  .metricsSection {
+  .overviewRow {
     grid-template-columns: 1fr;
   }
-
-  .metric {
-    flex-direction: row;
-  }
-
-  .documentItem {
-    flex-direction: column;
-    text-align: center;
-    border-left: none;
-    border-top: 4px solid #4f46e5;
-  }
-
-  .documentStats {
-    justify-content: center;
-  }
-
-  .actionsGrid {
+  .bottomRow {
     grid-template-columns: 1fr;
   }
+}
 
-  .largeValue {
+@media (max-width: 600px) {
+  .kpi {
+    min-width: 100%;
+  }
+  .pageHeader {
+    gap: 0.8rem;
+  }
+  .headerIcon {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+  }
+  .headerTextBlock h1 {
+    font-size: 1.6rem;
+  }
+  .studyHeroValue {
     font-size: 2rem;
+  }
+  .studyHeroStats {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .weekGrid {
+    gap: 0.3rem;
+  }
+  .ringWrap {
+    width: 130px;
+    height: 130px;
   }
 }

@@ -34,7 +34,7 @@
 
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-color: var(--primary, #4f46e5);
+    border-color: var(--primary, #0066B4);
   }
 }
 
@@ -56,7 +56,7 @@
 .fileIcon {
   width: 2rem;
   height: 2rem;
-  color: var(--primary, #4f46e5);
+  color: var(--primary, #0066B4);
   flex-shrink: 0;
 }
 
@@ -112,6 +112,7 @@
   color: var(--text-secondary, #6b7280);
   line-height: 1.5;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -140,9 +141,9 @@
   text-decoration: none;
 
   &:hover {
-    background: var(--primary, #4f46e5);
+    background: var(--primary, #0066B4);
     color: white;
-    border-color: var(--primary, #4f46e5);
+    border-color: var(--primary, #0066B4);
   }
 
   &.danger:hover {

@@ -25,10 +25,13 @@ class SummarizationService:
                 }
             }
         
-        # Add truncation notice to AI context if needed
+        # Prepend truncation notice so the AI knows the document is incomplete
         if was_truncated:
-            truncation_notice = f"\n\nImportant: This document was truncated to {word_limit:,} words for analysis. The original document contained {original_word_count:,} words. Please focus your analysis on the provided content."
-            # We'll let the AI handle the truncated text directly since we already added a notice in the text
+            text = (
+                f"[Note: This document was truncated to {word_limit:,} words for analysis. "
+                f"The original document contained {original_word_count:,} words. "
+                f"Please focus your analysis on the provided content.]\n\n{text}"
+            )
         
         # Additional safety truncation for very long texts (character-based)
         if len(text) > 15000:

@@ -37,7 +37,7 @@
 .brandName {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #4f46e5;
+  color: #0066B4;
   letter-spacing: -0.02em;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .linkItem a:hover {
-  color: #4f46e5;
+  color: #0066B4;
 }
 
 .socialLinks {
@@ -94,7 +94,7 @@
   transition: color 0.2s;
 
   &:hover {
-    color: #4f46e5;
+    color: #0066B4;
   }
 }
 

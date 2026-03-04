@@ -30,7 +30,7 @@
   word-wrap: break-word;
 
   .userMessage & {
-    background: var(--primary, #4f46e5);
+    background: var(--primary, #0066B4);
     color: white;
     border-bottom-right-radius: 4px;
   }

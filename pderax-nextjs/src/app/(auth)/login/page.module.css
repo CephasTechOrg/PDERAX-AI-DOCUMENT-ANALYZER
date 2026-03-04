@@ -106,14 +106,14 @@
 }
 
 .forgotLink {
-  color: #4f46e5;
+  color: #0066B4;
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 500;
   transition: color 0.15s;
 
   &:hover {
-    color: #4338ca;
+    color: #004D8A;
     text-decoration: underline;
   }
 }
@@ -130,13 +130,13 @@
 }
 
 .link {
-  color: #4f46e5;
+  color: #0066B4;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.15s;
 
   &:hover {
-    color: #4338ca;
+    color: #004D8A;
     text-decoration: underline;
   }
 }

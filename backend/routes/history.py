@@ -113,6 +113,26 @@ async def list_flashcard_sets(
     return [_flashcard_set_out(s) for s in sets]
 
 
+@history_router.get("/flashcard-sets/{set_id}", response_model=FlashcardSetOut)
+async def get_flashcard_set(
+    set_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Return a single flashcard set by ID."""
+    fs = (
+        db.query(FlashcardSet)
+        .filter(
+            FlashcardSet.id == set_id,
+            FlashcardSet.user_id == current_user.id,
+        )
+        .first()
+    )
+    if not fs:
+        raise HTTPException(status_code=404, detail="Flashcard set not found")
+    return _flashcard_set_out(fs)
+
+
 @history_router.delete("/flashcard-sets/{set_id}")
 async def delete_flashcard_set(
     set_id: str,

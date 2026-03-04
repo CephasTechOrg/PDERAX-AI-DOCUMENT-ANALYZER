@@ -146,6 +146,17 @@ async def generate_quiz_quick(
 
         questions_data = result.get("questions", [])
 
+        # Normalise question dicts so they have consistent keys before persisting
+        for q in questions_data:
+            q.setdefault("question", "")
+            q.setdefault("correct_answer", "A")
+            q.setdefault("explanation", "")
+            q.setdefault("category", "General")
+            opts = q.get("options", [])
+            for opt in opts:
+                opt["label"] = str(opt.get("label", "")).strip().upper()
+                opt["text"] = str(opt.get("text", "")).strip()
+
         # Persist quiz set
         try:
             analysis_uuid = None

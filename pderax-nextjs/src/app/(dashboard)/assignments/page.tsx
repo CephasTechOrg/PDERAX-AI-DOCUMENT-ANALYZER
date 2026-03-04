@@ -6,18 +6,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/forms/Button';
 import assignmentService, {
   Assignment,
-  PaginatedAssignments,
 } from '@/services/assignment_service';
 import styles from './page.module.css';
 
 export default function AssignmentsPage() {
-  const params = useParams();
-  const classroomId = params.id as string;
+  const searchParams = useSearchParams();
+  const classroomId = searchParams.get('classroom_id') || '';
   const { isLoading: authLoading } = useAuth();
 
   const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -36,10 +35,10 @@ export default function AssignmentsPage() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoading && classroomId) {
       loadAssignments();
     }
-  }, [authLoading, currentPage, filterStatus]);
+  }, [authLoading, classroomId, currentPage, filterStatus]);
 
   const loadAssignments = async () => {
     try {
@@ -133,6 +132,22 @@ export default function AssignmentsPage() {
           <div className={styles.spinner}></div>
           <p>Loading assignments...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!classroomId) {
+    return (
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div>
+            <h1 className={styles.title}>Assignments</h1>
+            <p className={styles.subtitle}>Pick a classroom first to manage assignments.</p>
+          </div>
+          <a href="/classrooms" className={styles.backLink}>
+            ← Go to Classrooms
+          </a>
+        </header>
       </div>
     );
   }

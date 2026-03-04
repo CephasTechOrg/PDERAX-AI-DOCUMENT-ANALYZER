@@ -23,16 +23,13 @@ export default function ProfilePage() {
 
   // Form state
   const [formData, setFormData] = useState({
-    name: '',
-    bio: '',
-    timezone: 'UTC',
-    language: 'en',
+    full_name: '',
   });
 
   const [settingsData, setSettingsData] = useState({
-    theme_preference: 'auto' as 'light' | 'dark' | 'auto',
-    notifications_enabled: true,
-    email_digest: 'weekly' as 'daily' | 'weekly' | 'never',
+    university: '',
+    field_of_study: '',
+    academic_level: '',
   });
 
   useEffect(() => {
@@ -47,15 +44,12 @@ export default function ProfilePage() {
       const data = await userService.getProfile();
       setProfile(data);
       setFormData({
-        name: data.full_name || '',
-        bio: data.bio || '',
-        timezone: data.timezone || 'UTC',
-        language: data.language || 'en',
+        full_name: data.full_name || '',
       });
       setSettingsData({
-        theme_preference: data.theme_preference || 'auto',
-        notifications_enabled: data.notifications_enabled !== false,
-        email_digest: data.email_digest || 'weekly',
+        university: data.university || '',
+        field_of_study: data.field_of_study || '',
+        academic_level: data.academic_level || '',
       });
     } catch (err) {
       const errorMessage =
@@ -161,51 +155,11 @@ export default function ProfilePage() {
             <div className={styles.formGrid}>
               <Input
                 label="Full Name"
-                value={formData.name}
+                value={formData.full_name}
                 onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
+                  setFormData({ ...formData, full_name: e.target.value })
                 }
               />
-              <Input
-                label="Bio"
-                value={formData.bio}
-                onChange={(e) =>
-                  setFormData({ ...formData, bio: e.target.value })
-                }
-                placeholder="Tell us about yourself"
-              />
-              <div className={styles.selectField}>
-                <label>Timezone</label>
-                <select
-                  value={formData.timezone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, timezone: e.target.value })
-                  }
-                  className={styles.select}
-                >
-                  <option value="UTC">UTC</option>
-                  <option value="EST">Eastern Standard Time</option>
-                  <option value="CST">Central Standard Time</option>
-                  <option value="MST">Mountain Standard Time</option>
-                  <option value="PST">Pacific Standard Time</option>
-                </select>
-              </div>
-              <div className={styles.selectField}>
-                <label>Language</label>
-                <select
-                  value={formData.language}
-                  onChange={(e) =>
-                    setFormData({ ...formData, language: e.target.value })
-                  }
-                  className={styles.select}
-                >
-                  <option value="en">English</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
-                  <option value="zh">Chinese</option>
-                </select>
-              </div>
 
               <div className={styles.formActions}>
                 <Button
@@ -235,12 +189,16 @@ export default function ProfilePage() {
                 <span className={styles.infoValue}>{profile.email}</span>
               </div>
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Timezone</span>
-                <span className={styles.infoValue}>{profile.timezone}</span>
+                <span className={styles.infoLabel}>University</span>
+                <span className={styles.infoValue}>{profile.university || '—'}</span>
               </div>
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Language</span>
-                <span className={styles.infoValue}>{profile.language}</span>
+                <span className={styles.infoLabel}>Field of Study</span>
+                <span className={styles.infoValue}>{profile.field_of_study || '—'}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Academic Level</span>
+                <span className={styles.infoValue}>{profile.academic_level || '—'}</span>
               </div>
             </div>
           )}
@@ -249,84 +207,79 @@ export default function ProfilePage() {
 
       {/* Settings Section */}
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Preferences</h2>
+        <h2 className={styles.sectionTitle}>Academic Profile</h2>
 
         <div className={styles.settingsCard}>
           <div className={styles.settingItem}>
             <div>
-              <p className={styles.settingLabel}>Theme</p>
+              <p className={styles.settingLabel}>University</p>
               <p className={styles.settingDescription}>
-                Choose your preferred interface theme
-              </p>
-            </div>
-            <select
-              value={settingsData.theme_preference}
-              onChange={(e) =>
-                setSettingsData({
-                  ...settingsData,
-                  theme_preference: e.target.value as
-                    | 'light'
-                    | 'dark'
-                    | 'auto',
-                })
-              }
-              className={styles.select}
-            >
-              <option value="auto">Auto</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </div>
-
-          <div className={styles.settingItem}>
-            <div>
-              <p className={styles.settingLabel}>Notifications</p>
-              <p className={styles.settingDescription}>
-                Receive notifications about your activity
+                Optional institution information
               </p>
             </div>
             <input
-              type="checkbox"
-              checked={settingsData.notifications_enabled}
+              type="text"
+              value={settingsData.university}
               onChange={(e) =>
                 setSettingsData({
                   ...settingsData,
-                  notifications_enabled: e.target.checked,
+                  university: e.target.value,
                 })
               }
-              className={styles.checkbox}
+              className={styles.select}
+              placeholder="e.g., University of Lagos"
             />
           </div>
 
           <div className={styles.settingItem}>
             <div>
-              <p className={styles.settingLabel}>Email Digest</p>
+              <p className={styles.settingLabel}>Field of Study</p>
               <p className={styles.settingDescription}>
-                How often to receive email updates
+                Your current major or discipline
               </p>
             </div>
-            <select
-              value={settingsData.email_digest}
+            <input
+              type="text"
+              value={settingsData.field_of_study}
               onChange={(e) =>
                 setSettingsData({
                   ...settingsData,
-                  email_digest: e.target.value as
-                    | 'daily'
-                    | 'weekly'
-                    | 'never',
+                  field_of_study: e.target.value,
+                })
+              }
+              className={styles.select}
+              placeholder="e.g., Computer Science"
+            />
+          </div>
+
+          <div className={styles.settingItem}>
+            <div>
+              <p className={styles.settingLabel}>Academic Level</p>
+              <p className={styles.settingDescription}>
+                Select your current level
+              </p>
+            </div>
+            <select
+              value={settingsData.academic_level}
+              onChange={(e) =>
+                setSettingsData({
+                  ...settingsData,
+                  academic_level: e.target.value,
                 })
               }
               className={styles.select}
             >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="never">Never</option>
+              <option value="">Select level</option>
+              <option value="high_school">High School</option>
+              <option value="undergraduate">Undergraduate</option>
+              <option value="graduate">Graduate</option>
+              <option value="professional">Professional</option>
             </select>
           </div>
 
           <div className={styles.formActions}>
             <Button variant="primary" onClick={handleSaveSettings} isLoading={isSaving}>
-              Save Preferences
+              Save Academic Profile
             </Button>
           </div>
         </div>

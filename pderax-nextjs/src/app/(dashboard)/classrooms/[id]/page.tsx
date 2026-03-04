@@ -6,14 +6,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/forms/Button';
+import {
+  Copy, UserPlus, Users, Trash2, ArrowLeft, Loader2,
+  Settings, BookOpen, ChevronLeft, ChevronRight,
+} from 'lucide-react';
 import classroomService, {
   Classroom,
   StudentInClassroom,
   ClassroomSettings,
-  PaginatedStudents,
 } from '@/services/classroom_service';
 import styles from './page.module.css';
 
@@ -21,6 +23,7 @@ type Tab = 'overview' | 'settings' | 'students';
 
 export default function ClassroomDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const classroomId = params.id as string;
   const { isLoading: authLoading } = useAuth();
 
@@ -37,6 +40,7 @@ export default function ClassroomDetailsPage() {
   const [inviteCode, setInviteCode] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   useEffect(() => {
     if (!authLoading) {
@@ -55,17 +59,14 @@ export default function ClassroomDetailsPage() {
       setIsLoading(true);
       const data = await classroomService.getClassroom(classroomId);
       setClassroom(data);
-      setSettings(data.settings);
+      setSettings(data.settings ?? null);
 
-      // Get invite code
       const codes = await classroomService.getInviteCodes(classroomId);
       if (codes.length > 0) {
         setInviteCode(codes[0].invite_code);
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load classroom';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to load classroom');
     } finally {
       setIsLoading(false);
     }
@@ -73,13 +74,8 @@ export default function ClassroomDetailsPage() {
 
   const loadStudents = async () => {
     if (!classroom) return;
-
     try {
-      const data = await classroomService.getClassroomStudents(
-        classroomId,
-        currentPage,
-        15
-      );
+      const data = await classroomService.getClassroomStudents(classroomId, currentPage, 15);
       setStudents(data.items);
       setTotalPages(Math.ceil(data.total / data.per_page));
     } catch (err) {
@@ -89,25 +85,21 @@ export default function ClassroomDetailsPage() {
 
   const handleUpdateSettings = async () => {
     if (!settings) return;
-
     try {
+      setIsSavingSettings(true);
       setError(null);
       await classroomService.updateClassroomSettings(classroomId, settings);
       setIsEditingSettings(false);
       loadClassroom();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to update settings';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to update settings');
+    } finally {
+      setIsSavingSettings(false);
     }
   };
 
   const handleInviteStudent = async () => {
-    if (!inviteEmail.trim()) {
-      setError('Email is required');
-      return;
-    }
-
+    if (!inviteEmail.trim()) { setError('Email is required'); return; }
     try {
       setIsInviting(true);
       setError(null);
@@ -116,27 +108,20 @@ export default function ClassroomDetailsPage() {
       setShowInviteModal(false);
       loadStudents();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to invite student';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to invite student');
     } finally {
       setIsInviting(false);
     }
   };
 
   const handleRemoveStudent = async (studentId: string) => {
-    if (!confirm('Are you sure you want to remove this student?')) {
-      return;
-    }
-
+    if (!confirm('Are you sure you want to remove this student?')) return;
     try {
       setError(null);
       await classroomService.removeStudent(classroomId, studentId);
       loadStudents();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to remove student';
-      setError(errorMessage);
+      setError(err instanceof Error ? err.message : 'Failed to remove student');
     }
   };
 
@@ -151,7 +136,7 @@ export default function ClassroomDetailsPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
+          <Loader2 size={36} className={styles.spinner} />
           <p>Loading classroom...</p>
         </div>
       </div>
@@ -170,15 +155,21 @@ export default function ClassroomDetailsPage() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div>
-          <a href="/classrooms" className={styles.backLink}>
-            ← Back to Classrooms
-          </a>
+          <button className={styles.backLink} onClick={() => router.push('/classrooms')}>
+            <ArrowLeft size={14} />
+            Back to Classrooms
+          </button>
           <h1 className={styles.title}>{classroom.name}</h1>
           <p className={styles.subtitle}>{classroom.description}</p>
         </div>
       </header>
 
-      {error && <div className={styles.errorMessage}>{error}</div>}
+      {error && (
+        <div className={styles.errorMessage}>
+          {error}
+          <button className={styles.errorClose} onClick={() => setError(null)}>✕</button>
+        </div>
+      )}
 
       {/* Tabs */}
       <nav className={styles.tabs}>
@@ -186,19 +177,19 @@ export default function ClassroomDetailsPage() {
           className={`${styles.tab} ${activeTab === 'overview' ? styles.active : ''}`}
           onClick={() => setActiveTab('overview')}
         >
-          Overview
+          <BookOpen size={14} /> Overview
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'students' ? styles.active : ''}`}
           onClick={() => setActiveTab('students')}
         >
-          Students ({classroom.student_count})
+          <Users size={14} /> Students ({classroom.student_count})
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'settings' ? styles.active : ''}`}
           onClick={() => setActiveTab('settings')}
         >
-          Settings
+          <Settings size={14} /> Settings
         </button>
       </nav>
 
@@ -206,7 +197,7 @@ export default function ClassroomDetailsPage() {
       {activeTab === 'overview' && (
         <div className={styles.tabContent}>
           <div className={styles.grid}>
-            {/* Classroom Info Card */}
+            {/* Classroom Info */}
             <div className={styles.card}>
               <h2 className={styles.cardTitle}>Classroom Information</h2>
               <div className={styles.infoGrid}>
@@ -231,33 +222,16 @@ export default function ClassroomDetailsPage() {
               </div>
             </div>
 
-            {/* Invite Code Card */}
+            {/* Invite Code */}
             <div className={styles.card}>
               <h2 className={styles.cardTitle}>Invite Code</h2>
               <div className={styles.inviteCodeContainer}>
                 <div className={styles.inviteCodeDisplay}>
                   <code>{inviteCode || 'No invite code'}</code>
                   {inviteCode && (
-                    <Button
-                      variant="secondary"
-                      onClick={handleCopyInviteCode}
-                      size="sm"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        />
-                      </svg>
-                      Copy
-                    </Button>
+                    <button className={styles.copyBtn} onClick={handleCopyInviteCode}>
+                      <Copy size={14} /> Copy
+                    </button>
                   )}
                 </div>
                 <p className={styles.helperText}>
@@ -270,45 +244,12 @@ export default function ClassroomDetailsPage() {
             <div className={styles.card}>
               <h2 className={styles.cardTitle}>Quick Actions</h2>
               <div className={styles.actionButtons}>
-                <Button
-                  variant="primary"
-                  onClick={() => setShowInviteModal(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Invite Student
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  onClick={() => setActiveTab('students')}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-2a6 6 0 0112 0v2zm0 0h6v-2a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                    />
-                  </svg>
-                  Manage Students
-                </Button>
+                <button className={styles.actionBtn} onClick={() => setShowInviteModal(true)}>
+                  <UserPlus size={16} /> Invite Student
+                </button>
+                <button className={`${styles.actionBtn} ${styles.actionBtnSecondary}`} onClick={() => setActiveTab('students')}>
+                  <Users size={16} /> Manage Students
+                </button>
               </div>
             </div>
           </div>
@@ -320,25 +261,9 @@ export default function ClassroomDetailsPage() {
         <div className={styles.tabContent}>
           <div className={styles.studentsHeader}>
             <h2>Students ({classroom.student_count})</h2>
-            <Button
-              variant="primary"
-              onClick={() => setShowInviteModal(true)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Invite Student
-            </Button>
+            <button className={styles.actionBtn} onClick={() => setShowInviteModal(true)}>
+              <UserPlus size={15} /> Invite Student
+            </button>
           </div>
 
           {students.length === 0 ? (
@@ -358,31 +283,17 @@ export default function ClassroomDetailsPage() {
                       <div className={styles.studentEmail}>{student.email}</div>
                     </div>
                   </div>
-
                   <div className={styles.studentStatus}>
                     <span className={`${styles.badge} ${styles[`badge-${student.status}`]}`}>
                       {student.status}
                     </span>
                   </div>
-
                   <button
                     className={styles.removeButton}
                     onClick={() => handleRemoveStudent(student.id)}
                     title="Remove student"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
+                    <Trash2 size={16} />
                   </button>
                 </div>
               ))}
@@ -391,21 +302,21 @@ export default function ClassroomDetailsPage() {
 
           {totalPages > 1 && (
             <div className={styles.pagination}>
-              <Button
-                variant="secondary"
+              <button
+                className={styles.pageBtn}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
               >
-                Previous
-              </Button>
+                <ChevronLeft size={16} /> Previous
+              </button>
               <span>Page {currentPage} of {totalPages}</span>
-              <Button
-                variant="secondary"
+              <button
+                className={styles.pageBtn}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
               >
-                Next
-              </Button>
+                Next <ChevronRight size={16} />
+              </button>
             </div>
           )}
         </div>
@@ -418,179 +329,69 @@ export default function ClassroomDetailsPage() {
             <div className={styles.cardHeader}>
               <h2 className={styles.cardTitle}>Classroom Settings</h2>
               {!isEditingSettings && (
-                <Button
-                  variant="secondary"
+                <button
+                  className={`${styles.actionBtn} ${styles.actionBtnSecondary} ${styles.actionBtnSm}`}
                   onClick={() => setIsEditingSettings(true)}
-                  size="sm"
                 >
                   Edit
-                </Button>
+                </button>
               )}
             </div>
 
             {isEditingSettings ? (
               <form
                 className={styles.settingsForm}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleUpdateSettings();
-                }}
+                onSubmit={(e) => { e.preventDefault(); handleUpdateSettings(); }}
               >
-                <div className={styles.settingItem}>
-                  <label className={styles.settingLabel}>
-                    <input
-                      type="checkbox"
-                      checked={settings.allow_student_uploads}
-                      onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                allow_student_uploads: e.target.checked,
-                              }
-                            : null
-                        )
-                      }
-                    />
-                    <span>Allow students to upload documents</span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <label className={styles.settingLabel}>
-                    <input
-                      type="checkbox"
-                      checked={settings.allow_peer_review}
-                      onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? { ...prev, allow_peer_review: e.target.checked }
-                            : null
-                        )
-                      }
-                    />
-                    <span>Enable peer review</span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <label className={styles.settingLabel}>
-                    <input
-                      type="checkbox"
-                      checked={settings.anonymous_feedback}
-                      onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                anonymous_feedback: e.target.checked,
-                              }
-                            : null
-                        )
-                      }
-                    />
-                    <span>Allow anonymous feedback</span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <label className={styles.settingLabel}>
-                    <input
-                      type="checkbox"
-                      checked={settings.email_notifications}
-                      onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                email_notifications: e.target.checked,
-                              }
-                            : null
-                        )
-                      }
-                    />
-                    <span>Send email notifications</span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <label className={styles.settingLabel}>
-                    <input
-                      type="checkbox"
-                      checked={settings.auto_grading_enabled}
-                      onChange={(e) =>
-                        setSettings((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                auto_grading_enabled: e.target.checked,
-                              }
-                            : null
-                        )
-                      }
-                    />
-                    <span>Enable automatic grading</span>
-                  </label>
-                </div>
+                {[
+                  { key: 'allow_student_uploads', label: 'Allow students to upload documents' },
+                  { key: 'allow_peer_review', label: 'Enable peer review' },
+                  { key: 'anonymous_feedback', label: 'Allow anonymous feedback' },
+                  { key: 'email_notifications', label: 'Send email notifications' },
+                  { key: 'auto_grading_enabled', label: 'Enable automatic grading' },
+                ].map(({ key, label }) => (
+                  <div key={key} className={styles.settingItem}>
+                    <label className={styles.settingLabel}>
+                      <input
+                        type="checkbox"
+                        checked={(settings as any)[key]}
+                        onChange={(e) =>
+                          setSettings((prev) => prev ? { ...prev, [key]: e.target.checked } : null)
+                        }
+                      />
+                      <span>{label}</span>
+                    </label>
+                  </div>
+                ))}
 
                 <div className={styles.formActions}>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setIsEditingSettings(false);
-                      loadClassroom();
-                    }}
+                  <button
                     type="button"
+                    className={`${styles.actionBtn} ${styles.actionBtnSecondary}`}
+                    onClick={() => { setIsEditingSettings(false); loadClassroom(); }}
                   >
                     Cancel
-                  </Button>
-                  <Button variant="primary" type="submit">
+                  </button>
+                  <button type="submit" className={styles.actionBtn} disabled={isSavingSettings}>
+                    {isSavingSettings ? <Loader2 size={14} className={styles.spinIcon} /> : null}
                     Save Settings
-                  </Button>
+                  </button>
                 </div>
               </form>
             ) : (
               <div className={styles.settingsList}>
-                <div className={styles.settingItem}>
-                  <span>Allow students to upload documents</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.allow_student_uploads}
-                    disabled
-                  />
-                </div>
-                <div className={styles.settingItem}>
-                  <span>Enable peer review</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.allow_peer_review}
-                    disabled
-                  />
-                </div>
-                <div className={styles.settingItem}>
-                  <span>Allow anonymous feedback</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.anonymous_feedback}
-                    disabled
-                  />
-                </div>
-                <div className={styles.settingItem}>
-                  <span>Send email notifications</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.email_notifications}
-                    disabled
-                  />
-                </div>
-                <div className={styles.settingItem}>
-                  <span>Enable automatic grading</span>
-                  <input
-                    type="checkbox"
-                    checked={settings.auto_grading_enabled}
-                    disabled
-                  />
-                </div>
+                {[
+                  { key: 'allow_student_uploads', label: 'Allow students to upload documents' },
+                  { key: 'allow_peer_review', label: 'Enable peer review' },
+                  { key: 'anonymous_feedback', label: 'Allow anonymous feedback' },
+                  { key: 'email_notifications', label: 'Send email notifications' },
+                  { key: 'auto_grading_enabled', label: 'Enable automatic grading' },
+                ].map(({ key, label }) => (
+                  <div key={key} className={styles.settingItem}>
+                    <span>{label}</span>
+                    <input type="checkbox" checked={(settings as any)[key]} disabled />
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -599,24 +400,19 @@ export default function ClassroomDetailsPage() {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className={styles.modal}>
+        <div
+          className={styles.modal}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowInviteModal(false); }}
+        >
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2>Invite Student</h2>
-              <button
-                className={styles.closeButton}
-                onClick={() => setShowInviteModal(false)}
-              >
-                ✕
-              </button>
+              <button className={styles.closeButton} onClick={() => setShowInviteModal(false)}>✕</button>
             </div>
 
             <form
               className={styles.form}
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleInviteStudent();
-              }}
+              onSubmit={(e) => { e.preventDefault(); handleInviteStudent(); }}
             >
               <div className={styles.formGroup}>
                 <label>Student Email *</label>
@@ -629,20 +425,19 @@ export default function ClassroomDetailsPage() {
               </div>
 
               <div className={styles.formActions}>
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowInviteModal(false)}
+                <button
                   type="button"
+                  className={`${styles.actionBtn} ${styles.actionBtnSecondary}`}
+                  onClick={() => setShowInviteModal(false)}
                 >
                   Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  isLoading={isInviting}
-                >
-                  Send Invite
-                </Button>
+                </button>
+                <button type="submit" className={styles.actionBtn} disabled={isInviting}>
+                  {isInviting
+                    ? <><Loader2 size={14} className={styles.spinIcon} /> Sending...</>
+                    : <><UserPlus size={14} /> Send Invite</>
+                  }
+                </button>
               </div>
             </form>
           </div>

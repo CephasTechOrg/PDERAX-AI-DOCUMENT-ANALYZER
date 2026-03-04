@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/analyzer');
+      router.push('/home');
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.push('/analyzer');
+      router.push('/home');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Login failed. Please try again.';

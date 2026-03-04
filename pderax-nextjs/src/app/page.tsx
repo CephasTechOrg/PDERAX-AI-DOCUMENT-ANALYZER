@@ -1,14 +1,30 @@
 /**
  * Landing Page
- * Home page with hero section, features, and call-to-action
+ * Public-facing home. If the user is already logged in, redirect to /home.
  */
 
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import styles from './page.module.css';
 
 export default function Home() {
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace('/home');
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  // Don't flash the landing page while auth initializes or during redirect
+  if (isLoading || isAuthenticated) return null;
+
   return (
     <>
       {/* Hero Section */}

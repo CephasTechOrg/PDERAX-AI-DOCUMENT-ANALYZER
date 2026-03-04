@@ -9,7 +9,7 @@ from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from auth_dependencies import get_current_user
@@ -69,12 +69,9 @@ async def create_classroom(
     db: Session = Depends(get_db)
 ):
     """Create a new classroom"""
-    # Only teachers and admins can create classrooms
-    if not (current_user.is_admin or current_user.role == 'teacher'):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only teachers and admins can create classrooms"
-        )
+    # Any authenticated user can create classrooms (students can lead study groups)
+    # Admin check kept for potential future use
+    _ = current_user.is_admin  # noqa
     
     # Generate unique invite code
     invite_code = generate_invite_code()
@@ -132,20 +129,20 @@ async def list_classrooms(
     """List all classrooms for the current user (teacher or enrolled student)"""
     query = db.query(Classroom)
     
-    # Teachers see their own classrooms
-    # Students see classrooms they're enrolled in
-    if current_user.is_admin:
-        # Admins see all classrooms
-        pass
-    elif getattr(current_user, 'role', 'student') == 'teacher':
-        query = query.filter(Classroom.teacher_id == current_user.id)
-    else:
-        # Students: filter by enrollment
+    # Everyone sees classrooms they own (teacher_id) OR are enrolled in.
+    # This ensures a user who creates a classroom always sees it,
+    # regardless of their account role field.
+    if not current_user.is_admin:
         enrolled_classroom_ids = db.query(ClassroomEnrollment.classroom_id).filter(
             ClassroomEnrollment.student_id == current_user.id,
             ClassroomEnrollment.status == "active"
         ).subquery()
-        query = query.filter(Classroom.id.in_(enrolled_classroom_ids))
+        query = query.filter(
+            or_(
+                Classroom.teacher_id == current_user.id,
+                Classroom.id.in_(enrolled_classroom_ids)
+            )
+        )
     
     # Filter out archived classrooms by default
     query = query.filter(Classroom.is_archived == False)
@@ -615,6 +612,20 @@ async def join_classroom_with_code(
             detail="Invalid invite code"
         )
     
+    # Prevent joining archived classrooms
+    if classroom.is_archived:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This classroom has been archived and is no longer accepting students"
+        )
+    
+    # Prevent teacher from enrolling as student in their own classroom
+    if classroom.teacher_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You are the teacher of this classroom"
+        )
+    
     # Check if already enrolled
     existing = db.query(ClassroomEnrollment).filter(
         ClassroomEnrollment.classroom_id == classroom.id,
@@ -744,8 +755,8 @@ async def update_classroom_settings(
     if classroom.teacher_id != current_user.id and not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
     
-    # Update settings
-    current_settings = classroom.settings or {}
+    # Update settings — copy dict so SQLAlchemy detects the mutation
+    current_settings = dict(classroom.settings or {})
     
     if settings_data.allow_student_uploads is not None:
         current_settings["allow_student_uploads"] = settings_data.allow_student_uploads
@@ -889,11 +900,15 @@ async def export_classroom_roster(
     
     csv_content = output.getvalue()
     
+    # Sanitize classroom name for filename (remove non-alphanumeric chars)
+    import re as _re
+    safe_name = _re.sub(r'[^\w\s-]', '', classroom.name).strip().replace(' ', '_')[:50]
+    
     from fastapi.responses import Response
     return Response(
         content=csv_content,
         media_type="text/csv",
         headers={
-            "Content-Disposition": f"attachment; filename=classroom_{classroom.name}_roster.csv"
+            "Content-Disposition": f'attachment; filename="classroom_{safe_name}_roster.csv"'
         }
     )

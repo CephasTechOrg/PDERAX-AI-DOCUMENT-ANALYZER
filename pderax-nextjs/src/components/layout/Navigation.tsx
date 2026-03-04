@@ -8,8 +8,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import styles from './Navigation.module.css';
+
+/** Routes where the root nav should be visible (landing page only) */
+const PUBLIC_PATHS = ['/'];
 
 interface NavLink {
   label: string;
@@ -30,7 +34,11 @@ const AUTH_NAV_LINKS: NavLink[] = [
 
 export function Navigation() {
   const { user, isAuthenticated, logout } = useAuth();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Hide root nav on all dashboard/app pages — only show on public routes
+  if (!PUBLIC_PATHS.includes(pathname)) return null;
 
   const handleLogout = async () => {
     try {
@@ -44,7 +52,7 @@ export function Navigation() {
   const navLinks = isAuthenticated ? AUTH_NAV_LINKS : NAV_LINKS;
 
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} data-root-nav>
       <div className={styles.navContainer}>
         {/* Logo */}
         <Link href="/" className={styles.logo}>

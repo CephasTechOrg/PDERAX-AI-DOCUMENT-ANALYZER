@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/forms/Button';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import gradeService from '@/services/grade_service';
 import styles from './page.module.css';
 
@@ -52,6 +52,28 @@ export default function PerformanceAnalyticsPage() {
     try {
       setIsLoading(true);
       const classData = await gradeService.getClassPerformance(classroomId);
+
+      const rawDistribution = (classData as any).grade_distribution ??
+        (classData as any).score_distribution ??
+        {};
+
+      const normalizedDistribution = {
+        a:
+          (rawDistribution.a ?? 0) +
+          (rawDistribution.a_plus ?? 0) +
+          (rawDistribution.a_minus ?? 0),
+        b:
+          (rawDistribution.b ?? 0) +
+          (rawDistribution.b_plus ?? 0) +
+          (rawDistribution.b_minus ?? 0),
+        c:
+          (rawDistribution.c ?? 0) +
+          (rawDistribution.c_plus ?? 0) +
+          (rawDistribution.c_minus ?? 0),
+        d: rawDistribution.d ?? 0,
+        f: rawDistribution.f ?? 0,
+      };
+
       const normalizedClassData = {
         ...classData,
         average: (classData as any).average ?? classData.class_average ?? 0,
@@ -59,10 +81,7 @@ export default function PerformanceAnalyticsPage() {
         highest: (classData as any).highest ?? classData.highest_score ?? 0,
         lowest: (classData as any).lowest ?? classData.lowest_score ?? 0,
         std_dev: (classData as any).std_dev ?? 0,
-        grade_distribution:
-          (classData as any).grade_distribution ??
-          (classData as any).score_distribution ??
-          { a: 0, b: 0, c: 0, d: 0, f: 0 },
+        grade_distribution: normalizedDistribution,
         trend_data: (classData as any).trend_data ?? [],
       };
       setClassPerformance(normalizedClassData);
@@ -137,7 +156,7 @@ export default function PerformanceAnalyticsPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
-          <div className={styles.spinner}></div>
+          <Loader2 size={36} className={styles.spinner} />
           <p>Loading analytics...</p>
         </div>
       </div>
@@ -153,7 +172,7 @@ export default function PerformanceAnalyticsPage() {
       <header className={styles.header}>
         <div>
           <a href={`/classrooms/${classroomId}`} className={styles.backLink}>
-            ← Back to Classroom
+            <ArrowLeft size={14} /> Back to Classroom
           </a>
           <h1 className={styles.title}>Performance Analytics</h1>
         </div>
