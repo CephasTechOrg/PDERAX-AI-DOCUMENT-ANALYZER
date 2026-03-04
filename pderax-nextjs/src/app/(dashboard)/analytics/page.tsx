@@ -258,50 +258,30 @@ export default function AnalyticsPage() {
           <p className={styles.ringSubtext}>
             Based on {stats.total_quizzes} quiz{stats.total_quizzes !== 1 ? 'zes' : ''}
           </p>
-          <div className={styles.gradeScale}>
-            {[
-              { letter: 'A', range: '90-100', color: '#10b981', bg: '#ecfdf5' },
-              { letter: 'B', range: '80-89',  color: '#3b82f6', bg: '#eff6ff' },
-              { letter: 'C', range: '70-79',  color: '#f59e0b', bg: '#fffbeb' },
-              { letter: 'D', range: '60-69',  color: '#ef4444', bg: '#fef2f2' },
-              { letter: 'F', range: '0-59',   color: '#6b7280', bg: '#f9fafb' },
-            ].map((g) => (
-              <div key={g.letter} className={styles.gradePill} style={{ background: g.bg }}>
-                <span className={styles.gradePillLetter} style={{ color: g.color }}>{g.letter}</span>
-                <span className={styles.gradePillRange} style={{ color: g.color }}>{g.range}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Study Time Hero Card */}
-        <div className={styles.studyHero}>
-          <div className={styles.studyHeroTop}>
-            <Clock size={18} />
-            Total Study Time
+        {/* Study Time Card */}
+        <div className={styles.studyTime}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>
+              <Clock size={18} className={styles.cardTitleIcon} />
+              Study Time
+            </h2>
           </div>
-          <p className={styles.studyHeroValue}>
-            {hours > 0 ? `${hours}h ` : ''}{mins}m
-          </p>
-          <p className={styles.studyHeroSub}>
-            {hours > 0 ? `${hours} hour${hours !== 1 ? 's' : ''} and ` : ''}{mins} minute{mins !== 1 ? 's' : ''} of focused learning
-          </p>
-          <div className={styles.studyHeroStats}>
-            <div className={styles.studyHeroStat}>
-              <span className={styles.studyHeroStatValue}>{stats.documents_this_week}</span>
-              <span className={styles.studyHeroStatLabel}>Docs this week</span>
+          <div className={styles.studyTimeMain}>
+            <span className={styles.studyTimeValue}>
+              {hours > 0 ? `${hours}h ` : ''}{mins}m
+            </span>
+            <span className={styles.studyTimeLabel}>Total learning time</span>
+          </div>
+          <div className={styles.studyTimeStats}>
+            <div className={styles.studyTimeStat}>
+              <span className={styles.studyTimeStatValue}>{stats.documents_this_week}</span>
+              <span className={styles.studyTimeStatLabel}>Docs this week</span>
             </div>
-            <div className={styles.studyHeroStat}>
-              <span className={styles.studyHeroStatValue}>{stats.quiz_attempts_this_week}</span>
-              <span className={styles.studyHeroStatLabel}>Quizzes this week</span>
-            </div>
-            <div className={styles.studyHeroStat}>
-              <span className={styles.studyHeroStatValue}>
-                {study_time.items.length > 0
-                  ? Math.round(study_time.items.reduce((a, b) => a + b.minutes, 0) / study_time.items.length)
-                  : 0}m
-              </span>
-              <span className={styles.studyHeroStatLabel}>Avg / day</span>
+            <div className={styles.studyTimeStat}>
+              <span className={styles.studyTimeStatValue}>{stats.quiz_attempts_this_week}</span>
+              <span className={styles.studyTimeStatLabel}>Quizzes this week</span>
             </div>
           </div>
         </div>

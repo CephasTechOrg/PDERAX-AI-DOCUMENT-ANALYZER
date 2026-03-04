@@ -271,85 +271,76 @@
   font-weight: 500;
 }
 
-/* ── Study Time Hero Card ───────────────────────────────── */
-.studyHero {
-  background: linear-gradient(135deg, #0066B4 0%, #0084E8 50%, #2A9D8F 100%);
+/* ── Study Time Card ────────────────────────────────────── */
+.studyTime {
+  composes: card;
+  background: linear-gradient(135deg, #0066B4 0%, #0084E8 100%);
   border: none;
-  border-radius: 28px;
-  padding: 1.75rem 2rem;
   color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
   position: relative;
   overflow: hidden;
 }
 
-.studyHero::before {
+.studyTime::before {
   content: '';
   position: absolute;
-  top: -40%;
-  right: -15%;
-  width: 200px;
-  height: 200px;
+  top: -50%;
+  right: -20%;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.studyHero::after {
-  content: '';
-  position: absolute;
-  bottom: -30%;
-  left: -10%;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+.studyTime .cardTitle,
+.studyTime .cardTitleIcon {
+  color: white;
 }
 
-.studyHeroTop {
+.studyTimeMain {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  opacity: 0.9;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
   z-index: 1;
+  position: relative;
 }
 
-.studyHeroValue {
-  font-size: 2.8rem;
+.studyTimeValue {
+  font-size: 2.4rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
-  z-index: 1;
 }
 
-.studyHeroSub {
-  font-size: 0.85rem;
-  opacity: 0.8;
-  z-index: 1;
+.studyTimeLabel {
+  font-size: 0.82rem;
+  opacity: 0.85;
 }
 
-.studyHeroStats {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 0.5rem;
+.studyTimeStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   z-index: 1;
+  position: relative;
 }
 
-.studyHeroStat {
+.studyTimeStat {
   display: flex;
   flex-direction: column;
+  gap: 0.15rem;
 }
 
-.studyHeroStatValue {
-  font-size: 1.4rem;
+.studyTimeStatValue {
+  font-size: 1.5rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1;
 }
 
-.studyHeroStatLabel {
+.studyTimeStatLabel {
   font-size: 0.7rem;
   opacity: 0.75;
   font-weight: 500;
@@ -820,12 +811,12 @@
   .headerTextBlock h1 {
     font-size: 1.6rem;
   }
-  .studyHeroValue {
+  .studyTimeValue {
     font-size: 2rem;
   }
-  .studyHeroStats {
-    flex-direction: column;
-    gap: 0.75rem;
+  .studyTimeStats {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
   .weekGrid {
     gap: 0.3rem;
