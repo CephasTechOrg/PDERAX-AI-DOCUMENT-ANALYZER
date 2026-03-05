@@ -19,6 +19,7 @@ class CreateClassroomRequest(BaseModel):
     description: Optional[str] = None
     subject: str = Field(..., min_length=1, max_length=100)
     grade_level: str = Field(..., min_length=1, max_length=50)
+    creator_role: Optional[str] = "teacher"  # "teacher" | "student"
 
 
 class UpdateClassroomRequest(BaseModel):

@@ -654,6 +654,146 @@
   gap: 6px;
 }
 
+/* ── Generation Config Card ────────────────────────────── */
+.genConfigCard {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FCFE 100%);
+  border-radius: 28px;
+  padding: 1.6rem 1.5rem;
+  border: 1px solid #E4EEF7;
+  box-shadow: 0 4px 16px -8px rgba(0, 50, 80, 0.08);
+  margin-top: 1.5rem;
+}
+
+.genConfigTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #0A2A3A;
+  margin: 0 0 0.25rem;
+}
+
+.genConfigSub {
+  font-size: 0.875rem;
+  color: #4F758E;
+  margin: 0 0 1.2rem;
+}
+
+.genConfigRow {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+  align-items: flex-start;
+}
+
+.genConfigGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.genConfigLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1D577B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.genSliderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.genSlider {
+  flex: 1;
+  accent-color: #0066B4;
+  height: 4px;
+  cursor: pointer;
+}
+
+.genSliderVal {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0066B4;
+  min-width: 28px;
+  text-align: right;
+}
+
+.genDiffBtns {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.genDiffBtn {
+  padding: 0.4rem 1.1rem;
+  border-radius: 60px;
+  border: 1.5px solid #D2E5F5;
+  background: #F4F9FD;
+  color: #4F758E;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+}
+
+.genDiffBtn:hover {
+  border-color: #0066B4;
+  color: #0066B4;
+}
+
+.genDiffActive {
+  background: linear-gradient(135deg, #0066B4 0%, #0084E8 100%);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgba(0, 102, 180, 0.4);
+}
+
+.genDiffActive:hover {
+  color: #fff;
+}
+
+.genConfigActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.genActionBtn {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 60px;
+  border: none;
+  background: linear-gradient(135deg, #0066B4 0%, #0084E8 100%);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -6px rgba(0, 102, 180, 0.4);
+  transition: all 0.3s ease;
+}
+
+.genActionBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -8px rgba(0, 102, 180, 0.5);
+}
+
+.genActionBtnSecondary {
+  background: linear-gradient(135deg, #F4F9FD 0%, #EBF4FB 100%);
+  color: #0066B4;
+  border: 1.5px solid #C9DEF0;
+  box-shadow: none;
+}
+
+.genActionBtnSecondary:hover {
+  background: linear-gradient(135deg, #E6F0FA 0%, #D9E9F5 100%);
+  box-shadow: 0 6px 16px -8px rgba(0, 102, 180, 0.2);
+}
+
 /* ── Footer Note ───────────────────────────────────────── */
 .footerNote {
   margin-top: 3rem;

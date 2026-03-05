@@ -24,6 +24,8 @@ export default function ClassroomsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createStep, setCreateStep] = useState<1 | 2>(1);
+  const [selectedCreatorRole, setSelectedCreatorRole] = useState<'teacher' | 'student'>('teacher');
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [newClassroom, setNewClassroom] = useState({
     name: '', description: '', subject: '', grade_level: 'college',
@@ -55,10 +57,13 @@ export default function ClassroomsPage() {
     if (!newClassroom.subject.trim()) { setError('Subject is required'); return; }
     try {
       setIsCreating(true); setError(null);
-      const created = await classroomService.createClassroom(newClassroom);
+      const created = await classroomService.createClassroom({
+        ...newClassroom,
+        creator_role: selectedCreatorRole,
+      });
       setNewClassroom({ name: '', description: '', subject: '', grade_level: 'college' });
+      setCreateStep(1);
       setShowCreateModal(false);
-      // Show the invite code prominently, then navigate to the new classroom
       setCreatedInviteCode(created.invite_code);
       loadClassrooms();
     } catch (err) {
@@ -69,10 +74,11 @@ export default function ClassroomsPage() {
   };
 
   const handleJoinClassroom = async () => {
-    if (!inviteCode.trim()) { setError('Invite code is required'); return; }
+    const code = inviteCode.trim().toUpperCase();
+    if (!code) { setError('Invite code is required'); return; }
     try {
       setIsJoining(true); setError(null);
-      await classroomService.joinClassroomWithCode(inviteCode);
+      await classroomService.joinClassroomWithCode(code);
       setInviteCode('');
       setShowJoinModal(false);
       loadClassrooms();
@@ -222,59 +228,99 @@ export default function ClassroomsPage() {
         </>
       )}
 
-      {/* Create Classroom Modal */}
+      {/* Create Classroom Modal — 2-step */}
       {showCreateModal && (
-        <div className={styles.modal} onClick={(e) => e.target === e.currentTarget && setShowCreateModal(false)}>
+        <div className={styles.modal} onClick={(e) => {
+          if (e.target === e.currentTarget) { setShowCreateModal(false); setCreateStep(1); }
+        }}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
-              <h2>Create Classroom</h2>
-              <button className={styles.closeButton} onClick={() => setShowCreateModal(false)}>
+              <h2>{createStep === 1 ? 'Your Role' : 'Create Classroom'}</h2>
+              <button className={styles.closeButton} onClick={() => { setShowCreateModal(false); setCreateStep(1); }}>
                 <X size={20} />
               </button>
             </div>
-            <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleCreateClassroom(); }}>
-              <div className={styles.formGroup}>
-                <label>Classroom Name *</label>
-                <input type="text" value={newClassroom.name}
-                  onChange={(e) => setNewClassroom((p) => ({ ...p, name: e.target.value }))}
-                  placeholder="e.g., Biology 101" />
+
+            {/* Step 1 — role selection */}
+            {createStep === 1 && (
+              <div className={styles.roleStep}>
+                <p className={styles.roleStepSubtitle}>How will you use this classroom?</p>
+                <div className={styles.roleCards}>
+                  <button
+                    className={`${styles.roleCard} ${selectedCreatorRole === 'teacher' ? styles.roleCardActive : ''}`}
+                    onClick={() => setSelectedCreatorRole('teacher')}
+                    type="button"
+                  >
+                    <GraduationCap size={28} className={styles.roleIcon} />
+                    <span className={styles.roleCardTitle}>Teacher</span>
+                    <span className={styles.roleCardDesc}>Full control — manage assignments, grades, and students</span>
+                  </button>
+                  <button
+                    className={`${styles.roleCard} ${selectedCreatorRole === 'student' ? styles.roleCardActive : ''}`}
+                    onClick={() => setSelectedCreatorRole('student')}
+                    type="button"
+                  >
+                    <Users size={28} className={styles.roleIcon} />
+                    <span className={styles.roleCardTitle}>Student</span>
+                    <span className={styles.roleCardDesc}>Study group — collaborate with peers on shared materials</span>
+                  </button>
+                </div>
+                <div className={styles.formActions}>
+                  <button type="button" className={styles.cancelBtn} onClick={() => { setShowCreateModal(false); setCreateStep(1); }}>
+                    Cancel
+                  </button>
+                  <button type="button" className={styles.submitBtn} onClick={() => setCreateStep(2)}>
+                    Continue →
+                  </button>
+                </div>
               </div>
-              <div className={styles.formGroup}>
-                <label>Description</label>
-                <textarea value={newClassroom.description} rows={3}
-                  onChange={(e) => setNewClassroom((p) => ({ ...p, description: e.target.value }))}
-                  placeholder="What is this class about?" />
-              </div>
-              <div className={styles.formRow}>
+            )}
+
+            {/* Step 2 — creation form */}
+            {createStep === 2 && (
+              <form className={styles.form} onSubmit={(e) => { e.preventDefault(); handleCreateClassroom(); }}>
                 <div className={styles.formGroup}>
-                  <label>Subject *</label>
-                  <input type="text" value={newClassroom.subject}
-                    onChange={(e) => setNewClassroom((p) => ({ ...p, subject: e.target.value }))}
-                    placeholder="e.g., Biology" />
+                  <label>Classroom Name *</label>
+                  <input type="text" value={newClassroom.name}
+                    onChange={(e) => setNewClassroom((p) => ({ ...p, name: e.target.value }))}
+                    placeholder="e.g., Biology 101" />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Grade Level *</label>
-                  <select value={newClassroom.grade_level}
-                    onChange={(e) => setNewClassroom((p) => ({ ...p, grade_level: e.target.value }))}>
-                    <option value="">Select Grade</option>
-                    <option value="9">Grade 9</option>
-                    <option value="10">Grade 10</option>
-                    <option value="11">Grade 11</option>
-                    <option value="12">Grade 12</option>
-                    <option value="college">College</option>
-                  </select>
+                  <label>Description</label>
+                  <textarea value={newClassroom.description} rows={3}
+                    onChange={(e) => setNewClassroom((p) => ({ ...p, description: e.target.value }))}
+                    placeholder="What is this class about?" />
                 </div>
-              </div>
-              <div className={styles.formActions}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setShowCreateModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className={styles.submitBtn} disabled={isCreating}>
-                  {isCreating ? <Loader2 size={16} className={styles.spinner} /> : <Plus size={16} />}
-                  {isCreating ? 'Creating...' : 'Create Classroom'}
-                </button>
-              </div>
-            </form>
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label>Subject *</label>
+                    <input type="text" value={newClassroom.subject}
+                      onChange={(e) => setNewClassroom((p) => ({ ...p, subject: e.target.value }))}
+                      placeholder="e.g., Biology" />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Grade Level</label>
+                    <select value={newClassroom.grade_level}
+                      onChange={(e) => setNewClassroom((p) => ({ ...p, grade_level: e.target.value }))}>
+                      <option value="9">Grade 9</option>
+                      <option value="10">Grade 10</option>
+                      <option value="11">Grade 11</option>
+                      <option value="12">Grade 12</option>
+                      <option value="college">College</option>
+                    </select>
+                  </div>
+                </div>
+                <div className={styles.formActions}>
+                  <button type="button" className={styles.cancelBtn} onClick={() => setCreateStep(1)}>
+                    ← Back
+                  </button>
+                  <button type="submit" className={styles.submitBtn} disabled={isCreating}>
+                    {isCreating ? <Loader2 size={16} className={styles.spinner} /> : <Plus size={16} />}
+                    {isCreating ? 'Creating...' : 'Create Classroom'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
@@ -293,7 +339,7 @@ export default function ClassroomsPage() {
               <div className={styles.formGroup}>
                 <label>Invite Code *</label>
                 <input type="text" value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                  onChange={(e) => setInviteCode(e.target.value.trim().toUpperCase())}
                   placeholder="Enter invite code" maxLength={8} />
                 <p className={styles.helperText}>Ask your teacher for the classroom invite code</p>
               </div>

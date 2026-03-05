@@ -21,11 +21,14 @@ from routes.compression import compression_router
 from routes.flashcards import flashcard_router
 from routes.quiz import quiz_router
 from routes.history import history_router
-from routes.chat import chat_router
+from routes.chat import chat_router, classroom_chat_router
 from routes.analytics import router as analytics_router
 from routes.classrooms import classroom_router
 from routes.assignments import assignment_router
 from routes.grades import grade_router
+from routes.announcements import announcements_router
+from routes.attendance import attendance_router
+from routes.classroom_docs import classroom_docs_router
 
 # Rate limiter — keyed by IP
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/hour"])
@@ -102,10 +105,14 @@ app.include_router(flashcard_router, prefix="/api/v1/flashcards", tags=["Flashca
 app.include_router(quiz_router, prefix="/api/v1/quiz", tags=["Quiz"])
 app.include_router(history_router, prefix="/api/v1", tags=["History"])
 app.include_router(chat_router, prefix="/api/v1/chat", tags=["Chat"])
+app.include_router(classroom_chat_router, prefix="/api/v1", tags=["Classroom Chat"])
 app.include_router(analytics_router, tags=["Analytics"])
 app.include_router(classroom_router, prefix="/api/v1", tags=["Classrooms"])
 app.include_router(assignment_router, prefix="/api/v1", tags=["Assignments"])
 app.include_router(grade_router, prefix="/api/v1", tags=["Grades"])
+app.include_router(announcements_router, prefix="/api/v1")
+app.include_router(attendance_router, prefix="/api/v1")
+app.include_router(classroom_docs_router, prefix="/api/v1")
 
 # Mount static files for downloads
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -139,6 +146,30 @@ def _run_column_migrations():
                 WHERE table_name = 'analysis_results' AND column_name = 'file_type'
             ) THEN
                 ALTER TABLE analysis_results ADD COLUMN file_type VARCHAR(50);
+            END IF;
+        END $$;
+        """,
+        # Add classroom_id to chat_sessions (Phase 13 — group chat)
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = 'chat_sessions' AND column_name = 'classroom_id'
+            ) THEN
+                ALTER TABLE chat_sessions ADD COLUMN classroom_id UUID REFERENCES classrooms(id) ON DELETE CASCADE;
+            END IF;
+        END $$;
+        """,
+        # Add sender_id to chat_messages (Phase 13 — group chat sender tracking)
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name = 'chat_messages' AND column_name = 'sender_id'
+            ) THEN
+                ALTER TABLE chat_messages ADD COLUMN sender_id UUID REFERENCES users(id) ON DELETE SET NULL;
             END IF;
         END $$;
         """,

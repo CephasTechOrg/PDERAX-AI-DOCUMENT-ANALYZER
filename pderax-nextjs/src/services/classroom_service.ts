@@ -24,6 +24,7 @@ export interface CreateClassroomRequest {
   description: string;
   subject: string;
   grade_level: string;
+  creator_role?: string;
 }
 
 export interface PaginatedClassrooms {
@@ -121,6 +122,45 @@ class ClassroomService {
   async updateClassroomSettings(classroomId: string, settings: Partial<ClassroomSettings>): Promise<Classroom> {
     return apiClient.put<Classroom>(`/api/v1/classrooms/${classroomId}/settings`, settings);
   }
+
+  // ── Documents ─────────────────────────────────────────────────────────────
+
+  async getDocuments(classroomId: string): Promise<ClassroomDocument[]> {
+    const data = await apiClient.get(`/api/v1/classrooms/${classroomId}/documents`);
+    return Array.isArray(data) ? data : [];
+  }
+
+  async uploadDocument(classroomId: string, file: File): Promise<ClassroomDocument> {
+    return apiClient.upload(`/api/v1/classrooms/${classroomId}/documents`, file);
+  }
+
+  async toggleDocumentVisibility(classroomId: string, docId: string, visible: boolean): Promise<ClassroomDocument> {
+    return apiClient.patch(`/api/v1/classrooms/${classroomId}/documents/${docId}`, {
+      is_visible_to_students: visible,
+    });
+  }
+
+  async deleteDocument(classroomId: string, docId: string): Promise<void> {
+    await apiClient.delete(`/api/v1/classrooms/${classroomId}/documents/${docId}`);
+  }
+
+  // ── Group chat ────────────────────────────────────────────────────────────
+
+  async getClassroomChatSession(classroomId: string): Promise<{ session_id: string }> {
+    return apiClient.get(`/api/v1/classrooms/${classroomId}/chat-session`);
+  }
+}
+
+export interface ClassroomDocument {
+  id: string;
+  classroom_id: string;
+  uploader_id: string;
+  uploader_name: string;
+  analysis_id: string | null;
+  filename: string;
+  description: string | null;
+  is_visible_to_students: boolean;
+  uploaded_at: string;
 }
 
 export default new ClassroomService();

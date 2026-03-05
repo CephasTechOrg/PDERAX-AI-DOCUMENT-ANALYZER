@@ -240,6 +240,22 @@ class ApiClient {
   }
 
   /**
+   * Generic PATCH request
+   */
+  public async patch<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<any> {
+    try {
+      const response = await this.instance.patch<ApiResponse<T>>(url, data, config);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Generic DELETE request
    */
   public async delete<T>(

@@ -78,15 +78,16 @@ async def create_classroom(
     while db.query(Classroom).filter(Classroom.invite_code == invite_code).first():
         invite_code = generate_invite_code()
     
-    # Default settings
+    # Default settings (include creator_role so classroom pages can gate features)
     default_settings = {
         "allow_student_uploads": True,
         "allow_peer_review": False,
         "anonymous_feedback": False,
         "email_notifications": True,
-        "auto_grading_enabled": False
+        "auto_grading_enabled": False,
+        "creator_role": classroom_data.creator_role or "teacher",
     }
-    
+
     classroom = Classroom(
         teacher_id=current_user.id,
         name=classroom_data.name,
@@ -111,7 +112,7 @@ async def create_classroom(
         "grade_level": classroom.grade_level,
         "invite_code": classroom.invite_code,
         "is_archived": classroom.is_archived,
-        "settings": ClassroomSettingsOut(**classroom.settings),
+        "settings": ClassroomSettingsOut(**(classroom.settings or {})),
         "created_at": classroom.created_at,
         "updated_at": classroom.updated_at
     }
@@ -179,7 +180,7 @@ async def list_classrooms(
             "grade_level": classroom.grade_level,
             "invite_code": classroom.invite_code,
             "is_archived": classroom.is_archived,
-            "settings": ClassroomSettingsOut(**classroom.settings),
+            "settings": ClassroomSettingsOut(**(classroom.settings or {})),
             "created_at": classroom.created_at,
             "updated_at": classroom.updated_at,
             "student_count": student_count,
@@ -188,6 +189,70 @@ async def list_classrooms(
         }
         items.append(ClassroomWithStatsOut(**classroom_dict))
     
+    return PaginatedClassrooms(
+        items=items,
+        total=total,
+        page=page,
+        per_page=limit,
+        total_pages=total_pages
+    )
+
+
+@classroom_router.get("/student/enrolled", response_model=PaginatedClassrooms)
+async def get_student_classrooms(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all classrooms where current user is enrolled as a student"""
+    enrolled_classroom_ids = db.query(ClassroomEnrollment.classroom_id).filter(
+        ClassroomEnrollment.student_id == current_user.id,
+        ClassroomEnrollment.status == "active"
+    ).subquery()
+
+    query = db.query(Classroom).filter(
+        Classroom.id.in_(enrolled_classroom_ids),
+        Classroom.is_archived == False
+    )
+
+    total = query.count()
+    total_pages = math.ceil(total / limit)
+    offset = (page - 1) * limit
+
+    classrooms = query.order_by(Classroom.created_at.desc()).offset(offset).limit(limit).all()
+
+    items = []
+    for classroom in classrooms:
+        student_count = db.query(ClassroomEnrollment).filter(
+            ClassroomEnrollment.classroom_id == classroom.id,
+            ClassroomEnrollment.status == "active"
+        ).count()
+        assignment_count = db.query(Assignment).filter(
+            Assignment.classroom_id == classroom.id
+        ).count()
+        active_assignment_count = db.query(Assignment).filter(
+            Assignment.classroom_id == classroom.id,
+            Assignment.status == "published"
+        ).count()
+        classroom_dict = {
+            "id": classroom.id,
+            "teacher_id": classroom.teacher_id,
+            "name": classroom.name,
+            "description": classroom.description,
+            "subject": classroom.subject,
+            "grade_level": classroom.grade_level,
+            "invite_code": classroom.invite_code,
+            "is_archived": classroom.is_archived,
+            "settings": ClassroomSettingsOut(**(classroom.settings or {})),
+            "created_at": classroom.created_at,
+            "updated_at": classroom.updated_at,
+            "student_count": student_count,
+            "assignment_count": assignment_count,
+            "active_assignment_count": active_assignment_count
+        }
+        items.append(ClassroomWithStatsOut(**classroom_dict))
+
     return PaginatedClassrooms(
         items=items,
         total=total,
@@ -243,7 +308,7 @@ async def get_classroom(
         "grade_level": classroom.grade_level,
         "invite_code": classroom.invite_code,
         "is_archived": classroom.is_archived,
-        "settings": ClassroomSettingsOut(**classroom.settings),
+        "settings": ClassroomSettingsOut(**(classroom.settings or {})),
         "created_at": classroom.created_at,
         "updated_at": classroom.updated_at,
         "student_count": student_count,
@@ -292,7 +357,7 @@ async def update_classroom(
         "grade_level": classroom.grade_level,
         "invite_code": classroom.invite_code,
         "is_archived": classroom.is_archived,
-        "settings": ClassroomSettingsOut(**classroom.settings),
+        "settings": ClassroomSettingsOut(**(classroom.settings or {})),
         "created_at": classroom.created_at,
         "updated_at": classroom.updated_at
     }
@@ -348,7 +413,7 @@ async def archive_classroom(
         "grade_level": classroom.grade_level,
         "invite_code": classroom.invite_code,
         "is_archived": classroom.is_archived,
-        "settings": ClassroomSettingsOut(**classroom.settings),
+        "settings": ClassroomSettingsOut(**(classroom.settings or {})),
         "created_at": classroom.created_at,
         "updated_at": classroom.updated_at
     }
@@ -581,11 +646,15 @@ async def get_invite_codes(
     if not classroom:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Classroom not found")
     
-    # Check access
+    # Check access — enrolled members may also view the invite code so they can share it
     is_teacher = classroom.teacher_id == current_user.id
-    if not (is_teacher or current_user.is_admin):
+    is_enrolled = db.query(ClassroomEnrollment).filter(
+        ClassroomEnrollment.classroom_id == classroom_id,
+        ClassroomEnrollment.student_id == current_user.id
+    ).first() is not None
+    if not (is_teacher or is_enrolled or current_user.is_admin):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-    
+
     # Return current invite code
     return [{
         "id": classroom.id,
@@ -677,7 +746,7 @@ async def join_classroom_with_code(
         "grade_level": classroom.grade_level,
         "invite_code": classroom.invite_code,
         "is_archived": classroom.is_archived,
-        "settings": ClassroomSettingsOut(**classroom.settings),
+        "settings": ClassroomSettingsOut(**(classroom.settings or {})),
         "created_at": classroom.created_at,
         "updated_at": classroom.updated_at,
         "student_count": student_count,
@@ -782,81 +851,12 @@ async def update_classroom_settings(
         "grade_level": classroom.grade_level,
         "invite_code": classroom.invite_code,
         "is_archived": classroom.is_archived,
-        "settings": ClassroomSettingsOut(**classroom.settings),
+        "settings": ClassroomSettingsOut(**(classroom.settings or {})),
         "created_at": classroom.created_at,
         "updated_at": classroom.updated_at
     }
     
     return ClassroomOut(**classroom_dict)
-
-
-@classroom_router.get("/student/enrolled", response_model=PaginatedClassrooms)
-async def get_student_classrooms(
-    page: int = Query(1, ge=1),
-    limit: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Get all classrooms where current user is enrolled as a student"""
-    # Get enrolled classroom IDs
-    enrolled_classroom_ids = db.query(ClassroomEnrollment.classroom_id).filter(
-        ClassroomEnrollment.student_id == current_user.id,
-        ClassroomEnrollment.status == "active"
-    ).subquery()
-    
-    query = db.query(Classroom).filter(
-        Classroom.id.in_(enrolled_classroom_ids),
-        Classroom.is_archived == False
-    )
-    
-    total = query.count()
-    total_pages = math.ceil(total / limit)
-    offset = (page - 1) * limit
-    
-    classrooms = query.order_by(Classroom.created_at.desc()).offset(offset).limit(limit).all()
-    
-    # Add statistics
-    items = []
-    for classroom in classrooms:
-        student_count = db.query(ClassroomEnrollment).filter(
-            ClassroomEnrollment.classroom_id == classroom.id,
-            ClassroomEnrollment.status == "active"
-        ).count()
-        
-        assignment_count = db.query(Assignment).filter(
-            Assignment.classroom_id == classroom.id
-        ).count()
-        
-        active_assignment_count = db.query(Assignment).filter(
-            Assignment.classroom_id == classroom.id,
-            Assignment.status == "published"
-        ).count()
-        
-        classroom_dict = {
-            "id": classroom.id,
-            "teacher_id": classroom.teacher_id,
-            "name": classroom.name,
-            "description": classroom.description,
-            "subject": classroom.subject,
-            "grade_level": classroom.grade_level,
-            "invite_code": classroom.invite_code,
-            "is_archived": classroom.is_archived,
-            "settings": ClassroomSettingsOut(**classroom.settings),
-            "created_at": classroom.created_at,
-            "updated_at": classroom.updated_at,
-            "student_count": student_count,
-            "assignment_count": assignment_count,
-            "active_assignment_count": active_assignment_count
-        }
-        items.append(ClassroomWithStatsOut(**classroom_dict))
-    
-    return PaginatedClassrooms(
-        items=items,
-        total=total,
-        page=page,
-        per_page=limit,
-        total_pages=total_pages
-    )
 
 
 @classroom_router.get("/{classroom_id}/roster/export")

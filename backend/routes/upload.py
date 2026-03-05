@@ -44,24 +44,29 @@ async def upload_file(
             temp_file_path, file.filename
         )
 
-        if result["status"] == "error":
-            raise HTTPException(status_code=500, detail=result["error"])
+        extracted_text = result.get("extracted_text") or ""
 
-        # Persist to history
-        try:
-            word_info = result.get("word_count_info") or {}
-            record = AnalysisResult(
-                user_id=current_user.id,
-                filename=file.filename,
-                analysis=result.get("analysis", {}),
-                word_count=word_info.get("processed_word_count"),
-            )
-            db.add(record)
-            db.commit()
-            db.refresh(record)
-            result["analysis_id"] = str(record.id)
-        except Exception as exc:
-            print(f"Warning: could not save analysis to history: {exc}")
+        # Persist to history whenever we have text — even on partial AI failure.
+        # Only skip saving if there is genuinely nothing extracted.
+        if extracted_text.strip():
+            try:
+                word_info = result.get("word_count_info") or {}
+                record = AnalysisResult(
+                    user_id=current_user.id,
+                    filename=file.filename,
+                    analysis=result.get("analysis", {}),
+                    word_count=word_info.get("processed_word_count"),
+                )
+                db.add(record)
+                db.commit()
+                db.refresh(record)
+                result["analysis_id"] = str(record.id)
+            except Exception as exc:
+                print(f"Warning: could not save analysis to history: {exc}")
+
+        # Now surface a proper error only when there is nothing usable at all
+        if result["status"] == "error" and not extracted_text.strip():
+            raise HTTPException(status_code=500, detail=result.get("error", "Processing failed"))
 
         background_tasks.add_task(FileUtils.cleanup_old_files)
         return result

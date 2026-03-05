@@ -20,6 +20,7 @@ class ChatMessageOut(BaseModel):
     id: str
     role: str
     content: str
+    sender_name: Optional[str] = None
     created_at: datetime
 
     class Config:

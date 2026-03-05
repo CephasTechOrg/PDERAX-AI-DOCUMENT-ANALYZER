@@ -51,6 +51,9 @@ export default function AnalyzerPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [recentDocs, setRecentDocs] = useState<RecentDoc[]>([]);
   const [totalDocCount, setTotalDocCount] = useState(0);
+  // Generation config shown after analysis
+  const [genCount, setGenCount] = useState(10);
+  const [genDifficulty, setGenDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
 
   useEffect(() => {
     documentService
@@ -133,7 +136,8 @@ export default function AnalyzerPage() {
 
     try {
       const response = await documentService.uploadDocument(selectedFile);
-      if (response.status === 'error') {
+      // Treat as success if we have extracted text, even on partial AI failure
+      if (response.status === 'error' && !response.extracted_text) {
         throw new Error(response.error || 'Analysis failed');
       }
       setResult(response);
@@ -153,20 +157,26 @@ export default function AnalyzerPage() {
     setView('upload');
   }, []);
 
+  const saveGenSettings = useCallback(() => {
+    sessionStorage.setItem('study_settings', JSON.stringify({ count: genCount, difficulty: genDifficulty }));
+  }, [genCount, genDifficulty]);
+
   const handleGenerateFlashcards = useCallback(
     (text: string) => {
       sessionStorage.setItem('study_text', text);
+      saveGenSettings();
       router.push('/study-tools/flashcards');
     },
-    [router],
+    [router, saveGenSettings],
   );
 
   const handleGenerateQuiz = useCallback(
     (text: string) => {
       sessionStorage.setItem('study_text', text);
+      saveGenSettings();
       router.push('/study-tools/quiz');
     },
-    [router],
+    [router, saveGenSettings],
   );
 
   // ── Results view ─────────────────────────────────────────
@@ -179,6 +189,54 @@ export default function AnalyzerPage() {
           onGenerateFlashcards={handleGenerateFlashcards}
           onGenerateQuiz={handleGenerateQuiz}
         />
+
+        {/* Inline generation config */}
+        <div className={styles.genConfigCard}>
+          <h3 className={styles.genConfigTitle}>Generate Study Material</h3>
+          <p className={styles.genConfigSub}>Configure and generate from this document</p>
+          <div className={styles.genConfigRow}>
+            <div className={styles.genConfigGroup}>
+              <label className={styles.genConfigLabel}>Items</label>
+              <div className={styles.genSliderRow}>
+                <input
+                  type="range" min={5} max={20} value={genCount}
+                  onChange={(e) => setGenCount(Number(e.target.value))}
+                  className={styles.genSlider}
+                />
+                <span className={styles.genSliderVal}>{genCount}</span>
+              </div>
+            </div>
+            <div className={styles.genConfigGroup}>
+              <label className={styles.genConfigLabel}>Difficulty</label>
+              <div className={styles.genDiffBtns}>
+                {(['easy', 'medium', 'hard'] as const).map((d) => (
+                  <button
+                    key={d}
+                    className={`${styles.genDiffBtn} ${genDifficulty === d ? styles.genDiffActive : ''}`}
+                    onClick={() => setGenDifficulty(d)}
+                    type="button"
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className={styles.genConfigActions}>
+            <button
+              className={styles.genActionBtn}
+              onClick={() => handleGenerateQuiz(result.extracted_text || result.analysis?.summary || '')}
+            >
+              Generate Quiz
+            </button>
+            <button
+              className={`${styles.genActionBtn} ${styles.genActionBtnSecondary}`}
+              onClick={() => handleGenerateFlashcards(result.extracted_text || result.analysis?.summary || '')}
+            >
+              Generate Flashcards
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

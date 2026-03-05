@@ -70,6 +70,15 @@ export default function QuizPage() {
       setText(saved);
       sessionStorage.removeItem('study_text');
     }
+    const savedSettings = sessionStorage.getItem('study_settings');
+    if (savedSettings) {
+      try {
+        const { count: c, difficulty: d } = JSON.parse(savedSettings);
+        if (typeof c === 'number') setCount(c);
+        if (d) setDifficulty(d);
+      } catch { /* ignore */ }
+      sessionStorage.removeItem('study_settings');
+    }
   }, []);
 
   // Load quiz set from history if ?set_id= param present
@@ -114,28 +123,35 @@ export default function QuizPage() {
       setUploadedName(null);
       setText('');
       setAnalysisId(undefined);
+      // Auto-extract immediately on selection
+      handleUploadExtractFromFile(file);
     }
   };
 
-  const handleUploadExtract = async () => {
-    if (!uploadFile) return;
+  const handleUploadExtractFromFile = async (file: File) => {
     setIsUploading(true);
     setError(null);
     try {
-      const result = await documentService.uploadDocument(uploadFile);
+      const result = await documentService.uploadDocument(file);
       const extracted = result.extracted_text || '';
       if (!extracted || extracted.length < 50) {
-        setError('Could not extract enough text from this file. Try a different document.');
+        setError('Could not read enough text from this file. Try a PDF, DOCX, or TXT with more content.');
         return;
       }
       setText(extracted);
       setAnalysisId(result.analysis_id);
-      setUploadedName(uploadFile.name);
-    } catch {
-      setError('Failed to extract text from file. Please try again.');
+      setUploadedName(file.name);
+    } catch (err: unknown) {
+      const apiErr = err as { message?: string };
+      setError(apiErr?.message || 'Could not read this file. Please try a different format.');
     } finally {
       setIsUploading(false);
     }
+  };
+
+  // Keep for drag-drop re-extraction
+  const handleUploadExtract = () => {
+    if (uploadFile) handleUploadExtractFromFile(uploadFile);
   };
 
   const handleSelectHistory = (item: AnalysisHistoryItem) => {
@@ -173,7 +189,7 @@ export default function QuizPage() {
       setStep('quiz');
     } catch (err: unknown) {
       const apiErr = err as { message?: string; code?: string };
-      const msg = apiErr?.message || 'Failed to generate quiz. Please try again.';
+      const msg = apiErr?.message || 'Quiz generation failed. Please try again with different text.';
       setError(msg);
       setStep('input');
     }
@@ -461,22 +477,31 @@ export default function QuizPage() {
                 onDrop={(e) => {
                   e.preventDefault();
                   const f = e.dataTransfer.files?.[0];
-                  if (f) setUploadFile(f);
+                  if (f) {
+                    setUploadFile(f);
+                    setUploadedName(null);
+                    setText('');
+                    setAnalysisId(undefined);
+                    handleUploadExtractFromFile(f);
+                  }
                 }}
               >
-                <FileText size={36} className={styles.dropIcon} />
-                <p className={styles.dropLabel}>
-                  {uploadFile ? uploadFile.name : 'Click or drag a file to upload'}
-                </p>
-                <p className={styles.dropHint}>PDF, DOCX, TXT, XLSX supported</p>
+                {isUploading ? (
+                  <>
+                    <Loader2 size={36} className={`${styles.dropIcon} ${styles.spinSm}`} />
+                    <p className={styles.dropLabel}>Extracting text…</p>
+                    <p className={styles.dropHint}>Reading your document</p>
+                  </>
+                ) : (
+                  <>
+                    <FileText size={36} className={styles.dropIcon} />
+                    <p className={styles.dropLabel}>
+                      {uploadFile && !uploadedName ? uploadFile.name : 'Click or drag a file to upload'}
+                    </p>
+                    <p className={styles.dropHint}>PDF, DOCX, TXT, XLSX — text is extracted automatically</p>
+                  </>
+                )}
               </div>
-              {uploadFile && (
-                <button className={styles.extractBtn} onClick={handleUploadExtract} disabled={isUploading}>
-                  {isUploading
-                    ? <><Loader2 size={16} className={styles.spinSm} /> Extracting text…</>
-                    : 'Extract Text'}
-                </button>
-              )}
             </>
           ) : (
             <div className={styles.uploadSuccess}>
@@ -550,12 +575,14 @@ export default function QuizPage() {
         </div>
       </div>
 
-      <button onClick={handleGenerate} disabled={!readyToGenerate} className={styles.generateBtn}>
-        {readyToGenerate
-          ? `Generate ${count} Questions`
-          : mode === 'paste' ? 'Enter at least 50 characters'
-            : mode === 'upload' ? (uploadedName ? `Generate ${count} Questions` : 'Upload and extract a file first')
-              : (selectedHistoryId ? `Generate ${count} Questions` : 'Select a document from history')}
+      <button onClick={handleGenerate} disabled={!readyToGenerate || isUploading} className={styles.generateBtn}>
+        {isUploading
+          ? 'Extracting file…'
+          : readyToGenerate
+            ? `Generate ${count} Questions`
+            : mode === 'paste' ? 'Enter at least 50 characters'
+              : mode === 'upload' ? 'Drop a file above to get started'
+                : 'Select a document from history'}
       </button>
     </div>
   );

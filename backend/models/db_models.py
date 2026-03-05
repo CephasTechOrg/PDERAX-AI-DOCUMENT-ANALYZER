@@ -121,6 +121,7 @@ class ChatSession(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    classroom_id = Column(UUID(as_uuid=True), ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=True, index=True)
     title = Column(String(300), nullable=True)
     mode = Column(String(20), default="teacher", nullable=False)  # teacher | helper
     document_context = Column(Text, nullable=True)
@@ -139,11 +140,13 @@ class ChatMessage(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     session_id = Column(UUID(as_uuid=True), ForeignKey("chat_sessions.id", ondelete="CASCADE"), nullable=False, index=True)
+    sender_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     role = Column(String(20), nullable=False)  # user | assistant
     content = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     session = relationship("ChatSession", back_populates="messages")
+    sender = relationship("User", foreign_keys=[sender_id])
 
 
 # ============================================================================
@@ -261,3 +264,85 @@ class Grade(Base):
     student = relationship("User", foreign_keys=[student_id], back_populates="grades_received")
     classroom = relationship("Classroom", back_populates="grades")
     grader = relationship("User", foreign_keys=[graded_by], back_populates="grades_given")
+
+
+# ── Phase 13: Classroom Collaboration Models ──────────────────────────────────
+
+class ClassroomAnnouncement(Base):
+    """Announcement posted by a teacher to a classroom"""
+    __tablename__ = "classroom_announcements"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    classroom_id = Column(UUID(as_uuid=True), ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=False, index=True)
+    author_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    title = Column(String(200), nullable=False)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    classroom = relationship("Classroom", backref="announcements")
+    author = relationship("User", foreign_keys=[author_id])
+    comments = relationship("AnnouncementComment", cascade="all, delete-orphan", order_by="AnnouncementComment.created_at")
+
+
+class AnnouncementComment(Base):
+    """Comment on a classroom announcement"""
+    __tablename__ = "announcement_comments"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    announcement_id = Column(UUID(as_uuid=True), ForeignKey("classroom_announcements.id", ondelete="CASCADE"), nullable=False, index=True)
+    author_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    author = relationship("User", foreign_keys=[author_id])
+
+
+class ClassSession(Base):
+    """A class session used for attendance tracking"""
+    __tablename__ = "class_sessions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    classroom_id = Column(UUID(as_uuid=True), ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=False, index=True)
+    teacher_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(200), nullable=False)
+    status = Column(String(20), default="open", nullable=False)  # "open" | "closed"
+    session_date = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    closed_at = Column(DateTime(timezone=True), nullable=True)
+
+    classroom = relationship("Classroom", backref="sessions")
+    teacher = relationship("User", foreign_keys=[teacher_id])
+    records = relationship("AttendanceRecord", cascade="all, delete-orphan")
+
+
+class AttendanceRecord(Base):
+    """Individual attendance record for a student in a session"""
+    __tablename__ = "attendance_records"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    session_id = Column(UUID(as_uuid=True), ForeignKey("class_sessions.id", ondelete="CASCADE"), nullable=False, index=True)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    classroom_id = Column(UUID(as_uuid=True), ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=False, index=True)
+    status = Column(String(20), default="absent", nullable=False)  # "present" | "absent" | "late" | "excused"
+    marked_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    __table_args__ = (UniqueConstraint("session_id", "student_id", name="uq_session_student"),)
+
+    student = relationship("User", foreign_keys=[student_id])
+
+
+class ClassroomDocument(Base):
+    """Document uploaded to a classroom library"""
+    __tablename__ = "classroom_documents"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    classroom_id = Column(UUID(as_uuid=True), ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=False, index=True)
+    uploader_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    analysis_id = Column(UUID(as_uuid=True), ForeignKey("analysis_results.id", ondelete="SET NULL"), nullable=True)
+    filename = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    is_visible_to_students = Column(Boolean, default=True, nullable=False)
+    uploaded_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    classroom = relationship("Classroom", backref="documents")
+    uploader = relationship("User", foreign_keys=[uploader_id])
